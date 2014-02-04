@@ -11,6 +11,10 @@ public class HumanPlayer implements Player {
 		return null;
 	}
 
+	public void setID(int id){
+		
+	}
+	
 	public String getName()
 	{
 		return "Human player";

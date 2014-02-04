@@ -11,6 +11,10 @@ public class SinglePlayerAI implements Player {
 		return null;
 	}
 	
+	public void setID(int id){
+		
+	}
+	
 	public String getName()
 	{
 		return "Single player AI";
