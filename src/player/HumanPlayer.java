@@ -11,4 +11,8 @@ public class HumanPlayer implements Player {
 		return null;
 	}
 
+	public String getName()
+	{
+		return "Human player";
+	}
 }
