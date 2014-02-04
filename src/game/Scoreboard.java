@@ -1,42 +1,66 @@
 package game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Scoreboard {
 
-	int ones = -1;
-	int twos = -1;
-	int threes = -1;
-	int fours = -1;
-	int fives = -1;
-	int sixes = -1;
-	int bonus = -1;
+	HashMap<ScoreType, Integer> scoreMap = new HashMap<ScoreType, Integer>();
 	
-	int threeOfAKind = -1;
-	int fourOfAKind = -1;
-	int fullHouse = -1;
-	int smallStraight = -1;
-	int bigStraight = -1;
-	int yahtzee = -1;
-	int chance = -1;
+	public Scoreboard(){				
+		for (ScoreType scoreType : ScoreType.values()) {
+			scoreMap.put(scoreType, -1);
+		}
+	}
 	
+	
+	public enum ScoreType{
+	    ONES, 
+	    TWOS,
+	    THREES,
+	    FOURS,
+	    FIVES,
+	    SIXES,
+	    BONUS,
+	    THREE_OF_A_KIND,
+	    FOUR_OF_A_KIND,
+	    FULL_HOUSE,
+	    SMALL_STRAIGHT,
+	    BIG_STRAIGHT,
+	    YAHTZEE,
+	    CHANCE;
+	}
+	
+	
+//	public enum ScoreType{
+//	    ONES(0), 
+//	    TWOS(1),
+//	    THREES(2),
+//	    FOURS(3),
+//	    FIVES(4),
+//	    SIXES(5),
+//	    BONUS(6),
+//	    THREE_OF_A_KIND(7),
+//	    FOUR_OF_A_KIND(8),
+//	    FULL_HOUSE(9),
+//	    SMALL_STRAIGHT(10),
+//	    BIG_STRAIGHT(11),
+//	    YAHTZEE(12),
+//	    CHANCE(13);
+//	    
+//
+//	    private final int id;
+//	    ScoreType(int id) { this.id = id; }
+//	    public int getValue() { return id; }
+//	}
+
 	
 	
 	public void PrintScoreBoard(){
 		System.out.println("Scoreboard for player: " + "PLAYERNAMEHERE");
-		System.out.println("Ones: " + ones);
-		System.out.println("Twos: " + twos);
-		System.out.println("Threes: " + threes);
-		System.out.println("Fours: " + fours);
-		System.out.println("Fives: " + fives);
-		System.out.println("Sixes: " + sixes);
-		System.out.println("Bonus: " + bonus);
-		System.out.println(" ");
-		System.out.println("Three of a kind: " + threeOfAKind);
-		System.out.println("Four of a kind: " + fourOfAKind);
-		System.out.println("Full house: " + fullHouse);
-		System.out.println("Small straight: " + smallStraight);
-		System.out.println("Big straight: " + bigStraight);
-		System.out.println("Yahtzee: " + yahtzee);
-		System.out.println("Chance: " + chance);
+		for (ScoreType scoreType : ScoreType.values()) {
+			System.out.println("" + scoreType + ": " + scoreMap.get(scoreType));
+		}
 		System.out.println("--------------");
 		
 	}
