@@ -25,6 +25,7 @@ public class Controller {
 	{
 		System.out.println("Take turn");
 		java.util.Random r = new java.util.Random();
+		players[0].PerformTurn(state);
 		if (r.nextInt(10) == 0)
 			gameRunning = false;
 		/*
