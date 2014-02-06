@@ -1,7 +1,6 @@
 package player;
 
 import game.Answer;
-import game.GameState;
 import game.Question;
 
 public class SinglePlayerAI implements Player {

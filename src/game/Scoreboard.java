@@ -1,28 +1,17 @@
 package game;
 
-import java.util.BitSet;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Scoreboard {
 
 	HashMap<ScoreType, Integer> scoreMap = new HashMap<ScoreType, Integer>();
-	
-	
-	
 	
 	public Scoreboard(){				
 		for (ScoreType scoreType : ScoreType.values()) {
 			scoreMap.put(scoreType, -1);
 		}
 		
-		scoreMap.put(ScoreType.ONES, 4);
-		
-		scoreMap.put(ScoreType.SMALL_STRAIGHT, 25);
-		
-		scoreMap.put(ScoreType.YAHTZEE, 50);
-		
-		ConvertMapToInt();
+		//ConvertMapToInt();
 	}
 	
 	public boolean isFull()
@@ -35,6 +24,8 @@ public class Scoreboard {
 	
 	public void put(ScoreType type, int value)
 	{
+		if (scoreMap.get(type) != -1)
+			throw new IllegalArgumentException("Category already used!");
 		scoreMap.put(type, value);
 	}
 	
@@ -58,29 +49,6 @@ public class Scoreboard {
 	    YAHTZEE,
 	    CHANCE;
 	}
-	
-	
-//	public enum ScoreType{
-//	    ONES(0), 
-//	    TWOS(1),
-//	    THREES(2),
-//	    FOURS(3),
-//	    FIVES(4),
-//	    SIXES(5),
-//	    THREE_OF_A_KIND(6),
-//	    FOUR_OF_A_KIND(7),
-//	    FULL_HOUSE(8),
-//	    SMALL_STRAIGHT(9),
-//	    BIG_STRAIGHT(10),
-//	    YAHTZEE(11),
-//	    CHANCE(12);
-//	    
-//
-//	    private final int id;
-//	    ScoreType(int id) { this.id = id; }
-//	    public int getValue() { return id; }
-//	}
-
 	
 	
 	void ConvertMapToInt(){
@@ -120,7 +88,6 @@ public class Scoreboard {
 		}
 		System.out.println("upperCounter: " + upperCounter + ", totalCounter: " + totalCounter + " ,result: " + result);
 
-		ConvertIntToMap(result);
 	}
 	
 	void ConvertIntToMap(int aInt){
@@ -147,7 +114,6 @@ public class Scoreboard {
 	}
 	
 	public void PrintScoreBoard(){
-		System.out.println("Scoreboard for player: " + "PLAYERNAMEHERE");
 		for (ScoreType scoreType : ScoreType.values()) {
 			System.out.println("" + scoreType + ": " + scoreMap.get(scoreType));
 		}

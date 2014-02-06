@@ -7,6 +7,12 @@ import java.util.Random;
 
 public class GameLogic {
 	
+	private static final int
+		FULL_HOUSE_SCORE = 25,
+		SMALL_STRAIGHT_SCORE = 30,
+		BIG_STRAIGHT_SCORE = 40,
+		YAHTZEE_SCORE = 50;
+	
 	int currentPlayer = 0;
 	int rollsLeft;
 	Random random;
@@ -51,17 +57,13 @@ public class GameLogic {
 	
 	
 	public void applyAnswer(Answer answer){
-		//TODO: validate player?
-		//TODO: Answer not null
 		if (rollsLeft > 0)
 		{
-			//TODO: validate diceToHold is set and long enough
 			roll = roll(roll, answer.diceToHold);
 			rollsLeft--;
 		}
 		else //turn over
 		{
-			//TODO: validate selectedScoreEntry is set and empty in score board
 			scoreboards[currentPlayer].put(answer.selectedScoreEntry, 
 					valueOfRoll(answer.selectedScoreEntry, roll));
 			
@@ -101,37 +103,36 @@ public class GameLogic {
 				return 0;
 			case FULL_HOUSE:
 				int v3 = -1;
-				boolean f3 = false;
 				for (int v = 1; v <= 6; v++)
 				{
 					if (count(roll,v) >= 3)
 					{
 						v3 = v;
-						f3 = true;
 						break;
 					}
 				}
+				if (v3 == -1) return 0;
 				for (int v = 1; v <= 6; v++)
 				{
 					if (v == v3) continue;
 					if (count(roll,v) >= 2)
 					{
-						return 25; //TODO: Move me
+						return FULL_HOUSE_SCORE;
 					}
 				}
 				return 0;
 			case SMALL_STRAIGHT:
 				if (countConsecutive(roll) >= 4)
-					return 30; //TODO: Move me
+					return SMALL_STRAIGHT_SCORE;
 				return 0;
 			case BIG_STRAIGHT:
 				if (countConsecutive(roll) == 5)
-					return 40; //TODO: Move me	
+					return BIG_STRAIGHT_SCORE;	
 				return 0;
 			case YAHTZEE:
 				for (int v = 1; v <= 6; v++)
 					if (count(roll,v) == 5)
-						return 50; //TODO: Move me
+						return YAHTZEE_SCORE;
 				return 0;
 			case CHANCE:
 				return sum(roll);
@@ -170,24 +171,4 @@ public class GameLogic {
 		return c;
 	}	
 	
-	public GameState doRoll(GameState state, Answer answer) {
-		for (int i = 0; i < answer.diceToHold.length; i++) {
-			if (answer.diceToHold[i] != true) {
-				Random generator = new Random();
-				state.roll[i] = generator.nextInt(6) + 1;
-			}
-		}
-		return state;
-	}
-	public GameState performAction(GameState state, Answer answer) {
-		state = this.doRoll(state, answer);
-		/*if (answer.selectedScoreEntry != -1) {
-			state = this.selectOption(state, answer);
-		}*/
-		return state;
-	}
-	public GameState selectOption(GameState state, Answer answer) {
-		//TODO
-		return state;
-	}
 }

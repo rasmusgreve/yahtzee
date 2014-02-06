@@ -4,13 +4,11 @@ import player.Player;
 
 public class Controller {
 	private final Player[] players;
-	private GameState state;
 	private boolean gameRunning;
 	private GameLogic logic;
 	
 	public Controller(Player[] players){
 		this.players = players;
-		state = new GameState();
 		logic = new GameLogic(players.length, 0); //TODO: todo
 	}
 	

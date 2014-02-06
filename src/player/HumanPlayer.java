@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import game.Answer;
-import game.GameState;
 import game.Question;
 import game.Scoreboard.ScoreType;
 
@@ -19,9 +18,8 @@ public class HumanPlayer implements Player {
 		System.out.println(question.rollsLeft);
 		System.out.println("Enter to reroll:");
 		try {
-			String s = input.readLine();
+			input.readLine();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Answer ans = new Answer();
