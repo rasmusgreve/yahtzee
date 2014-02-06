@@ -117,7 +117,21 @@ public class Scoreboard {
 		for (ScoreType scoreType : ScoreType.values()) {
 			System.out.println("" + scoreType + ": " + scoreMap.get(scoreType));
 		}
+		
+		int first6 = 0;
+		int sum = 0;
+		for (ScoreType scoreType : ScoreType.values())
+		{
+			if (scoreType.ordinal() < 6)
+				first6 += scoreMap.get(scoreType);
+			sum += scoreMap.get(scoreType);
+		}
+		int bonus = (first6 >= 63) ? 35 : 0;
+		
 		System.out.println("--------------");
+		System.out.println("Sum:    " + sum);
+		System.out.println("Bonus:  " + bonus);
+		System.out.println("Total:  " + (sum + bonus));
 		
 	}
 	
