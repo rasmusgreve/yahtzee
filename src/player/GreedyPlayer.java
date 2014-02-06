@@ -1,7 +1,5 @@
 package player;
 
-import java.util.ArrayList;
-
 import game.Answer;
 import game.GameLogic;
 import game.Question;
