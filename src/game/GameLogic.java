@@ -147,6 +147,11 @@ public class GameLogic {
 		}
 	}
 	
+	public static void main(String[] args) {
+		int[] test = new int[]{1,2,2,4,5};
+		System.out.println(countConsecutive(test));
+	}
+	
 	private static int countConsecutive(int[] roll)
 	{
 		Arrays.sort(roll);
@@ -155,6 +160,8 @@ public class GameLogic {
 		{
 			if (roll[i] == roll[i-1] + 1)
 				cons++;
+			else if (roll[i] != roll[i-1] + 1)
+				cons = 1;
 		}
 		return cons;
 	}
