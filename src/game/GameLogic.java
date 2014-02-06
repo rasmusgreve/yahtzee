@@ -1,8 +1,35 @@
 package game;
 
+import game.Scoreboard.ScoreType;
+
 import java.util.Random;
 
 public class GameLogic {
+	
+	int currentPlayer = 0;
+	
+	
+	public GameLogic(int numPlayers){
+		
+	}
+	
+	public Question getQuestion(){
+		
+		
+		return new Question();
+	}
+	
+	
+	public void applyAnswer(Answer answer){
+		
+	}
+	
+	
+	public int valueOfRoll(ScoreType type, int[] roll){
+		
+		return 0;
+	}
+	
 	public GameState doRoll(GameState state, Answer answer) {
 		for (int i = 0; i < answer.diceToHold.length; i++) {
 			if (answer.diceToHold[i] != true) {
