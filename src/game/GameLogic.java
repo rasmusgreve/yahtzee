@@ -31,6 +31,11 @@ public class GameLogic {
 		}
 	}
 	
+	public Scoreboard[] getResult()
+	{
+		return scoreboards;
+	}
+	
 	public Question getQuestion(){
 		if (scoreboards[currentPlayer].isFull()) return null;
 		return new Question(currentPlayer, roll, rollsLeft, scoreboards);
@@ -64,8 +69,8 @@ public class GameLogic {
 		}
 		else //turn over
 		{
-			scoreboards[currentPlayer].put(answer.selectedScoreEntry, 
-					valueOfRoll(answer.selectedScoreEntry, roll));
+			int score = valueOfRoll(answer.selectedScoreEntry, roll);
+			scoreboards[currentPlayer].put(answer.selectedScoreEntry, score);
 			
 			//Next player
 			currentPlayer = (currentPlayer + 1) % numPlayers;

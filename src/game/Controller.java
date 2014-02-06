@@ -18,8 +18,14 @@ public class Controller {
 		while (gameRunning){
 			takeTurn();
 		}
-		//TODO: Declare a winner
-		System.out.println("Game is over");
+		Scoreboard[] result = logic.getResult();
+		System.out.println("Game is over\nresults:");
+		for (int i = 0; i < players.length; i++)
+		{
+			System.out.println("\tPlayer " + players[i].getName());
+			result[i].PrintScoreBoard();
+			System.out.println("-----------------------------");
+		}
 	}
 	
 	private void takeTurn()
