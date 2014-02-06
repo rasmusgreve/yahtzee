@@ -7,9 +7,9 @@ public class Controller {
 	private boolean gameRunning;
 	private GameLogic logic;
 	
-	public Controller(Player[] players){
+	public Controller(Player[] players, int seed){
 		this.players = players;
-		logic = new GameLogic(players.length, 0); //TODO: todo
+		logic = new GameLogic(players.length, seed);
 	}
 	
 	public void startGame()
