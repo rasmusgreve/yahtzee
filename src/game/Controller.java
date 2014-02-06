@@ -3,6 +3,7 @@ package game;
 import player.Player;
 
 public class Controller {
+	private static final boolean OUTPUT = false;
 	private final Player[] players;
 	private boolean gameRunning;
 	private GameLogic logic;
@@ -19,13 +20,22 @@ public class Controller {
 			takeTurn();
 		}
 		Scoreboard[] result = logic.getResult();
-		System.out.println("Game is over\nresults:");
+		if (OUTPUT)
+			System.out.println("Game over. Results:");
 		for (int i = 0; i < players.length; i++)
 		{
-			System.out.println("\tPlayer " + players[i].getName());
-			result[i].PrintScoreBoard();
-			System.out.println("-----------------------------");
+			if (OUTPUT)
+			{
+				System.out.print("\tPlayer [" + i + "] " + players[i].getName() + ": ");
+				System.out.println(result[i].totalInclBonus());
+				result[i].PrintScoreBoard();
+			}
 		}
+	}
+	
+	public Scoreboard[] getResults()
+	{
+		return logic.getResult();
 	}
 	
 	private void takeTurn()

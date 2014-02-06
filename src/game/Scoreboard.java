@@ -33,6 +33,32 @@ public class Scoreboard {
 	{
 		return scoreMap.get(type);
 	}
+	
+	public int sum()
+	{
+		int sum = 0;
+		for (ScoreType scoreType : ScoreType.values())
+		{
+			sum += scoreMap.get(scoreType);
+		}
+		return sum;
+	}
+	
+	public int bonus()
+	{
+		int first6 = 0;
+		for (ScoreType scoreType : ScoreType.values())
+		{
+			if (scoreType.ordinal() < 6)
+				first6 += scoreMap.get(scoreType);
+		}
+		return (first6 >= 63) ? 35 : 0;
+	}
+	
+	public int totalInclBonus()
+	{
+		return bonus() + sum();
+	}
 
 	public enum ScoreType{
 	    ONES, 
@@ -118,20 +144,10 @@ public class Scoreboard {
 			System.out.println("" + scoreType + ": " + scoreMap.get(scoreType));
 		}
 		
-		int first6 = 0;
-		int sum = 0;
-		for (ScoreType scoreType : ScoreType.values())
-		{
-			if (scoreType.ordinal() < 6)
-				first6 += scoreMap.get(scoreType);
-			sum += scoreMap.get(scoreType);
-		}
-		int bonus = (first6 >= 63) ? 35 : 0;
-		
 		System.out.println("--------------");
-		System.out.println("Sum:    " + sum);
-		System.out.println("Bonus:  " + bonus);
-		System.out.println("Total:  " + (sum + bonus));
+		System.out.println("Sum:    " + sum());
+		System.out.println("Bonus:  " + bonus());
+		System.out.println("Total:  " + (totalInclBonus()));
 		
 	}
 	
