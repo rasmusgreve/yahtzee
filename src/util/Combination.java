@@ -9,7 +9,7 @@ public class Combination {
 	 * @param k Elements to choose
 	 * @return n choose k
 	 */
-	public static int combination(int n, int k)
+	public static long combination(long n, long k)
 	{
 		return factorial(n) / (factorial(k) * factorial(n-k));
 	}
@@ -20,9 +20,13 @@ public class Combination {
 	 * @param n
 	 * @return
 	 */
-	public static int factorial(int n)
+	public static long factorial(long n)
 	{
-		if (n == 1) return 1;
+		if (n <= 1L) return 1;
 		return n * factorial(n-1);
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(combination(10, 8));
 	}
 }
