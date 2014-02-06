@@ -24,6 +24,24 @@ public class Scoreboard {
 		
 		ConvertMapToInt();
 	}
+	
+	public boolean isFull()
+	{
+		for (ScoreType scoreType : ScoreType.values())
+			if (scoreMap.get(scoreType) == -1)
+				return false;
+		return true;
+	}
+	
+	public void put(ScoreType type, int value)
+	{
+		scoreMap.put(type, value);
+	}
+	
+	public int get(ScoreType type)
+	{
+		return scoreMap.get(type);
+	}
 
 	public enum ScoreType{
 	    ONES, 

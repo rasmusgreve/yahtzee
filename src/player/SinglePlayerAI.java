@@ -2,11 +2,12 @@ package player;
 
 import game.Answer;
 import game.GameState;
+import game.Question;
 
 public class SinglePlayerAI implements Player {
 
 	@Override
-	public Answer PerformTurn(GameState state) {
+	public Answer PerformTurn(Question question) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -6,10 +6,12 @@ public class Controller {
 	private final Player[] players;
 	private GameState state;
 	private boolean gameRunning;
+	private GameLogic logic;
 	
 	public Controller(Player[] players){
 		this.players = players;
 		state = new GameState();
+		logic = new GameLogic(players.length, 0); //TODO: todo
 	}
 	
 	public void startGame()
@@ -18,20 +20,18 @@ public class Controller {
 		while (gameRunning){
 			takeTurn();
 		}
+		//TODO: Declare a winner
 		System.out.println("Game is over");
 	}
 	
 	private void takeTurn()
 	{
-		System.out.println("Take turn");
-		java.util.Random r = new java.util.Random();
-		players[0].PerformTurn(state);
-		if (r.nextInt(10) == 0)
+		Question question = logic.getQuestion();
+		if (question == null) {
 			gameRunning = false;
-		/*
-		Player cur = players[state.currentPlayerTurn];
-		Answer ans = cur.PerformTurn(state);
-		state = state.apply(ans);
-		*/
+			return;
+		}
+		Answer answer = players[question.playerId].PerformTurn(question);
+		logic.applyAnswer(answer);
 	}
 }
