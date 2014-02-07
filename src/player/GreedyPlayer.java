@@ -12,7 +12,7 @@ public class GreedyPlayer implements Player {
 	@Override
 	public Answer PerformTurn(Question question) {
 		Answer ans = new Answer();
-		ans.diceToHold = new boolean[]{false,false,false,false,false};
+		ans.diceToHold = holdHigh(question.roll);
 		ans.selectedScoreEntry = bestValidScoretype(question.scoreboards[id], question.roll);
 		return ans;
 	}
@@ -32,6 +32,14 @@ public class GreedyPlayer implements Player {
 			}
 		}
 		return type;
+	}
+	
+	private boolean[] holdHigh(int[] roll)
+	{
+		boolean[] hold = new boolean[roll.length];
+		for (int i = 0; i < roll.length; i++)
+			hold[i] = (roll[i] >= 4);
+		return hold;
 	}
 
 	
