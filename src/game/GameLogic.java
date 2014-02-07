@@ -160,7 +160,7 @@ public class GameLogic {
 		{
 			if (roll[i] == roll[i-1] + 1)
 				cons++;
-			else if (roll[i] != roll[i-1] + 1)
+			else if (roll[i] != roll[i-1])
 				cons = 1;
 		}
 		return cons;
