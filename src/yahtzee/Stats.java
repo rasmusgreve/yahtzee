@@ -1,12 +1,9 @@
 package yahtzee;
 
 import game.Controller;
-import game.GameLogic;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
 import player.Player;
 
