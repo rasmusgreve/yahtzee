@@ -1,15 +1,18 @@
 package yahtzee;
 
 import game.Controller;
+import game.GameLogic;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import player.Player;
 
 public class Stats {
 
-	private static final int ROUNDS = 1000000;
+	private static final int ROUNDS = 100000;
 	/**
 	 * Args:
 	 * 	[0]   int seed
@@ -26,7 +29,7 @@ public class Stats {
 		}
 		catch (Exception e) {}
 		
-		System.out.println("Starting stats with "+ROUNDS+" rounds from seed " + seed);
+		System.out.println("Starting stats with " + String.format("%,d",ROUNDS) + " rounds from seed " + seed);
 		System.out.println("Loading players...");
 		for (int i = 1; i < args.length; i++)
 		{
@@ -42,13 +45,14 @@ public class Stats {
 		for (int i = 0; i < ROUNDS; i++)
 		{
 			Controller c = new Controller(players.toArray(new Player[players.size()]), seed++);
+			c.OUTPUT = false;
 			c.startGame();
 			results[i] = c.getResults()[0].totalInclBonus();
 		}
 		long duration = System.currentTimeMillis() - start;
 		
 		
-		System.out.println(duration + "ms " + stats(results));
+		System.out.println(String.format("%,d",duration) + " ms, " + stats(results));
 		
 		//System.out.println(Arrays.toString(results));
 	}
@@ -80,8 +84,7 @@ public class Stats {
 		}
 		double std_dev = Math.sqrt(tmp);
 		
-		
-		return "max: " + max + ", min: " + min + ", avg: " + mean + " median: " + median + " std dev.: " + std_dev;
+		return String.format("max: %d, min: %d, avg: %.2f, median: %d, std.dev.: %.3f", max, min, mean, median, std_dev);
 	}
 	
 	/**

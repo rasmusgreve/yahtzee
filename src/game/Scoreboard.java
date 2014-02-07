@@ -141,13 +141,14 @@ public class Scoreboard {
 	
 	public void PrintScoreBoard(){
 		for (ScoreType scoreType : ScoreType.values()) {
-			System.out.println("" + scoreType + ": " + scoreMap.get(scoreType));
+			//System.out.println("" + scoreType + ":" + scoreMap.get(scoreType));
+			System.out.println(String.format("%15s: %d", scoreType, scoreMap.get(scoreType)));
 		}
 		
-		System.out.println("--------------");
-		System.out.println("Sum:    " + sum());
-		System.out.println("Bonus:  " + bonus());
-		System.out.println("Total:  " + (totalInclBonus()));
+		System.out.println("_____________________________");
+		System.out.println(String.format("%15s: %d", "Sum", sum()));
+		System.out.println(String.format("%15s: %d", "Bonus", bonus()));
+		System.out.println(String.format("%15s: %d", "Total", totalInclBonus()));
 		
 	}
 	

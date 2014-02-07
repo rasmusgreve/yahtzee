@@ -3,7 +3,7 @@ package game;
 import player.Player;
 
 public class Controller {
-	private static final boolean OUTPUT = false;
+	public boolean OUTPUT = true;
 	private final Player[] players;
 	private boolean gameRunning;
 	private GameLogic logic;
