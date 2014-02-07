@@ -31,7 +31,7 @@ public class Play {
 			Player p = loadPlayer(args[i]);
 			System.out.println("\t" + args[i] + " -> ["+(i-1)+"] = " + p.getName());
 			players.add(p);
-			p.setID(i - 1);
+			p.reset(i - 1);
 		}
 		Controller c = new Controller(players.toArray(new Player[players.size()]), seed);
 		c.startGame();

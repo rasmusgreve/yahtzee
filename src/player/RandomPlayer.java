@@ -50,7 +50,12 @@ public class RandomPlayer implements Player {
 	}
 
 	@Override
-	public void setID(int id) {
+	public void finalize(){
+		
+	}
+	
+	@Override
+	public void reset(int id) {
 		this.id = id;
 	}
 

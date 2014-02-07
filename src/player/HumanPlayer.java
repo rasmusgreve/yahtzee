@@ -58,10 +58,17 @@ public class HumanPlayer implements Player {
 		return ans;
 	}
 	
-	public void setID(int id){
+	@Override
+	public void reset(int id){
 		
 	}
 	
+	@Override
+	public void finalize(){
+		
+	}
+	
+	@Override
 	public String getName()
 	{
 		return "Human player";

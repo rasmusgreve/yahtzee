@@ -47,9 +47,14 @@ public class GreedyPlayer implements Player {
 	public String getName() {
 		return "Greedy player";
 	}
+	
+	@Override
+	public void finalize(){
+		
+	}
 
 	@Override
-	public void setID(int id) {
+	public void reset(int id) {
 		this.id = id;
 	}
 

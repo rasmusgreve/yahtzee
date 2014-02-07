@@ -33,7 +33,7 @@ public class Stats {
 			Player p = loadPlayer(args[i]);
 			System.out.println("\t" + args[i] + " -> ["+(i-1)+"] = " + p.getName());
 			players.add(p);
-			p.setID(i - 1);
+			p.reset(i - 1);
 		}
 		
 		int[] results = new int[ROUNDS];
@@ -44,6 +44,7 @@ public class Stats {
 			Controller c = new Controller(players.toArray(new Player[players.size()]), seed++);
 			c.OUTPUT = false;
 			c.startGame();
+			//TODO: Reset players
 			results[i] = c.getResults()[0].totalInclBonus();
 		}
 		long duration = System.currentTimeMillis() - start;
