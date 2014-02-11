@@ -8,7 +8,7 @@ public class YahtzeeMath {
 		choose(10,5);
 	}
 	
-	/**
+	/** 
 	 * Naïve implementation of combination
 	 * C(n,k) n choose k
 	 * @param n Total elements
@@ -33,7 +33,7 @@ public class YahtzeeMath {
 	}
 	
 	//assumes 5d6
-	public static double prob(int[] r)
+	public static double prob5(int[] r)
 	{
 		//count occurrences
 		int[] c = new int[6];
@@ -53,7 +53,51 @@ public class YahtzeeMath {
 		}
 		else 				{			return  720 / 7776.;} /*ABCDE*/
 	}
-	
+	public static double prob4(int[] r)
+	{
+		//count occurrences
+		int[] c = new int[6];
+		for (int i = 0; i < 4; i++)
+			c[r[i]-1]++;
+		//sort them and find prob
+		Arrays.sort(c);
+		if (c[5] == 4){ 				return  6 / 1296.;} /*AAAA*/
+		else if (c[5] == 3) { 			return 120 / 1296.;} /*AAAB*/
+		else if (c[5] == 2){
+			if (c[4] == 2) { 			return 90 / 1296.;} /*AABB*/
+			else {						return 720 / 1296.;} /*AABC*/
+		}
+		else {							return  360 / 1296.;} /*ABCD*/
+	}
+
+	public static double prob3(int[] r)
+	{
+		//count occurrences
+		int[] c = new int[6];
+		for (int i = 0; i < 3; i++)
+			c[r[i]-1]++;
+		//sort them and find prob
+		Arrays.sort(c);
+		if (c[5] == 3){ 				return  6 / 216.;} /*AAA*/
+		else if (c[5] == 2) { 			return 90 / 216.;} /*AAB*/
+		else {							return  120 / 216.;} /*ABC*/
+	}
+
+	public static double prob2(int[] r)
+	{
+		//count occurrences
+		int[] c = new int[6];
+		for (int i = 0; i < 2; i++)
+			c[r[i]-1]++;
+		//sort them and find prob
+		Arrays.sort(c);
+		if (c[5] == 2){ 				return  6 / 36.;} /*AA*/
+		else {							return  30 / 36.;} /*AB*/
+	}
+	public static double prob1(int[] r)
+	{
+		return 1;
+	}
 	
 	static long[][] ch = new long[1][0];
 	public static long choose(int ii, int jj) { // Access method with init check
