@@ -94,16 +94,6 @@ public class SinglePlayerAI implements Player {
 		return (float)YahtzeeMath.prob(c, roll);
 	}
 	
-	private static int[] rollFromInt(int input)
-	{
-		int[] res = new int[5];
-		for (int i = 1; i < 6; i++)
-		{
-			res[i-1] = (input / (int)(Math.pow(6,i-1))) % 6 + 1;
-		}
-		return res;
-	}
-	
 	public static void main(String[] args) {
 		/*ArrayList<int[]> r = getPossibleRolls(new int[] {6,6,6,6,6},new boolean[]{false,false,false,false,false});
 		for(int[] v : r)
@@ -131,27 +121,16 @@ public class SinglePlayerAI implements Player {
 	{
 		ArrayList<int[]> rolls = new ArrayList<int[]>();
 		
+		for (int a = 1; a <= 6; a++)
+			for (int b = a; b <= 6; b++)
+				for (int c = b; c <= 6; c++)
+					for (int d = c; d <= 6; d++)
+						for (int e = d; e <= 6; e++)
+						{
+							int[] r = new int[]{a,b,c,d,e};
+							rolls.add(Arrays.copyOf(r, r.length));
+						}
 		//TODO: Use reverse coolex instead
-		for (int i = 0; i < 7776; i++)
-		{
-			int[] n = rollFromInt(i);
-			for (int j = 0; j < 5; j++)
-				if (hold[j])
-					n[j] = roll[j];
-			
-			Arrays.sort(n);
-			boolean has = false;
-			for (int[] ex : rolls)
-			{
-				if (Arrays.equals(ex, n))
-				{
-					has = true;
-					break;
-				}
-			}
-			if (!has)
-				rolls.add(n);
-		}
 		
 		return rolls;
 	}
