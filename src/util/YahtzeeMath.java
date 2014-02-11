@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class YahtzeeMath {
 
 	static{
+		ch = new long[1][0];
 		choose(10,5);
 	}
 	
@@ -41,17 +42,21 @@ public class YahtzeeMath {
 			c[r[i]-1]++;
 		//sort them and find prob
 		Arrays.sort(c);
-		if 		(c[5] == 5){			return    6 / 7776.;} /*AAAAA*/
-		else if (c[5] == 4){			return  150 / 7776.;} /*AAAAB*/
+		//(A/B) / C
+		//Probability = (A/C)
+		//Occurences = B
+		//Could be rewritten to: (A/C)/B (makes more sense?)
+		if 		(c[5] == 5){			return     (6/6.) / 7776.;} /*AAAAA*/
+		else if (c[5] == 4){			return  (150/30.) / 7776.;} /*AAAAB*/
 		else if (c[5] == 3){
-				if (c[4] == 2) {		return  300 / 7776.;} /*AAABB*/
-				else 		   {		return 1200 / 7776.;} /*AAABC*/
+				if (c[4] == 2) {		return  (300/30.) / 7776.;} /*AAABB*/
+				else 		   {		return (1200/60.) / 7776.;} /*AAABC*/
 		}
 		else if (c[5] == 2){
-				if (c[4] == 2) {		return 1800 / 7776.;} /*AABBC*/
-				else 		   {		return 3600 / 7776.;} /*AABCD*/
+				if (c[4] == 2) {		return (1800/60.) / 7776.;} /*AABBC*/
+				else 		   {		return (3600/60.) / 7776.;} /*AABCD*/
 		}
-		else 				{			return  720 / 7776.;} /*ABCDE*/
+		else 				{			return   (720/6.) / 7776.;} /*ABCDE*/
 	}
 	public static double prob4(int[] r)
 	{
@@ -61,13 +66,13 @@ public class YahtzeeMath {
 			c[r[i]-1]++;
 		//sort them and find prob
 		Arrays.sort(c);
-		if (c[5] == 4){ 				return  6 / 1296.;} /*AAAA*/
-		else if (c[5] == 3) { 			return 120 / 1296.;} /*AAAB*/
+		if (c[5] == 4){ 				return  (6/6.) / 1296.;} /*AAAA*/
+		else if (c[5] == 3) { 			return (120/30.) / 1296.;} /*AAAB*/
 		else if (c[5] == 2){
-			if (c[4] == 2) { 			return 90 / 1296.;} /*AABB*/
-			else {						return 720 / 1296.;} /*AABC*/
+			if (c[4] == 2) { 			return (90/15.) / 1296.;} /*AABB*/
+			else {						return (720/60.) / 1296.;} /*AABC*/
 		}
-		else {							return  360 / 1296.;} /*ABCD*/
+		else {							return  (360/15.) / 1296.;} /*ABCD*/
 	}
 
 	public static double prob3(int[] r)
@@ -78,9 +83,9 @@ public class YahtzeeMath {
 			c[r[i]-1]++;
 		//sort them and find prob
 		Arrays.sort(c);
-		if (c[5] == 3){ 				return  6 / 216.;} /*AAA*/
-		else if (c[5] == 2) { 			return 90 / 216.;} /*AAB*/
-		else {							return  120 / 216.;} /*ABC*/
+		if (c[5] == 3){ 				return  (6/6.) / 216.;} /*AAA*/
+		else if (c[5] == 2) { 			return (90/30.) / 216.;} /*AAB*/
+		else {							return  (120/20.) / 216.;} /*ABC*/
 	}
 
 	public static double prob2(int[] r)
@@ -91,12 +96,25 @@ public class YahtzeeMath {
 			c[r[i]-1]++;
 		//sort them and find prob
 		Arrays.sort(c);
-		if (c[5] == 2){ 				return  6 / 36.;} /*AA*/
-		else {							return  30 / 36.;} /*AB*/
+		if (c[5] == 2){ 				return  (6/6.) / 36.;} /*AA*/
+		else {							return  (30/15.) / 36.;} /*AB*/
 	}
 	public static double prob1(int[] r)
 	{
-		return 1;
+		return 1 / 6.;
+	}
+	public static double prob(int n, int[] roll)
+	{
+		switch(n){
+			case 0: return 1;
+			case 1: return prob1(roll);
+			case 2: return prob2(roll);
+			case 3: return prob3(roll);
+			case 4: return prob4(roll);
+			case 5: return prob5(roll);
+			default:
+				throw new IllegalArgumentException("Max n is 5. you gave " + n);
+		}
 	}
 	
 	static long[][] ch = new long[1][0];

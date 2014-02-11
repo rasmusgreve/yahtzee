@@ -2,6 +2,7 @@ package player;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import game.Answer;
 import game.Question;
@@ -82,24 +83,98 @@ public class SinglePlayerAI implements Player {
 		return values[idx];
 	}
 	
-	private float getProb(boolean[] hold, int[] roll)
+	
+	private static float getProb(boolean[] hold, int[] roll)
 	{
-		//Look at dice roll[i] where hold[i] == false
-		//# dice to roll = count(hold[i] == false)
-		//TODO: do it
-		return 1;
+		int c = 0;
+		for (boolean b : hold)
+			if (!b)
+				c++;
+		
+		return (float)YahtzeeMath.prob(c, roll);
 	}
 	
-	private ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
+	private static int[] rollFromInt(int input)
 	{
-		//TODO: This
-		return null;
+		int[] res = new int[5];
+		for (int i = 1; i < 6; i++)
+		{
+			res[i-1] = (input / (int)(Math.pow(6,i-1))) % 6 + 1;
+		}
+		return res;
+	}
+	
+	public static void main(String[] args) {
+		/*ArrayList<int[]> r = getPossibleRolls(new int[] {6,6,6,6,6},new boolean[]{false,false,false,false,false});
+		for(int[] v : r)
+		{
+			System.out.println(Arrays.toString(v));
+		}*/
+		SinglePlayerAI ai = new SinglePlayerAI();
+		ai.doIt();
+	}
+	
+	public void doIt()
+	{
+		float sum = 0;
+		boolean[] hold = new boolean[]{false,false,false,false,false};
+		int[] roll = new int[] {1,1,2,2,2};
+		for (int[] new_roll : getPossibleRolls(roll, hold))
+		{
+			sum += getProb(hold, new_roll);
+		}
+		System.out.println(sum);
+		
+	}
+	
+	private static ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
+	{
+		ArrayList<int[]> rolls = new ArrayList<int[]>();
+		
+		//TODO: Use reverse coolex instead
+		for (int i = 0; i < 7776; i++)
+		{
+			int[] n = rollFromInt(i);
+			for (int j = 0; j < 5; j++)
+				if (hold[j])
+					n[j] = roll[j];
+			
+			Arrays.sort(n);
+			boolean has = false;
+			for (int[] ex : rolls)
+			{
+				if (Arrays.equals(ex, n))
+				{
+					has = true;
+					break;
+				}
+			}
+			if (!has)
+				rolls.add(n);
+		}
+		
+		return rolls;
+	}
+	
+	private static boolean[] holdFromInt(int v)
+	{
+		boolean[] out = new boolean[5];
+		for (int i = 0; i < 5;i++)
+		{
+			out[i] = (v & (1 << i)) > 0;
+		}
+		return out;
 	}
 	
 	private ArrayList<boolean[]> getInterestingHolds(int[] roll)
 	{
-		//TODO: This
-		return null;
+		ArrayList<boolean[]> holds = new ArrayList<boolean[]>();
+		
+		//TODO: Filter out uninteresting holds maybe?
+		for (int i = 0; i < (1 << 5); i++)
+			holds.add(holdFromInt(i));
+		
+		return holds;
 	}
 	
 	
