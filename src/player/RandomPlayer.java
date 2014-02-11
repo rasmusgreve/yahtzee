@@ -37,11 +37,8 @@ public class RandomPlayer implements Player {
 
 	private ScoreType randomValidScoretype(Scoreboard scoreboard)
 	{
-		ArrayList<ScoreType> types = new ArrayList<ScoreType>();
-		for (ScoreType st : ScoreType.values())
-			if (scoreboard.get(st) == -1)
-				types.add(st);
-		return types.get(random.nextInt(types.size()));
+		ArrayList<ScoreType> p = scoreboard.possibleScoreTypes();
+		return p.get(random.nextInt(p.size()));
 	}
 	
 	@Override

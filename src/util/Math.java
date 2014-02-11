@@ -2,7 +2,7 @@ package util;
 
 import java.util.Arrays;
 
-public class Combination {
+public class Math {
 
 	/**
 	 * Naïve implementation of combination

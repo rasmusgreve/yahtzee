@@ -6,9 +6,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import game.Answer;
 import game.Question;
+import game.Scoreboard;
+import game.Scoreboard.ScoreType;
+import util.Math;
 
 public class SinglePlayerAI implements Player {
 
@@ -17,9 +21,62 @@ public class SinglePlayerAI implements Player {
 	
 	@Override
 	public Answer PerformTurn(Question question) {
-		// TODO Auto-generated method stub
+		Answer ans = new Answer();
+		if (question.rollsLeft == 0)
+			ans.selectedScoreEntry = searchScoreType(question.roll, question.scoreboards[question.playerId]);
+		else
+			ans.diceToHold = searchHold(question.roll, question.rollsLeft);
+		
+		return ans;
+	}
+	
+	private boolean[] searchHold(int[] roll, int rollsLeft)
+	{
 		return null;
 	}
+	
+	private ScoreType searchScoreType(int[] roll, Scoreboard scoreboard)
+	{
+		HashMap<ScoreType, Integer> values = new HashMap<ScoreType, Integer>();
+		
+		for (ScoreType type : scoreboard.possibleScoreTypes())
+		{
+			
+			
+			values.put(type, 0);
+		}
+		
+		
+		
+		
+		//Find and return maximum value!
+		int max = Integer.MIN_VALUE;
+		ScoreType best = null;
+		for (ScoreType type : values.keySet())
+		{
+			if (values.get(type) > max)
+			{
+				max = values.get(type);
+				best = type;
+			}
+		}
+		
+		return best;
+	}
+	
+	
+	private int valueOfScoreBoard(Scoreboard board){
+		return -1;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@Override
 	public void reset(int id){
