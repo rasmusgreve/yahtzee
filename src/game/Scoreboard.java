@@ -29,16 +29,16 @@ public class Scoreboard implements Cloneable {
 		return true;
 	}
 	
-	public void insert(int index, int value)
+	public void insert(ScoreType type, int value)
 	{
-		if (scoreArray[index] != -1)
+		if (scoreArray[type.ordinal()] != -1)
 			throw new IllegalArgumentException("Category already used!");
-		scoreArray[index] = value;
+		scoreArray[type.ordinal()] = value;
 	}
 	
-	public int get(int index)
+	public int get(ScoreType type)
 	{
-		return scoreArray[index];
+		return scoreArray[type.ordinal()];
 	}
 	
 	public int sum()
@@ -66,7 +66,7 @@ public class Scoreboard implements Cloneable {
 	{
 		ArrayList<ScoreType> types = new ArrayList<ScoreType>();
 		for (ScoreType st : ScoreType.values())
-			if (get(st.ordinal()) == -1)
+			if (scoreArray[st.ordinal()] == -1)
 				types.add(st);
 		return types;
 	}
@@ -93,16 +93,10 @@ public class Scoreboard implements Cloneable {
 	}
 	
 	
-	void ConvertMapToInt(){
-		System.out.println("--------------");
-		System.out.println("CONVERTING TO INT");
-		System.out.println("--------------");
+	public int ConvertMapToInt(){
 		int upperCounter = 0;
-		int totalCounter = 0;
-		
 		
 		boolean[] scores = new boolean[13];
-		
 		
 		int i = 0;
 		for (ScoreType scoreType : ScoreType.values()) {
@@ -110,7 +104,6 @@ public class Scoreboard implements Cloneable {
 			if (scoreAmount > -1){
 				scores[i] = true;
 				if (scoreType.ordinal() < 6) upperCounter += scoreAmount;
-				totalCounter += scoreAmount;
 			}
 			
 			i++;
@@ -118,19 +111,15 @@ public class Scoreboard implements Cloneable {
 		
 		
 		
-		int result = upperCounter + (totalCounter << 6);
+		int result = upperCounter;
 		
 		for (int j = 0; j < scores.length; j++) {
 			int trueOrFalse = scores[j] ? 1 : 0;
-			result |= (trueOrFalse) << (15+j);
+			result |= (trueOrFalse) << (6+j);
 		}		
-		
-		for (int j = 0; j < scores.length; j++) {
-			System.out.println("ScoreType: " + ScoreType.values()[j] + ", scores[j]: " + scores[j]);
-		}
-		System.out.println("upperCounter: " + upperCounter + ", totalCounter: " + totalCounter + " ,result: " + result);
-
+		return result;
 	}
+	/*
 	
 	void ConvertIntToMap(int aInt){
 		System.out.println("--------------");
@@ -154,6 +143,7 @@ public class Scoreboard implements Cloneable {
 		System.out.println("upperCounter: " + upperCounter + ", totalCounter: " + totalCounter);
 
 	}
+	*/
 	
 	public void PrintScoreBoard(){
 		for (ScoreType scoreType : ScoreType.values()) {

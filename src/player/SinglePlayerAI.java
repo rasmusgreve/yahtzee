@@ -5,10 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import game.Answer;
+import game.GameLogic;
 import game.Question;
 import game.Scoreboard;
 import game.Scoreboard.ScoreType;
@@ -30,33 +32,72 @@ public class SinglePlayerAI implements Player {
 		return ans;
 	}
 	
+	
+	private int searchRoll(int[] roll, boolean[] hold, int rollsLeft)
+	{
+		int max = Integer.MIN_VALUE;
+		boolean[] best = null;
+		for (int[] nroll : possibleRolls(roll, hold))
+		{
+			boolean[] choice = searchHold(roll, rollsLeft);
+			if (value > max)
+			{
+				max = value;
+				best = hold;
+			}
+		}
+		
+		return best;
+	}
+	
 	private boolean[] searchHold(int[] roll, int rollsLeft)
 	{
-		return null;
+		int max = Integer.MIN_VALUE;
+		boolean[] best = null;
+		for (boolean[] hold : possibleHolds(roll))
+		{
+			int value = searchRoll(roll, hold, rollsLeft);
+			if (value > max)
+			{
+				max = value;
+				best = hold;
+			}
+		}
+		
+		return best;
+	}
+	
+	private ArrayList<boolean[]> possibleHolds(int[] roll)
+	{
+		ArrayList<boolean[]> holds = new ArrayList<boolean[]>();
+		
+		//TODO: Magic
+		
+		return holds;
+	}
+	
+	private ArrayList<int[]> possibleRolls(int[] roll, boolean[] hold)
+	{
+		ArrayList<int[]> rolls = new ArrayList<int[]>();
+		
+		//TODO: Magic
+		
+		return rolls;
 	}
 	
 	private ScoreType searchScoreType(int[] roll, Scoreboard scoreboard)
 	{
-		HashMap<ScoreType, Integer> values = new HashMap<ScoreType, Integer>();
-		
-		for (ScoreType type : scoreboard.possibleScoreTypes())
-		{
-			
-			
-			values.put(type, 0);
-		}
-		
-		
-		
-		
-		//Find and return maximum value!
 		int max = Integer.MIN_VALUE;
 		ScoreType best = null;
-		for (ScoreType type : values.keySet())
+		//Calculate values of all possible scoretypes (recursively!)
+		for (ScoreType type : scoreboard.possibleScoreTypes())
 		{
-			if (values.get(type) > max)
+			Scoreboard copy = scoreboard.clone();
+			copy.put(type, GameLogic.valueOfRoll(type, roll));
+			int value = valueOfScoreBoard(copy);
+			if (value > max)
 			{
-				max = values.get(type);
+				max = value;
 				best = type;
 			}
 		}
@@ -65,7 +106,20 @@ public class SinglePlayerAI implements Player {
 	}
 	
 	
+	private int[] scoreBoardValueCache = new int[1000000];
+	
 	private int valueOfScoreBoard(Scoreboard board){
+		int idx = board.ConvertMapToInt();
+		if (scoreBoardValueCache[idx] == -1)
+		{
+			scoreBoardValueCache[idx] = bigDynamicProgram(board);
+		}
+		
+		return scoreBoardValueCache[idx];
+	}
+	
+	private int bigDynamicProgram(Scoreboard b)
+	{
 		return -1;
 	}
 	
