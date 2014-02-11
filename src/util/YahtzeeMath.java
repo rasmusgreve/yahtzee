@@ -113,10 +113,11 @@ public class YahtzeeMath {
 	}
 	
 	public static int colex(int[] c) {
-		Arrays.sort(c);
+		int[] copy = Arrays.copyOf(c, c.length);
+		Arrays.sort(copy);
 		int index = 0; 
-		for (int i = 0 ; i < c.length ; i++) {
-			index += ch[c[i]+i-1][i + 1];
+		for (int i = 0 ; i < copy.length ; i++) {
+			index += ch[copy[i]+i-1][i + 1];
 		}
 		return index;
 	}
