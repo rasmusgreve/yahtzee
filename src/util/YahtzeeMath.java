@@ -2,8 +2,12 @@ package util;
 
 import java.util.Arrays;
 
-public class Math {
+public class YahtzeeMath {
 
+	static{
+		choose(10,5);
+	}
+	
 	/**
 	 * Naïve implementation of combination
 	 * C(n,k) n choose k
@@ -49,5 +53,30 @@ public class Math {
 		}
 		else 				{			return  720 / 7776.;} /*ABCDE*/
 	}
+	
+	
+	static long[][] ch = new long[1][0];
+	public static long choose(int ii, int jj) { // Access method with init check
+		if (ii >= ch.length || jj >= ch[0].length) {
+			ch = new long[Math.max(ch.length, ii + 1)][Math.max(ch[0].length, jj + 1)];
+			for (int i = 0 ; i < ch.length ; i++) ch[i][0] = 1;
+			for (int j = Math.min(ch.length, ch[0].length) - 1 ; j > 0 ; j--) ch[j][j] = 1;
+			for (int i = 2 ; i < ch.length ; i++) 
+				for (int j = Math.min(i, ch[0].length - 1) ; j > 0 ; j--)
+					ch[i][j] = ch[i - 1][j] + ch[i - 1][j - 1];
+		}
+		return ch[ii][jj];
+	}
+	
+	public static int colex(int[] c) {
+		Arrays.sort(c);
+		int index = 0; 
+		for (int i = 0 ; i < c.length ; i++) {
+			index += ch[c[i]+i-1][i + 1];
+		}
+		return index;
+	}
+	
+	
 	
 }
