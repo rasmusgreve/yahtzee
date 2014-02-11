@@ -11,6 +11,8 @@ public class Scoreboard implements Cloneable {
 	
 	public Scoreboard() {
 		scoreArray = new int[ScoreType.values().length];
+		for (ScoreType typ : ScoreType.values())
+			scoreArray[typ.ordinal()] = -1;
 	}
 	
 	@Override
