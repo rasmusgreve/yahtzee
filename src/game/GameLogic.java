@@ -70,7 +70,7 @@ public class GameLogic {
 		else //turn over
 		{
 			int score = valueOfRoll(answer.selectedScoreEntry, roll);
-			scoreboards[currentPlayer].put(answer.selectedScoreEntry, score);
+			scoreboards[currentPlayer].scoreArray[answer.selectedScoreEntry.ordinal()] = score;
 			
 			//Next player
 			currentPlayer = (currentPlayer + 1) % numPlayers;

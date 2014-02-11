@@ -6,51 +6,47 @@ import java.util.HashMap;
 
 public class Scoreboard implements Cloneable {
 
-	HashMap<ScoreType, Integer> scoreMap = new HashMap<ScoreType, Integer>();
+	int[] scoreArray;
 	//TODO: Change to array. Use ScoreType.ordinal() as lookup thingie
 	
-	public Scoreboard(){				
-		for (ScoreType scoreType : ScoreType.values()) {
-			scoreMap.put(scoreType, -1);
-		}
-		
-		//ConvertMapToInt();
+	public Scoreboard() {
+		scoreArray = new int[ScoreType.values().length];
 	}
 	
 	@Override
 	public Scoreboard clone(){
 		Scoreboard n = new Scoreboard();
-		n.scoreMap = (HashMap<ScoreType, Integer>) scoreMap.clone();
+		n.scoreArray = (int[]) scoreArray.clone();
 		return n;
 	}
 	
 	
 	public boolean isFull()
 	{
-		for (ScoreType scoreType : ScoreType.values())
-			if (scoreMap.get(scoreType) == -1)
+		for (int i = 0; i < scoreArray.length; i++)
+			if (scoreArray[i] == -1)
 				return false;
 		return true;
 	}
 	
-	public void put(ScoreType type, int value)
+	public void insert(int index, int value)
 	{
-		if (scoreMap.get(type) != -1)
+		if (scoreArray[index] != -1)
 			throw new IllegalArgumentException("Category already used!");
-		scoreMap.put(type, value);
+		scoreArray[index] = value;
 	}
 	
-	public int get(ScoreType type)
+	public int get(int index)
 	{
-		return scoreMap.get(type);
+		return scoreArray[index];
 	}
 	
 	public int sum()
 	{
 		int sum = 0;
-		for (ScoreType scoreType : ScoreType.values())
+		for (int i = 0; i < scoreArray.length; i++)
 		{
-			sum += scoreMap.get(scoreType);
+			sum += scoreArray[i];
 		}
 		return sum;
 	}
@@ -61,7 +57,7 @@ public class Scoreboard implements Cloneable {
 		for (ScoreType scoreType : ScoreType.values())
 		{
 			if (scoreType.ordinal() < 6)
-				first6 += scoreMap.get(scoreType);
+				first6 += scoreArray[scoreType.ordinal()];
 		}
 		return (first6 >= 63) ? 35 : 0;
 	}
@@ -70,7 +66,7 @@ public class Scoreboard implements Cloneable {
 	{
 		ArrayList<ScoreType> types = new ArrayList<ScoreType>();
 		for (ScoreType st : ScoreType.values())
-			if (get(st) == -1)
+			if (get(st.ordinal()) == -1)
 				types.add(st);
 		return types;
 	}
@@ -110,7 +106,7 @@ public class Scoreboard implements Cloneable {
 		
 		int i = 0;
 		for (ScoreType scoreType : ScoreType.values()) {
-			int scoreAmount = scoreMap.get(scoreType);
+			int scoreAmount = scoreArray[scoreType.ordinal()];
 			if (scoreAmount > -1){
 				scores[i] = true;
 				if (scoreType.ordinal() < 6) upperCounter += scoreAmount;
@@ -162,7 +158,7 @@ public class Scoreboard implements Cloneable {
 	public void PrintScoreBoard(){
 		for (ScoreType scoreType : ScoreType.values()) {
 			//System.out.println("" + scoreType + ":" + scoreMap.get(scoreType));
-			System.out.println(String.format("%15s: %d", scoreType, scoreMap.get(scoreType)));
+			System.out.println(String.format("%15s: %d", scoreType, scoreArray[scoreType.ordinal()]));
 		}
 		
 		System.out.println("_____________________________");

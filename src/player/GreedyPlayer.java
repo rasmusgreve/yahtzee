@@ -23,7 +23,7 @@ public class GreedyPlayer implements Player {
 		ScoreType type = null;
 		for (ScoreType st : ScoreType.values())
 		{
-			if (scoreboard.get(st) != -1) continue;
+			if (scoreboard.get(st.ordinal()) != -1) continue;
 			int v = GameLogic.valueOfRoll(st, roll); 
 			if (v > max)
 			{
