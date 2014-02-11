@@ -1,10 +1,13 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Scoreboard {
+
+public class Scoreboard implements Cloneable {
 
 	HashMap<ScoreType, Integer> scoreMap = new HashMap<ScoreType, Integer>();
+	//TODO: Change to array. Use ScoreType.ordinal() as lookup thingie
 	
 	public Scoreboard(){				
 		for (ScoreType scoreType : ScoreType.values()) {
@@ -13,6 +16,14 @@ public class Scoreboard {
 		
 		//ConvertMapToInt();
 	}
+	
+	@Override
+	public Scoreboard clone(){
+		Scoreboard n = new Scoreboard();
+		n.scoreMap = (HashMap<ScoreType, Integer>) scoreMap.clone();
+		return n;
+	}
+	
 	
 	public boolean isFull()
 	{
@@ -53,6 +64,15 @@ public class Scoreboard {
 				first6 += scoreMap.get(scoreType);
 		}
 		return (first6 >= 63) ? 35 : 0;
+	}
+	
+	public ArrayList<ScoreType> possibleScoreTypes()
+	{
+		ArrayList<ScoreType> types = new ArrayList<ScoreType>();
+		for (ScoreType st : ScoreType.values())
+			if (get(st) == -1)
+				types.add(st);
+		return types;
 	}
 	
 	public int totalInclBonus()
