@@ -17,6 +17,8 @@ public class SinglePlayerAI implements Player {
 	
 	@Override
 	public Answer PerformTurn(Question question) {
+		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
+		
 		Answer ans = new Answer();
 		values = new float[1025];
 		for (int i = 0; i < 1025; i++){values[i] = -1;}
@@ -25,7 +27,9 @@ public class SinglePlayerAI implements Player {
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
 		else
 			ans.diceToHold = getBestHold(question.roll, question.rollsLeft);
-		
+
+		System.out.println("a: " + Arrays.toString(ans.diceToHold) + ", " + ans.selectedScoreEntry);
+
 		return ans;
 	}
 	
@@ -61,6 +65,8 @@ public class SinglePlayerAI implements Player {
 	{
 		if (rollsLeft == 0)
 		{
+			if (roll[0] == roll[1] && roll[1] == roll[2] && roll[2] == roll[3] && roll[3] == roll[4]) return 1.001f;
+			
 			return 1;
 			//iterate valid ScoreTypes in scoreboard
 			//return big dynamic program ( Scoreboard.Apply(roll) );
@@ -91,7 +97,18 @@ public class SinglePlayerAI implements Player {
 			if (!b)
 				c++;
 		
-		return (float)YahtzeeMath.prob(c, roll);
+		int[] reducedRoll = new int[c];
+		c = 0;
+		for (int i=0; i<5; i++){
+			if (!hold[i]){
+				reducedRoll[c] = roll[i];
+				c++;
+			}
+			
+		}
+				
+		
+		return (float)YahtzeeMath.prob(c, reducedRoll);
 	}
 	
 	private static int[] rollFromInt(int input)
@@ -117,11 +134,13 @@ public class SinglePlayerAI implements Player {
 	public void doIt()
 	{
 		float sum = 0;
-		boolean[] hold = new boolean[]{false,false,true,false,false};
-		int[] roll = new int[] {1,1,2,2,2};
+		boolean[] hold = new boolean[]{true,false,false,false,true};
+		int[] roll = new int[] {1,5,1,3,1};
 		for (int[] new_roll : getPossibleRolls(roll, hold))
 		{
+			System.out.println("new_roll: " + Arrays.toString(new_roll));
 			sum += getProb(hold, new_roll);
+			System.out.println("getProb(hold, new_roll): " + getProb(hold, new_roll));
 		}
 		System.out.println(sum);
 		
@@ -142,7 +161,6 @@ public class SinglePlayerAI implements Player {
 								if (hold[j])
 									r[j] = roll[j];
 							//Sort and filter unique
-							Arrays.sort(r);
 							boolean has = false;
 							for (int[] ex : rolls)
 							{
