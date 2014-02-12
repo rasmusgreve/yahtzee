@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 public class YahtzeeMath {
 
+	static long[][] ch;
+	
 	static{
 		ch = new long[1][0];
 		choose(10,5);
@@ -117,7 +119,7 @@ public class YahtzeeMath {
 		}
 	}
 	
-	static long[][] ch = new long[1][0];
+	
 	public static long choose(int ii, int jj) { // Access method with init check
 		if (ii >= ch.length || jj >= ch[0].length) {
 			ch = new long[Math.max(ch.length, ii + 1)][Math.max(ch[0].length, jj + 1)];
