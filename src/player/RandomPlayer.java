@@ -47,7 +47,7 @@ public class RandomPlayer implements Player {
 	}
 
 	@Override
-	public void finalize(){
+	public void cleanUp(){
 		
 	}
 	

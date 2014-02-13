@@ -1,17 +1,73 @@
-package util;
+package tests;
 
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 
-public class YahtzeeMath {
+import org.junit.Test;
 
-	static long[][] ch;
+import util.YahtzeeMath;
+
+public class YahtzeeMathTest {
+
 	
-	static{
-		ch = new long[1][0];
-		choose(10,5);
+	private static ArrayList<int[]> allRolls = new ArrayList<int[]>();
+	static {
+		for (int a = 1; a <= 6; a++)
+		 for (int b = a; b <= 6; b++)
+		  for (int c = b; c <= 6; c++)
+		   for (int d = c; d <= 6; d++)
+		    for (int e = d; e <= 6; e++)
+		     allRolls.add(new int[]{a,b,c,d,e}); //TODO: Cache probabilities (use colex)
 	}
 	
-	//assumes 5d6
+	@Test
+	public void testProb5() {
+		for (int[] roll : allRolls)
+			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
+	}
+	
+	@Test
+	public void testProb4() {
+		for (int[] roll : allRolls)
+		{
+			roll = Arrays.copyOf(roll, 4);
+			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
+		}
+	}
+	
+	@Test
+	public void testProb3() {
+		for (int[] roll : allRolls)
+		{
+			roll = Arrays.copyOf(roll, 3);
+			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
+		}
+	}
+	
+	@Test
+	public void testProb2() {
+		for (int[] roll : allRolls)
+		{
+			roll = Arrays.copyOf(roll, 2);
+			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
+		}
+	}
+	
+	@Test
+	public void testProb1() {
+		for (int[] roll : allRolls)
+		{
+			roll = Arrays.copyOf(roll, 1);
+			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
+		}
+	}
+
+	/*
+	 * OLD CODE FOR VERIFICATION PURPOSES
+	 */
+	
 	public static double prob5(int[] r)
 	{
 		//count occurrences
@@ -81,6 +137,7 @@ public class YahtzeeMath {
 	{
 		return 1 / 6.;
 	}
+	
 	public static double prob(int n, int[] roll)
 	{
 		switch(n){
@@ -94,30 +151,4 @@ public class YahtzeeMath {
 				throw new IllegalArgumentException("Max n is 5. you gave " + n);
 		}
 	}
-	
-	
-	public static long choose(int ii, int jj) { // Access method with init check
-		if (ii >= ch.length || jj >= ch[0].length) {
-			ch = new long[Math.max(ch.length, ii + 1)][Math.max(ch[0].length, jj + 1)];
-			for (int i = 0 ; i < ch.length ; i++) ch[i][0] = 1;
-			for (int j = Math.min(ch.length, ch[0].length) - 1 ; j > 0 ; j--) ch[j][j] = 1;
-			for (int i = 2 ; i < ch.length ; i++) 
-				for (int j = Math.min(i, ch[0].length - 1) ; j > 0 ; j--)
-					ch[i][j] = ch[i - 1][j] + ch[i - 1][j - 1];
-		}
-		return ch[ii][jj];
-	}
-	
-	public static int colex(int[] c) {
-		int[] copy = Arrays.copyOf(c, c.length);
-		Arrays.sort(copy);
-		int index = 0; 
-		for (int i = 0 ; i < copy.length ; i++) {
-			index += ch[copy[i]+i-1][i + 1];
-		}
-		return index;
-	}
-	
-	
-	
 }

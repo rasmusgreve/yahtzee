@@ -64,7 +64,7 @@ public class HumanPlayer implements Player {
 	}
 	
 	@Override
-	public void finalize(){
+	public void cleanUp(){
 		
 	}
 	

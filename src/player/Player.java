@@ -7,5 +7,5 @@ public interface Player {
 	public Answer PerformTurn(Question question);
 	public String getName();
 	public void reset(int id);
-	public void finalize();
+	public void cleanUp();
 }

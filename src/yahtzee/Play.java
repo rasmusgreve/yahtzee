@@ -38,7 +38,7 @@ public class Play {
 		
 		for (Player p : players)
 		{
-			p.finalize();
+			p.cleanUp();
 		}
 	}
 	

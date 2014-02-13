@@ -98,7 +98,7 @@ public class SinglePlayerAI implements Player {
 		}
 		return s;
 	}
-	private double bigDynamicProgramming(Scoreboard board) {
+	public double bigDynamicProgramming(Scoreboard board) {
 		int idx = board.ConvertMapToInt();
 		if (boardValues[idx] == -1) {
 			if (board.isFull())
@@ -148,8 +148,8 @@ public class SinglePlayerAI implements Player {
 	
 	public static void main(String[] args) {
 		Scoreboard board = new Scoreboard();
-		//board.insert(ScoreType.ONES, 3);
-		board.insert(ScoreType.TWOS, 6);
+		//board.insert(ScoreType.ONES, 2);
+		//board.insert(ScoreType.TWOS, 6);
 		board.insert(ScoreType.THREES, 9);
 		board.insert(ScoreType.FOURS, 12);
 		board.insert(ScoreType.FIVES, 15);
@@ -291,7 +291,7 @@ public class SinglePlayerAI implements Player {
 	}
 	
 	@Override
-	public void finalize(){
+	public void cleanUp(){
 		//Save lookup table to persistent medium
 		try {
 			FileOutputStream fos = new FileOutputStream(filename);

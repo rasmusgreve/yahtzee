@@ -49,7 +49,7 @@ public class GreedyPlayer implements Player {
 	}
 	
 	@Override
-	public void finalize(){
+	public void cleanUp(){
 		
 	}
 

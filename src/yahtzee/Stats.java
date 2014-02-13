@@ -51,7 +51,7 @@ public class Stats {
 		
 		for (Player p : players)
 		{
-			p.finalize();
+			p.cleanUp();
 		}
 		
 		System.out.println(String.format("%,d",duration) + " ms, " + stats(results));
