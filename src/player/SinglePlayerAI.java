@@ -14,9 +14,7 @@ import util.YahtzeeMath;
 public class SinglePlayerAI implements Player {
 
 	public double[] boardValues;
-	//Values is the dynamic program cache for the inner search
-	double[] rollValues = new double[1025];
-	private static final String filename = "testCache.bin";
+	private static final String filename = "boardValuesCache.bin";
 	//A list of all 252 possible different rolls
 	private static ArrayList<int[]> allRolls = new ArrayList<int[]>();
 	static {
@@ -30,14 +28,23 @@ public class SinglePlayerAI implements Player {
 	public SinglePlayerAI() {
 		loadArray();
 	}
+	
+	private static double[] newRollValuesCache()
+	{
+		double[] rollValues = new double[1025];
+		for (int i = 0; i < 1025; i++){rollValues[i] = -1;}
+		return rollValues;
+	}
+	
 	@Override
 	public Answer PerformTurn(Question question) {		
 		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 
 		Answer ans = new Answer();
-		rollValues = new double[1025];
-		for (int i = 0; i < 1025; i++){rollValues[i] = -1;}
 		
+		if (question.rollsLeft == 1){
+			System.out.print("");
+		}
 		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
@@ -75,7 +82,7 @@ public class SinglePlayerAI implements Player {
 			double sum = 0;
 			for (int[] new_roll : getPossibleRolls(roll, hold))
 			{
-				sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board);
+				sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board, newRollValuesCache());
 			}
 			if (sum > max)
 			{
@@ -87,8 +94,10 @@ public class SinglePlayerAI implements Player {
 	}
 	private double rollFromScoreboard(Scoreboard board) {
 		double s = 0;
+		int i = 0;
 		for (int[] roll: allRolls) {
-			double v = valueOfRoll(roll, 2, board);
+			System.out.println("Checking roll: " + Arrays.toString(roll) + i++ + "/252");
+			double v = valueOfRoll(roll, 2, board, newRollValuesCache());
 			s += v * YahtzeeMath.prob5(roll);
 		}
 		return s;
@@ -97,14 +106,20 @@ public class SinglePlayerAI implements Player {
 		int idx = board.ConvertMapToInt();
 		if (boardValues[idx] == -1) {
 			if (board.isFull())
+			{
 				boardValues[idx] = board.totalInclBonus();
+				System.out.println("Board is full. Value: " + board.totalInclBonus());
+			} 
 			else
+			{
 				boardValues[idx] = rollFromScoreboard(board);
+				System.out.println("Calulating value");
+			}
 		}
 		return boardValues[idx];
 	}
 	
-	private double valueOfRoll(int[] roll, int rollsLeft, Scoreboard board)
+	private double valueOfRoll(int[] roll, int rollsLeft, Scoreboard board, double[] rollValues)
 	{
 		if (rollsLeft == 0)
 		{		
@@ -126,12 +141,31 @@ public class SinglePlayerAI implements Player {
 				double sum = 0;
 				for (int[] new_roll : getPossibleRolls(roll, hold))
 				{
-					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board);
+					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board, rollValues);
 				}
 				rollValues[idx] = Math.max(rollValues[idx], sum);
 			}
 		}
 		return rollValues[idx];
+	}
+	
+	public static void main(String[] args) {
+		Scoreboard board = new Scoreboard();
+		board.insert(ScoreType.TWOS, 6);
+		board.insert(ScoreType.THREES, 9);
+		board.insert(ScoreType.FOURS, 12);
+		board.insert(ScoreType.FIVES, 15);
+		board.insert(ScoreType.SIXES, 18);
+		board.insert(ScoreType.THREE_OF_A_KIND, 25);
+		board.insert(ScoreType.FOUR_OF_A_KIND, 26);
+		board.insert(ScoreType.SMALL_STRAIGHT, 25);
+		board.insert(ScoreType.BIG_STRAIGHT, 30);
+		board.insert(ScoreType.YAHTZEE, 50);
+		board.insert(ScoreType.CHANCE, 20);
+		board.insert(ScoreType.FULL_HOUSE, 30);
+
+		SinglePlayerAI ai = new SinglePlayerAI();
+		System.out.println("Value: " + ai.bigDynamicProgramming(board));
 	}
 	
 	private static double getProb(boolean[] hold, int[] roll)
@@ -266,6 +300,7 @@ public class SinglePlayerAI implements Player {
 			oos.writeObject(boardValues);
 			oos.close();
 			fos.close();
+			System.out.println("Cache stored to \"" + filename + "\"");
 		} catch (IOException e) {
 			System.out.println("WARNING! cache not stored");
 		}

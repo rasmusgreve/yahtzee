@@ -49,7 +49,8 @@ public class Scoreboard implements Cloneable {
 		int sum = 0;
 		for (int i = 0; i < scoreArray.length; i++)
 		{
-			sum += scoreArray[i];
+			if (scoreArray[i] > -1)
+				sum += scoreArray[i];
 		}
 		return sum;
 	}
