@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import game.Answer;
+import game.GameLogic;
 import game.Question;
 import game.Scoreboard;
 import game.Scoreboard.ScoreType;
@@ -38,7 +39,7 @@ public class SinglePlayerAI implements Player {
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
 		else
-			ans.diceToHold = getBestHold(question.roll, question.rollsLeft);
+			ans.diceToHold = getBestHold(question.roll, question.rollsLeft, question.scoreboards[question.playerId]);
 
 		System.out.println("a: " + Arrays.toString(ans.diceToHold) + ", " + ans.selectedScoreEntry);
 
@@ -47,11 +48,26 @@ public class SinglePlayerAI implements Player {
 	
 	private ScoreType getBestScoreEntry(int[] roll, Scoreboard board)
 	{
+		ScoreType best = null;
+		double max = Double.NEGATIVE_INFINITY;
+		for (ScoreType type : board.possibleScoreTypes()) {
+			Scoreboard cloneBoard = board.clone();
+			cloneBoard.insert(type, GameLogic.valueOfRoll(type, roll));
+			double newVal = bigDynamicProgramming(cloneBoard);
+			
+			if (newVal > max){
+				max = newVal;
+				best = type;
+			
+			}
+		}
+		return best;
+		
 		//TODO: Big dynamic program
-		return ScoreType.BIG_STRAIGHT;
+		//return ScoreType.BIG_STRAIGHT;
 	}
 	
-	private boolean[] getBestHold(int[] roll, int rollsLeft) //Kickoff
+	private boolean[] getBestHold(int[] roll, int rollsLeft, Scoreboard board) //Kickoff
 	{
 		double max = Double.NEGATIVE_INFINITY;
 		boolean[] best = null;
@@ -60,7 +76,7 @@ public class SinglePlayerAI implements Player {
 			double sum = 0;
 			for (int[] new_roll : getPossibleRolls(roll, hold))
 			{
-				sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1);
+				sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board);
 			}
 			if (sum > max)
 			{
@@ -70,14 +86,33 @@ public class SinglePlayerAI implements Player {
 		}
 		return best;
 	}
+	private double rollFromScoreboard(Scoreboard board) {
+		double s = 0;
+		for (int[] roll: allRolls) {
+			double v = valueOfRoll(roll, 2, board);
+			s += v * YahtzeeMath.prob5(roll);
+		}
+		return s;
+	}
+	private double bigDynamicProgramming(Scoreboard board) {
+		int idx = board.ConvertMapToInt();
+		if (boardValues[idx] == -1) {
+			boardValues[idx] = rollFromScoreboard(board);
+		}
+		return boardValues[idx];
+	}
 	
-	private double valueOfRoll(int[] roll, int rollsLeft)
+	private double valueOfRoll(int[] roll, int rollsLeft, Scoreboard board)
 	{
 		if (rollsLeft == 0)
-		{
-			if (roll[0] == roll[1] && roll[1] == roll[2] && roll[2] == roll[3] && roll[3] == roll[4]) return 1.001f;
-			
-			return 1;
+		{		
+			double max = Double.NEGATIVE_INFINITY;
+			for (ScoreType type : board.possibleScoreTypes()) {
+				Scoreboard cloneBoard = board.clone();
+				cloneBoard.insert(type, GameLogic.valueOfRoll(type, roll));
+				max = Math.max(max, bigDynamicProgramming(cloneBoard));
+			}
+			return max;
 			//iterate valid ScoreTypes in scoreboard
 			//return big dynamic program ( Scoreboard.Apply(roll) );
 		}
@@ -91,7 +126,7 @@ public class SinglePlayerAI implements Player {
 				double sum = 0;
 				for (int[] new_roll : getPossibleRolls(roll, hold))
 				{
-					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1);
+					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board);
 				}
 				rollValues[idx] = Math.max(rollValues[idx], sum);
 			}
