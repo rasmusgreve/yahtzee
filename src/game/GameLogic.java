@@ -3,11 +3,12 @@ package game;
 import game.Scoreboard.ScoreType;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 public class GameLogic {
 	
-	private static final int
+	public static final int
 		FULL_HOUSE_SCORE = 25,
 		SMALL_STRAIGHT_SCORE = 30,
 		BIG_STRAIGHT_SCORE = 40,
@@ -81,7 +82,7 @@ public class GameLogic {
 	
 	
 	//TODO: Precalculate values to turn this into a table lookup
-	
+	HashMap<ScoreType, int[]> rollValues = new HashMap<>();
 	public static int valueOfRoll(ScoreType type, int[] roll){
 		
 		switch (type)

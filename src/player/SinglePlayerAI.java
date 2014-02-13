@@ -23,9 +23,9 @@ public class SinglePlayerAI implements Player {
 		  for (int c = b; c <= 6; c++)
 		   for (int d = c; d <= 6; d++)
 		    for (int e = d; e <= 6; e++)
-		     allRolls.add(new int[]{a,b,c,d,e}); //TODO: Cache probabilities (use colex)
+		     allRolls.add(new int[]{a,b,c,d,e});
 	}
-	//TODO: Cache remaining score instead.
+	
 	public SinglePlayerAI() {
 		loadArray();
 	}

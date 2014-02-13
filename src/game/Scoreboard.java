@@ -8,7 +8,6 @@ import java.util.HashMap;
 public class Scoreboard implements Cloneable {
 
 	int[] scoreArray;
-	//TODO: Change to array. Use ScoreType.ordinal() as lookup thingie
 	
 	public Scoreboard() {
 		scoreArray = new int[ScoreType.values().length];
