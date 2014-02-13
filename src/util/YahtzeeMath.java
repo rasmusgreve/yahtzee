@@ -1,5 +1,6 @@
 package util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class YahtzeeMath {
@@ -12,6 +13,17 @@ public class YahtzeeMath {
 	static double[] prob3 = new double[56];
 	static double[] prob2 = new double[21];
 	static double[] prob1 = new double[6];
+	
+	public static ArrayList<int[]> allRolls = new ArrayList<int[]>();
+	static {
+		for (int a = 1; a <= 6; a++)
+		 for (int b = a; b <= 6; b++)
+		  for (int c = b; c <= 6; c++)
+		   for (int d = c; d <= 6; d++)
+		    for (int e = d; e <= 6; e++)
+		     allRolls.add(new int[]{a,b,c,d,e});
+	}
+	
 	
 	static{
 		ch = new long[1][0];

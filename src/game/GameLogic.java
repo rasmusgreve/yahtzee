@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
+import util.YahtzeeMath;
+
 public class GameLogic {
 	
 	public static final int
@@ -13,6 +15,19 @@ public class GameLogic {
 		SMALL_STRAIGHT_SCORE = 30,
 		BIG_STRAIGHT_SCORE = 40,
 		YAHTZEE_SCORE = 50;
+	
+	HashMap<ScoreType, int[]> rollValues = new HashMap<>();
+
+	static{
+		for (ScoreType typ : ScoreType.values())
+		{
+			for (int[] roll : YahtzeeMath.allRolls){
+				
+				
+			}
+		}
+	}
+	
 	
 	int currentPlayer = 0;
 	int rollsLeft;
@@ -82,8 +97,12 @@ public class GameLogic {
 	
 	
 	//TODO: Precalculate values to turn this into a table lookup
-	HashMap<ScoreType, int[]> rollValues = new HashMap<>();
+	
 	public static int valueOfRoll(ScoreType type, int[] roll){
+		
+	}
+	
+	private static int calculateValueOfRoll(ScoreType type, int[] roll){
 		
 		switch (type)
 		{
