@@ -49,6 +49,10 @@ public class Stats {
 		}
 		long duration = System.currentTimeMillis() - start;
 		
+		for (Player p : players)
+		{
+			p.finalize();
+		}
 		
 		System.out.println(String.format("%,d",duration) + " ms, " + stats(results));
 		
