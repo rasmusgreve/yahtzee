@@ -27,17 +27,17 @@ public class SinglePlayerAI implements Player {
 		    for (int e = d; e <= 6; e++)
 		     allRolls.add(new int[]{a,b,c,d,e});
 	}
-	
 	public SinglePlayerAI() {
 		loadArray();
 	}
 	@Override
 	public Answer PerformTurn(Question question) {		
 		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
-		
+
 		Answer ans = new Answer();
 		rollValues = new double[1025];
 		for (int i = 0; i < 1025; i++){rollValues[i] = -1;}
+		
 		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
@@ -61,13 +61,9 @@ public class SinglePlayerAI implements Player {
 			if (newVal > max){
 				max = newVal;
 				best = type;
-			
 			}
 		}
 		return best;
-		
-		//TODO: Big dynamic program
-		//return ScoreType.BIG_STRAIGHT;
 	}
 	
 	private boolean[] getBestHold(int[] roll, int rollsLeft, Scoreboard board) //Kickoff
@@ -100,7 +96,10 @@ public class SinglePlayerAI implements Player {
 	private double bigDynamicProgramming(Scoreboard board) {
 		int idx = board.ConvertMapToInt();
 		if (boardValues[idx] == -1) {
-			boardValues[idx] = rollFromScoreboard(board);
+			if (board.isFull())
+				boardValues[idx] = board.totalInclBonus();
+			else
+				boardValues[idx] = rollFromScoreboard(board);
 		}
 		return boardValues[idx];
 	}
@@ -116,8 +115,6 @@ public class SinglePlayerAI implements Player {
 				max = Math.max(max, bigDynamicProgramming(cloneBoard));
 			}
 			return max;
-			//iterate valid ScoreTypes in scoreboard
-			//return big dynamic program ( Scoreboard.Apply(roll) );
 		}
 		
 		int idx = rollIdx(roll, rollsLeft);

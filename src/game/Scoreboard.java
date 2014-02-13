@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -18,7 +19,7 @@ public class Scoreboard implements Cloneable {
 	@Override
 	public Scoreboard clone(){
 		Scoreboard n = new Scoreboard();
-		n.scoreArray = (int[]) scoreArray.clone();
+		n.scoreArray = Arrays.copyOf(scoreArray, scoreArray.length);
 		return n;
 	}
 	
