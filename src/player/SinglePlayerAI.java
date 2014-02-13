@@ -16,7 +16,7 @@ public class SinglePlayerAI implements Player {
 	//Values is the dynamic program cache for the inner search
 	double[] rollValues = new double[1025];
 	private static final String filename = "testCache.bin";
-	
+	private static ArrayList<int[]> allRolls = new ArrayList<int[]>();
 	@Override
 	public Answer PerformTurn(Question question) {
 		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
@@ -130,8 +130,11 @@ public class SinglePlayerAI implements Player {
 		System.out.println(sum);
 		
 	}
+<<<<<<< Updated upstream
 	*/
 	
+=======
+>>>>>>> Stashed changes
 	private static ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
 	{
 		//TODO: calculate rolls once. Apply roll,hold dyn
