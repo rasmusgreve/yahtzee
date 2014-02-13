@@ -20,7 +20,7 @@ public class SinglePlayerAI implements Player {
 		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 		
 		Answer ans = new Answer();
-		values = new float[1025];
+		values = new double[1025];
 		for (int i = 0; i < 1025; i++){values[i] = -1;}
 		
 		if (question.rollsLeft == 0)
@@ -41,11 +41,11 @@ public class SinglePlayerAI implements Player {
 	
 	private boolean[] getBestHold(int[] roll, int rollsLeft) //Kickoff
 	{
-		float max = Float.MIN_VALUE;
+		double max = Double.NEGATIVE_INFINITY;
 		boolean[] best = null;
 		for (boolean[] hold : getInterestingHolds(roll))
 		{
-			float sum = 0;
+			double sum = 0;
 			for (int[] new_roll : getPossibleRolls(roll, hold))
 			{
 				sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1);
@@ -60,8 +60,8 @@ public class SinglePlayerAI implements Player {
 	}
 	
 	
-	float[] values = new float[1025];
-	private float valueOfRoll(int[] roll, int rollsLeft)
+	double[] values = new double[1025];
+	private double valueOfRoll(int[] roll, int rollsLeft)
 	{
 		if (rollsLeft == 0)
 		{
@@ -78,7 +78,7 @@ public class SinglePlayerAI implements Player {
 			values[idx] = Integer.MIN_VALUE;
 			for (boolean[] hold : getInterestingHolds(roll))
 			{
-				float sum = 0;
+				double sum = 0;
 				for (int[] new_roll : getPossibleRolls(roll, hold))
 				{
 					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1);
@@ -90,7 +90,7 @@ public class SinglePlayerAI implements Player {
 	}
 	
 	
-	private static float getProb(boolean[] hold, int[] roll)
+	private static double getProb(boolean[] hold, int[] roll)
 	{
 		int c = 0;
 		for (boolean b : hold)
@@ -108,7 +108,7 @@ public class SinglePlayerAI implements Player {
 		}
 				
 		
-		return (float)YahtzeeMath.prob(c, reducedRoll);
+		return (double)YahtzeeMath.prob(c, reducedRoll);
 	}
 	/*
 	public static void main(String[] args) {
@@ -118,7 +118,7 @@ public class SinglePlayerAI implements Player {
 	
 	public void doIt()
 	{
-		float sum = 0;
+		double sum = 0;
 		boolean[] hold = new boolean[]{true,false,false,false,true};
 		int[] roll = new int[] {1,5,1,3,1};
 		for (int[] new_roll : getPossibleRolls(roll, hold))
