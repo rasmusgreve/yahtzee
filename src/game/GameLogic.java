@@ -70,7 +70,7 @@ public class GameLogic {
 		else //turn over
 		{
 			int score = valueOfRoll(answer.selectedScoreEntry, roll);
-			scoreboards[currentPlayer].scoreArray[answer.selectedScoreEntry.ordinal()] = score;
+			scoreboards[currentPlayer].insert(answer.selectedScoreEntry, score);
 			
 			//Next player
 			currentPlayer = (currentPlayer + 1) % numPlayers;
@@ -145,11 +145,6 @@ public class GameLogic {
 			default:
 				return 0;
 		}
-	}
-	
-	public static void main(String[] args) {
-		int[] test = new int[]{1,2,2,4,5};
-		System.out.println(countConsecutive(test));
 	}
 	
 	private static int countConsecutive(int[] roll)
