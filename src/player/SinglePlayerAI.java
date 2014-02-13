@@ -12,13 +12,13 @@ import util.YahtzeeMath;
 
 public class SinglePlayerAI implements Player {
 
-	public double[] boardValues = new double[1000000];
+	public double[] boardValues;
 	//Values is the dynamic program cache for the inner search
 	double[] rollValues = new double[1025];
 	private static final String filename = "testCache.bin";
 	private static ArrayList<int[]> allRolls = new ArrayList<int[]>();
 	@Override
-	public Answer PerformTurn(Question question) {
+	public Answer PerformTurn(Question question) {		
 		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 		
 		Answer ans = new Answer();
@@ -217,6 +217,8 @@ public class SinglePlayerAI implements Player {
 			fis.close();
 		} catch (Exception e) {
 			System.out.println("WARNING! cache not loaded");
+			boardValues = new double[1000000];
+			for (int i = 0; i < 1000000; i++){boardValues[i] = -1;}
 		}
 	}
 	
