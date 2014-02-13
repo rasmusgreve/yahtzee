@@ -11,24 +11,15 @@ import game.Scoreboard.ScoreType;
 
 import org.junit.Test;
 
-public class GameLogicTest {
+import util.YahtzeeMath;
 
-	private static ArrayList<int[]> allRolls = new ArrayList<int[]>();
-	static {
-		for (int a = 1; a <= 6; a++)
-		 for (int b = a; b <= 6; b++)
-		  for (int c = b; c <= 6; c++)
-		   for (int d = c; d <= 6; d++)
-		    for (int e = d; e <= 6; e++)
-		     allRolls.add(new int[]{a,b,c,d,e});
-	}
-	
+public class GameLogicTest {
 	
 	@Test
 	public void testValues() {
 		for (ScoreType typ : ScoreType.values())
 		{
-			for (int[] roll : allRolls)
+			for (int[] roll : YahtzeeMath.allRolls)
 			{
 				assertEquals("Unexpected value", valueOfRoll(typ, roll), GameLogic.valueOfRoll(typ, roll));
 			}

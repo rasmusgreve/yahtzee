@@ -15,16 +15,6 @@ public class SinglePlayerAI implements Player {
 
 	public double[] boardValues;
 	private static final String filename = "boardValuesCache.bin";
-	//A list of all 252 possible different rolls
-	private static ArrayList<int[]> allRolls = new ArrayList<int[]>();
-	static {
-		for (int a = 1; a <= 6; a++)
-		 for (int b = a; b <= 6; b++)
-		  for (int c = b; c <= 6; c++)
-		   for (int d = c; d <= 6; d++)
-		    for (int e = d; e <= 6; e++)
-		     allRolls.add(new int[]{a,b,c,d,e});
-	}
 	
 	public SinglePlayerAI() {
 		loadArray();
@@ -92,7 +82,7 @@ public class SinglePlayerAI implements Player {
 	private double rollFromScoreboard(Scoreboard board) {
 		double s = 0;
 		double[] cache = newRollValuesCache();
-		for (int[] roll: allRolls) {
+		for (int[] roll: YahtzeeMath.allRolls) {
 			double v = valueOfRoll(roll, 2, board, cache);
 			s += v * YahtzeeMath.prob(5,roll);
 		}
@@ -211,7 +201,7 @@ public class SinglePlayerAI implements Player {
 	{
 		//TODO: calculate rolls once. Apply roll,hold dyn
 		ArrayList<int[]> rolls = new ArrayList<int[]>();
-		for (int[] r_p : allRolls)
+		for (int[] r_p : YahtzeeMath.allRolls)
 		{
 			int[] r = Arrays.copyOf(r_p, r_p.length);
 			//Apply hold
