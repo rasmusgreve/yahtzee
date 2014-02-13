@@ -110,13 +110,8 @@ public class SinglePlayerAI implements Player {
 		
 		return (float)YahtzeeMath.prob(c, reducedRoll);
 	}
-	
+	/*
 	public static void main(String[] args) {
-		/*ArrayList<int[]> r = getPossibleRolls(new int[] {6,6,6,6,6},new boolean[]{false,false,false,false,false});
-		for(int[] v : r)
-		{
-			System.out.println(Arrays.toString(v));
-		}*/
 		SinglePlayerAI ai = new SinglePlayerAI();
 		ai.doIt();
 	}
@@ -135,9 +130,11 @@ public class SinglePlayerAI implements Player {
 		System.out.println(sum);
 		
 	}
+	*/
 	
 	private static ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
 	{
+		//TODO: calculate rolls once. Apply roll,hold dyn
 		ArrayList<int[]> rolls = new ArrayList<int[]>();
 		for (int a = 1; a <= 6; a++){
 			for (int b = a; b <= 6; b++){
