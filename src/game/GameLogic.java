@@ -80,6 +80,8 @@ public class GameLogic {
 	}
 	
 	
+	//TODO: Precalculate values to turn this into a table lookup
+	
 	public static int valueOfRoll(ScoreType type, int[] roll){
 		
 		switch (type)

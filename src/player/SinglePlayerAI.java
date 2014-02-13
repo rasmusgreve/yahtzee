@@ -23,8 +23,9 @@ public class SinglePlayerAI implements Player {
 		  for (int c = b; c <= 6; c++)
 		   for (int d = c; d <= 6; d++)
 		    for (int e = d; e <= 6; e++)
-		     allRolls.add(new int[]{a,b,c,d,e});
+		     allRolls.add(new int[]{a,b,c,d,e}); //TODO: Cache probabilities (use colex)
 	}
+	//TODO: Cache remaining score instead.
 	public SinglePlayerAI() {
 		loadArray();
 	}
@@ -90,7 +91,6 @@ public class SinglePlayerAI implements Player {
 	}
 	private double rollFromScoreboard(Scoreboard board) {
 		double s = 0;
-		int i = 0;
 		double[] cache = newRollValuesCache();
 		for (int[] roll: allRolls) {
 			double v = valueOfRoll(roll, 2, board, cache);
@@ -103,14 +103,16 @@ public class SinglePlayerAI implements Player {
 		if (boardValues[idx] == -1) {
 			if (board.isFull())
 			{
-				boardValues[idx] = board.totalInclBonus();
+				System.out.println("Board is full");
+				boardValues[idx] = board.bonus();
 			} 
 			else
 			{
+				System.out.println("Calculating value from board " + board.ConvertMapToInt() + " (" + board.emptySpaces() + " empty)");
 				boardValues[idx] = rollFromScoreboard(board);
-
 			}
 		}
+			
 		return boardValues[idx];
 	}
 	
@@ -122,7 +124,7 @@ public class SinglePlayerAI implements Player {
 			for (ScoreType type : board.possibleScoreTypes()) {
 				Scoreboard cloneBoard = board.clone();
 				cloneBoard.insert(type, GameLogic.valueOfRoll(type, roll));
-				max = Math.max(max, bigDynamicProgramming(cloneBoard));
+				max = Math.max(max, bigDynamicProgramming(cloneBoard) + GameLogic.valueOfRoll(type, roll));
 			}
 			return max;
 		}
@@ -146,6 +148,7 @@ public class SinglePlayerAI implements Player {
 	
 	public static void main(String[] args) {
 		Scoreboard board = new Scoreboard();
+		//board.insert(ScoreType.ONES, 3);
 		board.insert(ScoreType.TWOS, 6);
 		board.insert(ScoreType.THREES, 9);
 		board.insert(ScoreType.FOURS, 12);
@@ -241,6 +244,7 @@ public class SinglePlayerAI implements Player {
 		return out;
 	}
 	
+	//TODO: Remove symmetries
 	private ArrayList<boolean[]> getInterestingHolds(int[] roll)
 	{
 		ArrayList<boolean[]> holds = new ArrayList<boolean[]>();

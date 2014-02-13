@@ -96,6 +96,15 @@ public class Scoreboard implements Cloneable {
 	    CHANCE;
 	}
 	
+	public int emptySpaces()
+	{
+		int e = 0;
+		for (ScoreType type : ScoreType.values())
+			if (scoreArray[type.ordinal()] == -1)
+				e++;
+		return e;
+	}
+	
 	
 	public int ConvertMapToInt(){
 		int upperCounter = 0;
