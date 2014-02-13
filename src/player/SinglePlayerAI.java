@@ -42,10 +42,6 @@ public class SinglePlayerAI implements Player {
 
 		Answer ans = new Answer();
 		
-		if (question.rollsLeft == 1){
-			System.out.print("");
-		}
-		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
 		else
