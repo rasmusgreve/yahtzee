@@ -94,16 +94,6 @@ public class SinglePlayerAI implements Player {
 		return (float)YahtzeeMath.prob(c, roll);
 	}
 	
-	private static int[] rollFromInt(int input)
-	{
-		int[] res = new int[5];
-		for (int i = 1; i < 6; i++)
-		{
-			res[i-1] = (input / (int)(Math.pow(6,i-1))) % 6 + 1;
-		}
-		return res;
-	}
-	
 	public static void main(String[] args) {
 		/*ArrayList<int[]> r = getPossibleRolls(new int[] {6,6,6,6,6},new boolean[]{false,false,false,false,false});
 		for(int[] v : r)
