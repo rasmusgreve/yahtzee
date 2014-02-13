@@ -35,6 +35,11 @@ public class Play {
 		}
 		Controller c = new Controller(players.toArray(new Player[players.size()]), seed);
 		c.startGame();
+		
+		for (Player p : players)
+		{
+			p.finalize();
+		}
 	}
 	
 	/**
