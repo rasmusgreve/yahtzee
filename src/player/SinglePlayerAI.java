@@ -91,9 +91,9 @@ public class SinglePlayerAI implements Player {
 	private double rollFromScoreboard(Scoreboard board) {
 		double s = 0;
 		int i = 0;
+		double[] cache = newRollValuesCache();
 		for (int[] roll: allRolls) {
-			System.out.println("Checking roll: " + Arrays.toString(roll) + i++ + "/252");
-			double v = valueOfRoll(roll, 2, board, newRollValuesCache());
+			double v = valueOfRoll(roll, 2, board, cache);
 			s += v * YahtzeeMath.prob5(roll);
 		}
 		return s;
@@ -104,12 +104,11 @@ public class SinglePlayerAI implements Player {
 			if (board.isFull())
 			{
 				boardValues[idx] = board.totalInclBonus();
-				System.out.println("Board is full. Value: " + board.totalInclBonus());
 			} 
 			else
 			{
 				boardValues[idx] = rollFromScoreboard(board);
-				System.out.println("Calulating value");
+
 			}
 		}
 		return boardValues[idx];
