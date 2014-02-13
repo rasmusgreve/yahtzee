@@ -12,7 +12,9 @@ import util.YahtzeeMath;
 
 public class SinglePlayerAI implements Player {
 
-	public int[] testCache = new int[100];
+	public double[] boardValues = new double[1000000];
+	//Values is the dynamic program cache for the inner search
+	double[] rollValues = new double[1025];
 	private static final String filename = "testCache.bin";
 	
 	@Override
@@ -20,8 +22,8 @@ public class SinglePlayerAI implements Player {
 		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 		
 		Answer ans = new Answer();
-		values = new double[1025];
-		for (int i = 0; i < 1025; i++){values[i] = -1;}
+		rollValues = new double[1025];
+		for (int i = 0; i < 1025; i++){rollValues[i] = -1;}
 		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
@@ -59,8 +61,6 @@ public class SinglePlayerAI implements Player {
 		return best;
 	}
 	
-	
-	double[] values = new double[1025];
 	private double valueOfRoll(int[] roll, int rollsLeft)
 	{
 		if (rollsLeft == 0)
@@ -73,9 +73,9 @@ public class SinglePlayerAI implements Player {
 		}
 		
 		int idx = rollIdx(roll, rollsLeft);
-		if (values[idx] == -1)
+		if (rollValues[idx] == -1)
 		{
-			values[idx] = Integer.MIN_VALUE;
+			rollValues[idx] = Integer.MIN_VALUE;
 			for (boolean[] hold : getInterestingHolds(roll))
 			{
 				double sum = 0;
@@ -83,10 +83,10 @@ public class SinglePlayerAI implements Player {
 				{
 					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1);
 				}
-				values[idx] = Math.max(values[idx], sum);
+				rollValues[idx] = Math.max(rollValues[idx], sum);
 			}
 		}
-		return values[idx];
+		return rollValues[idx];
 	}
 	
 	
@@ -213,12 +213,11 @@ public class SinglePlayerAI implements Player {
 		try {
 			FileInputStream fis = new FileInputStream(filename);
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			testCache = (int[]) ois.readObject();
+			boardValues = (double[]) ois.readObject();
 			ois.close();
 			fis.close();
 		} catch (Exception e) {
 			System.out.println("WARNING! cache not loaded");
-			testCache = new int[100];
 		}
 	}
 	
@@ -228,7 +227,7 @@ public class SinglePlayerAI implements Player {
 		try {
 			FileOutputStream fos = new FileOutputStream(filename);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(testCache);
+			oos.writeObject(boardValues);
 			oos.close();
 			fos.close();
 		} catch (IOException e) {
