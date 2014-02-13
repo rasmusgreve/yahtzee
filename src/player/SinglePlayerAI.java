@@ -16,7 +16,17 @@ public class SinglePlayerAI implements Player {
 	//Values is the dynamic program cache for the inner search
 	double[] rollValues = new double[1025];
 	private static final String filename = "testCache.bin";
+	//A list of all 252 possible different rolls
 	private static ArrayList<int[]> allRolls = new ArrayList<int[]>();
+	static {
+		for (int a = 1; a <= 6; a++)
+		 for (int b = a; b <= 6; b++)
+		  for (int c = b; c <= 6; c++)
+		   for (int d = c; d <= 6; d++)
+		    for (int e = d; e <= 6; e++)
+		     allRolls.add(new int[]{a,b,c,d,e});
+	}
+	
 	@Override
 	public Answer PerformTurn(Question question) {
 		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
@@ -89,7 +99,6 @@ public class SinglePlayerAI implements Player {
 		return rollValues[idx];
 	}
 	
-	
 	private static double getProb(boolean[] hold, int[] roll)
 	{
 		int c = 0;
@@ -135,35 +144,26 @@ public class SinglePlayerAI implements Player {
 	{
 		//TODO: calculate rolls once. Apply roll,hold dyn
 		ArrayList<int[]> rolls = new ArrayList<int[]>();
-		for (int a = 1; a <= 6; a++){
-			for (int b = a; b <= 6; b++){
-				for (int c = b; c <= 6; c++){
-					for (int d = c; d <= 6; d++){
-						for (int e = d; e <= 6; e++)
-						{
-							int[] r = new int[]{a,b,c,d,e};
-							//Apply hold
-							for (int j = 0; j < 5; j++)
-								if (hold[j])
-									r[j] = roll[j];
-							//Sort and filter unique
-							boolean has = false;
-							for (int[] ex : rolls)
-							{
-								if (Arrays.equals(ex, r))
-								{
-									has = true;
-									break;
-								}
-							}
-							if (!has)
-								rolls.add(r);
-						}
-					}
+		for (int[] r_p : allRolls)
+		{
+			int[] r = Arrays.copyOf(r_p, r_p.length);
+			//Apply hold
+			for (int j = 0; j < 5; j++)
+				if (hold[j])
+					r[j] = roll[j];
+			//Sort and filter unique
+			boolean has = false;
+			for (int[] ex : rolls)
+			{
+				if (Arrays.equals(ex, r))
+				{
+					has = true;
+					break;
 				}
 			}
+			if (!has)
+				rolls.add(r);
 		}
-		//TODO: Use reverse coolex instead
 		return rolls;
 	}
 	
