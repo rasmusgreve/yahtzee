@@ -94,7 +94,7 @@ public class SinglePlayerAI implements Player {
 		double[] cache = newRollValuesCache();
 		for (int[] roll: allRolls) {
 			double v = valueOfRoll(roll, 2, board, cache);
-			s += v * YahtzeeMath.prob5(roll);
+			s += v * YahtzeeMath.prob(5,roll);
 		}
 		return s;
 	}

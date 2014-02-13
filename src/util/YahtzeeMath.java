@@ -6,13 +6,36 @@ public class YahtzeeMath {
 
 	static long[][] ch;
 	
+	//Probability caches
+	static double[] prob5 = new double[252];
+	static double[] prob4 = new double[126];
+	static double[] prob3 = new double[56];
+	static double[] prob2 = new double[21];
+	static double[] prob1 = new double[6];
+	
 	static{
 		ch = new long[1][0];
 		choose(10,5);
+		
+		for (int a = 1; a <= 6; a++){
+			for (int b = a; b <= 6; b++){
+				for (int c = b; c <= 6; c++){
+					for (int d = c; d <= 6; d++){
+						for (int e = d; e <= 6; e++){
+							prob5[colex(new int[]{a,b,c,d,e})] = prob5(new int[]{a,b,c,d,e}); 
+						}
+						prob4[colex(new int[]{a,b,c,d})] = prob4(new int[]{a,b,c,d});
+					}
+					prob3[colex(new int[]{a,b,c})] = prob3(new int[]{a,b,c});
+				}
+				prob2[colex(new int[]{a,b})] = prob2(new int[]{a,b});
+			}
+			prob1[colex(new int[]{a})] = prob1(new int[]{a});
+		}
 	}
 	
 	//assumes 5d6
-	public static double prob5(int[] r)
+	private static double prob5(int[] r)
 	{
 		//count occurrences
 		int[] c = new int[6];
@@ -36,7 +59,7 @@ public class YahtzeeMath {
 		}
 		else 				{			return   (720/6.) / 7776.;} /*ABCDE*/
 	}
-	public static double prob4(int[] r)
+	private static double prob4(int[] r)
 	{
 		//count occurrences
 		int[] c = new int[6];
@@ -53,7 +76,7 @@ public class YahtzeeMath {
 		else {							return  (360/15.) / 1296.;} /*ABCD*/
 	}
 
-	public static double prob3(int[] r)
+	private static double prob3(int[] r)
 	{
 		//count occurrences
 		int[] c = new int[6];
@@ -66,7 +89,7 @@ public class YahtzeeMath {
 		else {							return  (120/20.) / 216.;} /*ABC*/
 	}
 
-	public static double prob2(int[] r)
+	private static double prob2(int[] r)
 	{
 		//count occurrences
 		int[] c = new int[6];
@@ -76,20 +99,20 @@ public class YahtzeeMath {
 		Arrays.sort(c);
 		if (c[5] == 2){ 				return  (6/6.) / 36.;} /*AA*/
 		else {							return  (30/15.) / 36.;} /*AB*/
-	}
-	public static double prob1(int[] r)
-	{
-		return 1 / 6.;
-	}
-	public static double prob(int n, int[] roll)
+	}                                            
+	private static double prob1(int[] r)         
+	{                                            
+		return 1 / 6.;                           
+	}                                            
+	public static double prob(int n, int[] roll) 
 	{
 		switch(n){
 			case 0: return 1;
-			case 1: return prob1(roll);
-			case 2: return prob2(roll);
-			case 3: return prob3(roll);
-			case 4: return prob4(roll);
-			case 5: return prob5(roll);
+			case 1: return prob1[colex(roll)];
+			case 2: return prob2[colex(roll)];
+			case 3: return prob3[colex(roll)];
+			case 4: return prob4[colex(roll)];
+			case 5: return prob5[colex(roll)];
 			default:
 				throw new IllegalArgumentException("Max n is 5. you gave " + n);
 		}
