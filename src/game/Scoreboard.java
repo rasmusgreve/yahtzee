@@ -118,7 +118,7 @@ public class Scoreboard implements Cloneable {
 		for (int j = 0; j < scores.length; j++) {
 			int trueOrFalse = scores[j] ? 1 : 0;
 			result |= (trueOrFalse) << (6+j);
-		}		
+		}
 		return result;
 	}
 	/*

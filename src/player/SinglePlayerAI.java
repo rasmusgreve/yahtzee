@@ -28,6 +28,9 @@ public class SinglePlayerAI implements Player {
 		     allRolls.add(new int[]{a,b,c,d,e});
 	}
 	
+	public SinglePlayerAI() {
+		loadArray();
+	}
 	@Override
 	public Answer PerformTurn(Question question) {		
 		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
