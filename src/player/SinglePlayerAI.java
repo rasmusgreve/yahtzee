@@ -130,11 +130,7 @@ public class SinglePlayerAI implements Player {
 		System.out.println(sum);
 		
 	}
-<<<<<<< Updated upstream
 	*/
-	
-=======
->>>>>>> Stashed changes
 	private static ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
 	{
 		//TODO: calculate rolls once. Apply roll,hold dyn
