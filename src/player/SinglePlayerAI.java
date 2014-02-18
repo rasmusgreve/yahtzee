@@ -209,7 +209,7 @@ public class SinglePlayerAI implements Player {
 //		long t = System.nanoTime();
 		
 		//TODO: calculate rolls once. Apply roll,hold dyn
-		ArrayList<int[]> rolls = new ArrayList<int[]>();
+		ArrayList<int[]> rolls = new ArrayList<int[]>(252);
 		
 		boolean[] rollsColex = new boolean[252];
 		int[] r = new int[5];
@@ -271,7 +271,7 @@ public class SinglePlayerAI implements Player {
 	//TODO: Remove symmetries
 	private ArrayList<boolean[]> getInterestingHolds(int[] roll)
 	{
-		ArrayList<boolean[]> holds = new ArrayList<boolean[]>();
+		ArrayList<boolean[]> holds = new ArrayList<boolean[]>(32);
 		for (int i = 0; i < (1 << 5); i++){
 			boolean[] hold = holdFromInt(i);
 			
