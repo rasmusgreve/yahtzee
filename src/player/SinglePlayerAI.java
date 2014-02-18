@@ -207,9 +207,16 @@ public class SinglePlayerAI implements Player {
 	
 	private static ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
 	{
-                int newRollsNeeded = 5;
+        int newRollsNeeded = 5;
 		for (int i = 0; i < hold.length; i++) if (hold[i]) newRollsNeeded--;
-		ArrayList<int[]> rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(newRollsNeeded));
+		ArrayList<int[]> rolls;
+		if (newRollsNeeded == 0){
+			 rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(1));
+			 rolls.add(roll);
+			 return rolls;
+		}else{
+			 rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(newRollsNeeded));
+		}
 		
 		for (int j = 0; j < YahtzeeMath.rollNumber(newRollsNeeded); j++)
 		{
