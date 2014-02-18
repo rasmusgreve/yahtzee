@@ -16,7 +16,7 @@ import util.YahtzeeMath;
 public class SinglePlayerAI implements Player {
 
 	public double[] boardValues;
-	private static final String filename = "boardValuesCache.bin";
+	public static final String filename = "singlePlayerCache.bin";
 	
 	public SinglePlayerAI() {
 		loadArray();
