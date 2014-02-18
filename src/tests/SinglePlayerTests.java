@@ -25,6 +25,8 @@ public class SinglePlayerTests {
 		ai = new SinglePlayerAI();
 		boardAlmostFull = new Scoreboard();
 		
+		boardAlmostFull.insert(ScoreType.THREES, 9);
+		boardAlmostFull.insert(ScoreType.FOURS, 12);
 		boardAlmostFull.insert(ScoreType.FIVES, 15);
 		boardAlmostFull.insert(ScoreType.SIXES, 18);
 		boardAlmostFull.insert(ScoreType.THREE_OF_A_KIND, 25);
@@ -41,8 +43,6 @@ public class SinglePlayerTests {
 		
 		boardAlmostFull.insert(ScoreType.ONES, 2);
 		boardAlmostFull.insert(ScoreType.TWOS, 6);
-		boardAlmostFull.insert(ScoreType.THREES, 9);
-		boardAlmostFull.insert(ScoreType.FOURS, 12);
 		
 		assertEquals("Full board w/o bonus gave a value > 0", 0, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);		
 	}
@@ -51,8 +51,6 @@ public class SinglePlayerTests {
 	public void testFullBoardBonus() {
 		boardAlmostFull.insert(ScoreType.ONES, 3);
 		boardAlmostFull.insert(ScoreType.TWOS, 6);
-		boardAlmostFull.insert(ScoreType.THREES, 9);
-		boardAlmostFull.insert(ScoreType.FOURS, 12);
 		
 		assertEquals("Full board w/ bonus gave a value != 35", 35, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);		
 	}
@@ -61,8 +59,6 @@ public class SinglePlayerTests {
 	public void testMissingOnes()
 	{
 		boardAlmostFull.insert(ScoreType.TWOS, 6);
-		boardAlmostFull.insert(ScoreType.THREES, 9);
-		boardAlmostFull.insert(ScoreType.FOURS, 12);
 
 		assertEquals("Full board w/ bonus gave a wrong value", 14.526231410705554, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);
 	}
@@ -71,33 +67,12 @@ public class SinglePlayerTests {
 	public void testMissingTwos()
 	{
 		boardAlmostFull.insert(ScoreType.ONES, 2);
-		boardAlmostFull.insert(ScoreType.THREES, 9);
-		boardAlmostFull.insert(ScoreType.FOURS, 12);
-		assertEquals("Full board w/ bonus gave a wrong value", 7.867883003018436, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);
-	}
-	
-	@Test
-	public void testMissingThrees()
-	{
-		boardAlmostFull.insert(ScoreType.ONES, 2);
-		boardAlmostFull.insert(ScoreType.TWOS, 6);
-		boardAlmostFull.insert(ScoreType.FOURS, 12);
-		assertEquals("Full board w/ bonus gave a wrong value", 7.867883003018436, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);
-	}
-	
-	@Test
-	public void testMissingFours()
-	{
-		boardAlmostFull.insert(ScoreType.ONES, 2);
-		boardAlmostFull.insert(ScoreType.TWOS, 6);
-		boardAlmostFull.insert(ScoreType.THREES, 9);
 		assertEquals("Full board w/ bonus gave a wrong value", 7.867883003018436, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);
 	}
 	
 	@Test
 	public void testMissingOnesAndTwos()
 	{
-		
 		assertEquals("Full board w/ bonus gave a wrong value", 16.729612099229513, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);
 	}
 
