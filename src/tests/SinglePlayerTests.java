@@ -2,6 +2,10 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
+import game.Answer;
+import game.Question;
 import game.Scoreboard;
 import game.Scoreboard.ScoreType;
 
@@ -71,6 +75,49 @@ public class SinglePlayerTests {
 		
 		assertEquals("Full board w/ bonus gave a wrong value", 16.729612099229513, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);
 	}
+	
+	@Test
+	public void testRightChoiceOnes1()
+	{
+		boolean[] expected = new boolean[]{true, true, false, false, false};
+		int[] roll = new int[]{1,1,6,6,6};
+		
+		Question q = new Question(0, roll, 2, new Scoreboard[]{boardAlmostFull});
+		Answer a = ai.PerformTurn(q);
+		assertTrue("AI held the wrong dice", Arrays.equals(expected, a.diceToHold));
+	}
+	
+	@Test
+	public void testRightChoiceOnes2()
+	{
+		boolean[] expected = new boolean[]{true, true, true, false, false};
+		int[] roll = new int[]{1,1,1,2,6};
+		
+		Question q = new Question(0, roll, 2, new Scoreboard[]{boardAlmostFull});
+		Answer a = ai.PerformTurn(q);
+		assertTrue("AI held the wrong dice", Arrays.equals(expected, a.diceToHold));
+	}
 
+	@Test
+	public void testRightChoiceTwos1()
+	{
+		boolean[] expected = new boolean[]{false, false, true, true, false};
+		int[] roll = new int[]{1,1,2,2,6};
+		
+		Question q = new Question(0, roll, 2, new Scoreboard[]{boardAlmostFull});
+		Answer a = ai.PerformTurn(q);
+		assertTrue("AI held the wrong dice", Arrays.equals(expected, a.diceToHold));
+	}
+	
+	@Test
+	public void testRightChoiceTwos2()
+	{
+		boolean[] expected = new boolean[]{false, false, true, true, true};
+		int[] roll = new int[]{1,1,2,2,2};
+		
+		Question q = new Question(0, roll, 2, new Scoreboard[]{boardAlmostFull});
+		Answer a = ai.PerformTurn(q);
+		assertTrue("AI held the wrong dice", Arrays.equals(expected, a.diceToHold));
+	}
 	
 }
