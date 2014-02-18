@@ -21,7 +21,7 @@ public class YahtzeeMath {
 	static double[] prob1 = new double[252];
 
 	
-	public static ArrayList<int[]> allRolls = new ArrayList<int[]>();
+	public static int[][] allRolls = new int[252][];
 	static int[] specialToColexLookup = new int[6*6*6*6*6*6];
 	final static int[] multTable = new int[] {
 		0, // 0 ignore
@@ -34,12 +34,15 @@ public class YahtzeeMath {
 		6*6*6*6*6 // dice count
 	};
 	static {
+		int i = 0;
 		for (int a = 1; a <= 6; a++)
 		 for (int b = a; b <= 6; b++)
 		  for (int c = b; c <= 6; c++)
 		   for (int d = c; d <= 6; d++)
 		    for (int e = d; e <= 6; e++)
-		     allRolls.add(new int[]{a,b,c,d,e});
+		    {
+		    	allRolls[i++] = new int[]{a,b,c,d,e};
+		    }
 
 
 		ch = new long[1][0];
@@ -218,7 +221,7 @@ public class YahtzeeMath {
 	static long timer = 0;
 
 	
-	private static int colexInit(int[] c){
+	public static int colexInit(int[] c){
 		int[] copy = Arrays.copyOf(c, c.length);
 		Arrays.sort(copy);
 

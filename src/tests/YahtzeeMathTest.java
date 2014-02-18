@@ -13,42 +13,42 @@ public class YahtzeeMathTest {
 
 	@Test
 	public void testProb5() {
-		for (int[] roll : YahtzeeMath.allRolls)
-			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
+			assertEquals("The probabilities are not the same", prob(YahtzeeMath.allRolls[i].length,YahtzeeMath.allRolls[i]), YahtzeeMath.prob(YahtzeeMath.allRolls[i].length, YahtzeeMath.allRolls[i]), 1E-6);
 	}
 	
 	@Test
 	public void testProb4() {
-		for (int[] roll : YahtzeeMath.allRolls)
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
 		{
-			roll = Arrays.copyOf(roll, 4);
+			int[] roll = Arrays.copyOf(YahtzeeMath.allRolls[i], 4);
 			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
 		}
 	}
 	
 	@Test
 	public void testProb3() {
-		for (int[] roll : YahtzeeMath.allRolls)
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
 		{
-			roll = Arrays.copyOf(roll, 3);
+			int[] roll = Arrays.copyOf(YahtzeeMath.allRolls[i], 3);
 			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
 		}
 	}
 	
 	@Test
 	public void testProb2() {
-		for (int[] roll : YahtzeeMath.allRolls)
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
 		{
-			roll = Arrays.copyOf(roll, 2);
+			int[] roll = Arrays.copyOf(YahtzeeMath.allRolls[i], 2);
 			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
 		}
 	}
 	
 	@Test
 	public void testProb1() {
-		for (int[] roll : YahtzeeMath.allRolls)
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
 		{
-			roll = Arrays.copyOf(roll, 1);
+			int[] roll = Arrays.copyOf(YahtzeeMath.allRolls[i], 1);
 			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
 		}
 	}

@@ -19,8 +19,9 @@ public class GameLogicTest {
 	public void testValues() {
 		for (ScoreType typ : ScoreType.values())
 		{
-			for (int[] roll : YahtzeeMath.allRolls)
+			for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
 			{
+				int[] roll = YahtzeeMath.allRolls[i];
 				assertEquals("Unexpected value", valueOfRoll(typ, roll), GameLogic.valueOfRoll(typ, roll));
 			}
 		}

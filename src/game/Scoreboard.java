@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Scoreboard implements Cloneable {
 
-	int[] scoreArray;
+	public int[] scoreArray;
 	
 	public Scoreboard() {
 		scoreArray = new int[ScoreType.values().length];
@@ -34,9 +34,12 @@ public class Scoreboard implements Cloneable {
 	
 	public void insert(ScoreType type, int value)
 	{
-		if (scoreArray[type.ordinal()] != -1)
-			throw new IllegalArgumentException("Category already used!");
-		scoreArray[type.ordinal()] = value;
+		insert(type.ordinal(), value);
+	}
+	
+	public void insert(int type, int value)
+	{
+		scoreArray[type] = value;
 	}
 	
 	public int get(ScoreType type)
@@ -94,6 +97,7 @@ public class Scoreboard implements Cloneable {
 	    BIG_STRAIGHT,
 	    YAHTZEE,
 	    CHANCE;
+	    public static int count = 13;
 	}
 	
 	public int emptySpaces()
@@ -113,11 +117,11 @@ public class Scoreboard implements Cloneable {
 		boolean[] scores = new boolean[13];
 		
 		int i = 0;
-		for (ScoreType scoreType : ScoreType.values()) {
-			int scoreAmount = scoreArray[scoreType.ordinal()];
+		for (int type = 0; type < ScoreType.count; type++) {
+			int scoreAmount = scoreArray[type];
 			if (scoreAmount > -1){
 				scores[i] = true;
-				if (scoreType.ordinal() < 6) upperCounter += scoreAmount;
+				if (type < 6) upperCounter += scoreAmount;
 			}
 			i++;
 		}

@@ -16,7 +16,19 @@ public class GameLogic {
 		BIG_STRAIGHT_SCORE = 40,
 		YAHTZEE_SCORE = 50;
 	
-	HashMap<ScoreType, int[]> rollValues = new HashMap<>();
+	static int[][] rollValues = new int[ScoreType.values().length][];
+	static{
+		for (ScoreType typ : ScoreType.values())
+		{
+			rollValues[typ.ordinal()] = new int[252];
+			for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
+			{
+				rollValues[typ.ordinal()]
+						[YahtzeeMath.colexInit(YahtzeeMath.allRolls[i])]
+								= calculateValueOfRoll(typ, YahtzeeMath.allRolls[i]);
+			}
+		}
+	}
 
 	
 	int currentPlayer = 0;
@@ -86,10 +98,12 @@ public class GameLogic {
 	}
 	
 	
-	//TODO: Precalculate values to turn this into a table lookup
-	
 	public static int valueOfRoll(ScoreType type, int[] roll){
-		return calculateValueOfRoll(type, roll);
+		return valueOfRoll(type.ordinal(), roll);
+	}
+	
+	public static int valueOfRoll(int type, int[] roll){
+		return rollValues[type][YahtzeeMath.colex(roll)];
 	}
 	
 	private static int calculateValueOfRoll(ScoreType type, int[] roll){

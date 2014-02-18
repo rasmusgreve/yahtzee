@@ -86,9 +86,9 @@ public class SinglePlayerAI implements Player {
 
 		double s = 0;
 		double[] cache = newRollValuesCache();
-		for (int[] roll: YahtzeeMath.allRolls) {
-			double v = valueOfRoll(roll, 2, board, cache);
-			s += v * YahtzeeMath.prob(5,roll);
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
+			double v = valueOfRoll(YahtzeeMath.allRolls[i], 2, board, cache);
+			s += v * YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
 		}
 		return s;
 	}
@@ -119,10 +119,11 @@ public class SinglePlayerAI implements Player {
 		if (rollsLeft == 0)
 		{		
 			double max = Double.NEGATIVE_INFINITY;
-			for (ScoreType type : board.possibleScoreTypes()) {
+			for (int i = 0; i < ScoreType.count; i++) {
+				if (board.scoreArray[i] != -1) continue; //Skip filled entries
 				Scoreboard cloneBoard = board.clone();
-				cloneBoard.insert(type, GameLogic.valueOfRoll(type, roll));
-				max = Math.max(max, bigDynamicProgramming(cloneBoard) + GameLogic.valueOfRoll(type, roll));
+				cloneBoard.insert(i, GameLogic.valueOfRoll(i, roll));
+				max = Math.max(max, bigDynamicProgramming(cloneBoard) + GameLogic.valueOfRoll(i, roll));
 			}
 			return max;
 		}
@@ -211,8 +212,9 @@ public class SinglePlayerAI implements Player {
 		
 		boolean[] rollsColex = new boolean[252];
 		int[] r = new int[5];
-		for (int[] r_p : YahtzeeMath.allRolls)
+		for (int j = 0; j < YahtzeeMath.allRolls.length; j++)
 		{
+			int[] r_p = YahtzeeMath.allRolls[j];
 			
 //			int[] r = Arrays.copyOf(r_p, r_p.length);
 			for (int i=0; i<hold.length; i++) {
