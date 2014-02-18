@@ -18,16 +18,6 @@ public class GameLogic {
 	
 	HashMap<ScoreType, int[]> rollValues = new HashMap<>();
 
-	static{
-		for (ScoreType typ : ScoreType.values())
-		{
-			for (int[] roll : YahtzeeMath.allRolls){
-				
-				
-			}
-		}
-	}
-	
 	
 	int currentPlayer = 0;
 	int rollsLeft;
@@ -99,7 +89,7 @@ public class GameLogic {
 	//TODO: Precalculate values to turn this into a table lookup
 	
 	public static int valueOfRoll(ScoreType type, int[] roll){
-		
+		return calculateValueOfRoll(type, roll);
 	}
 	
 	private static int calculateValueOfRoll(ScoreType type, int[] roll){

@@ -2,19 +2,37 @@ package util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class YahtzeeMath {
 
 	static long[][] ch;
 	
 	//Probability caches
+//	static double[] prob5 = new double[252];
+//	static double[] prob4 = new double[126];
+//	static double[] prob3 = new double[56];
+//	static double[] prob2 = new double[21];
+//	static double[] prob1 = new double[6];
 	static double[] prob5 = new double[252];
-	static double[] prob4 = new double[126];
-	static double[] prob3 = new double[56];
-	static double[] prob2 = new double[21];
-	static double[] prob1 = new double[6];
+	static double[] prob4 = new double[252];
+	static double[] prob3 = new double[252];
+	static double[] prob2 = new double[252];
+	static double[] prob1 = new double[252];
+
 	
 	public static ArrayList<int[]> allRolls = new ArrayList<int[]>();
+	static int[] specialToColexLookup = new int[6*6*6*6*6*6];
+	final static int[] multTable = new int[] {
+		0, // 0 ignore
+		0, // 1 dont count
+		1, // 2's
+		6, // 3's etc..
+		6*6,
+		6*6*6,
+		6*6*6*6,
+		6*6*6*6*6 // dice count
+	};
 	static {
 		for (int a = 1; a <= 6; a++)
 		 for (int b = a; b <= 6; b++)
@@ -22,10 +40,8 @@ public class YahtzeeMath {
 		   for (int d = c; d <= 6; d++)
 		    for (int e = d; e <= 6; e++)
 		     allRolls.add(new int[]{a,b,c,d,e});
-	}
-	
-	
-	static{
+
+
 		ch = new long[1][0];
 		choose(10,5);
 		
@@ -34,17 +50,72 @@ public class YahtzeeMath {
 				for (int c = b; c <= 6; c++){
 					for (int d = c; d <= 6; d++){
 						for (int e = d; e <= 6; e++){
-							prob5[colex(new int[]{a,b,c,d,e})] = prob5(new int[]{a,b,c,d,e}); 
+							prob5[colexInit(new int[]{a,b,c,d,e})] = prob5(new int[]{a,b,c,d,e}); 
 						}
-						prob4[colex(new int[]{a,b,c,d})] = prob4(new int[]{a,b,c,d});
+						prob4[colexInit(new int[]{a,b,c,d})] = prob4(new int[]{a,b,c,d});
 					}
-					prob3[colex(new int[]{a,b,c})] = prob3(new int[]{a,b,c});
+					prob3[colexInit(new int[]{a,b,c})] = prob3(new int[]{a,b,c});
 				}
-				prob2[colex(new int[]{a,b})] = prob2(new int[]{a,b});
+				prob2[colexInit(new int[]{a,b})] = prob2(new int[]{a,b});
 			}
-			prob1[colex(new int[]{a})] = prob1(new int[]{a});
+			prob1[colexInit(new int[]{a})] = prob1(new int[]{a});
+		}
+		
+		
+		
+		for (int a = 1; a <= 6; a++){
+			for (int b = a; b <= 6; b++){
+				for (int c = b; c <= 6; c++){
+					for (int d = c; d <= 6; d++){
+						for (int e = d; e <= 6; e++){
+							int colex = colexInit(new int[]{a,b,c,d,e});
+							int special = convertToSpecial(new int[]{a,b,c,d,e});
+							specialToColexLookup[special] = colex;
+						}
+						int colex = colexInit(new int[]{a,b,c,d});
+						int special = convertToSpecial(new int[]{a,b,c,d});
+						specialToColexLookup[special] = colex;
+					}
+					int colex = colexInit(new int[]{a,b,c});
+					int special = convertToSpecial(new int[]{a,b,c});
+					specialToColexLookup[special] = colex;
+				}
+				int colex = colexInit(new int[]{a,b});
+				int special = convertToSpecial(new int[]{a,b});
+				specialToColexLookup[special] = colex;
+			}
+			int colex = colexInit(new int[]{a});
+			int special = convertToSpecial(new int[]{a});
+			specialToColexLookup[special] = colex;
 		}
 	}
+	
+	
+
+	
+	
+	private static int convertToSpecial(int[] r){
+		int result = 0;
+		
+		
+		for(int i = 0; i < r.length; i++) {
+			result += multTable[r[i]];
+		}
+		result += (r.length-1) * multTable[multTable.length-1];
+		
+		return result;
+//		
+//		int[] rollC = new int[5];
+//		
+//		for (int i = 0; i < r.length; i++) {
+//			if (r[i] == 1) continue;
+//			rollC[r[i]-2]++;
+//		}
+//		
+//		int idx = rollC[0] | rollC[1]<<3 | rollC[2]<<6 | rollC[3]<<9 | rollC[4]<<12 | r.length<<15;
+//		return idx;
+	}
+	
 	
 	//assumes 5d6
 	private static double prob5(int[] r)
@@ -142,17 +213,54 @@ public class YahtzeeMath {
 		}
 		return ch[ii][jj];
 	}
+		
 	
-	public static int colex(int[] c) {
+	static long timer = 0;
+
+	
+	private static int colexInit(int[] c){
 		int[] copy = Arrays.copyOf(c, c.length);
 		Arrays.sort(copy);
+
 		int index = 0; 
 		for (int i = 0 ; i < copy.length ; i++) {
 			index += ch[copy[i]+i-1][i + 1];
-		}
+		}	
 		return index;
 	}
 	
+	public static int colex(int[] c) {	
+		
+//		long t = System.nanoTime();
+		
+		int special = convertToSpecial(c);
+		int index = specialToColexLookup[special];
+		
+		
+		
+//		int[] copy = Arrays.copyOf(c, c.length);
+//		Arrays.sort(copy);
+//
+//		int index = 0; 
+//		for (int i = 0 ; i < copy.length ; i++) {
+//			index += ch[copy[i]+i-1][i + 1];
+//		}
+//		timer += System.nanoTime() - t; 
+		
+				
+		return index;
+	}
 	
+	public static void printout(){
+		System.out.println("t colex: " + timer) ;
+	}
+	
+	
+	static int[] colexLookup;
+	
+
+	
+	
+		
 	
 }

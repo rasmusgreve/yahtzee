@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 
 
@@ -105,7 +106,8 @@ public class Scoreboard implements Cloneable {
 	}
 	
 	
-	public int ConvertMapToInt(){
+	
+	public int ConvertMapToInt(){				
 		int upperCounter = 0;
 		
 		boolean[] scores = new boolean[13];
@@ -117,18 +119,13 @@ public class Scoreboard implements Cloneable {
 				scores[i] = true;
 				if (scoreType.ordinal() < 6) upperCounter += scoreAmount;
 			}
-			
 			i++;
 		}
-		
-		
-		
 		int result = upperCounter;
-		
 		for (int j = 0; j < scores.length; j++) {
-			int trueOrFalse = scores[j] ? 1 : 0;
-			result |= (trueOrFalse) << (6+j);
-		}
+			result |= (scores[j] ? 1 : 0) << (6+j);
+		}		
+		
 		return result;
 	}
 	/*

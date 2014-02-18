@@ -1,8 +1,10 @@
 package player;
 
+import java.util.List;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import game.Answer;
 import game.GameLogic;
@@ -22,6 +24,7 @@ public class SinglePlayerAI implements Player {
 	
 	private static double[] newRollValuesCache()
 	{
+
 		double[] rollValues = new double[1025];
 		for (int i = 0; i < 1025; i++){rollValues[i] = -1;}
 		return rollValues;
@@ -80,6 +83,7 @@ public class SinglePlayerAI implements Player {
 		return best;
 	}
 	private double rollFromScoreboard(Scoreboard board) {
+
 		double s = 0;
 		double[] cache = newRollValuesCache();
 		for (int[] roll: YahtzeeMath.allRolls) {
@@ -88,6 +92,9 @@ public class SinglePlayerAI implements Player {
 		}
 		return s;
 	}
+	
+	
+	int counter = 0;
 	public double bigDynamicProgramming(Scoreboard board) {
 		int idx = board.ConvertMapToInt();
 		if (boardValues[idx] == -1) {
@@ -98,11 +105,12 @@ public class SinglePlayerAI implements Player {
 			} 
 			else
 			{
-				System.out.println("Calculating value from board " + board.ConvertMapToInt() + " (" + board.emptySpaces() + " empty)");
+				System.out.println("Calculating value from board " + board.ConvertMapToInt() + " (" + board.emptySpaces() + " empty)" + " - count: " + counter );
+				counter++;
 				boardValues[idx] = rollFromScoreboard(board);
 			}
 		}
-			
+					
 		return boardValues[idx];
 	}
 	
@@ -137,23 +145,37 @@ public class SinglePlayerAI implements Player {
 	}
 	
 	public static void main(String[] args) {
-		Scoreboard board = new Scoreboard();
-		//board.insert(ScoreType.ONES, 2);
-		//board.insert(ScoreType.TWOS, 6);
-		board.insert(ScoreType.THREES, 9);
-		board.insert(ScoreType.FOURS, 12);
-		board.insert(ScoreType.FIVES, 15);
-		board.insert(ScoreType.SIXES, 18);
-		board.insert(ScoreType.THREE_OF_A_KIND, 25);
-		board.insert(ScoreType.FOUR_OF_A_KIND, 26);
-		board.insert(ScoreType.SMALL_STRAIGHT, 25);
-		board.insert(ScoreType.BIG_STRAIGHT, 30);
-		board.insert(ScoreType.YAHTZEE, 50);
-		board.insert(ScoreType.CHANCE, 20);
-		board.insert(ScoreType.FULL_HOUSE, 30);
-
-		SinglePlayerAI ai = new SinglePlayerAI();
-		System.out.println("Value: " + ai.bigDynamicProgramming(board));
+//		Scoreboard board = new Scoreboard();
+//		//board.insert(ScoreType.ONES, 2);
+//		//board.insert(ScoreType.TWOS, 6);
+//		board.insert(ScoreType.THREES, 9);
+//		board.insert(ScoreType.FOURS, 12);
+//		board.insert(ScoreType.FIVES, 15);
+//		board.insert(ScoreType.SIXES, 18);
+//		board.insert(ScoreType.THREE_OF_A_KIND, 25);
+//		board.insert(ScoreType.FOUR_OF_A_KIND, 26);
+//		board.insert(ScoreType.SMALL_STRAIGHT, 25);
+//		board.insert(ScoreType.BIG_STRAIGHT, 30);
+//		board.insert(ScoreType.YAHTZEE, 50);
+//		board.insert(ScoreType.CHANCE, 20);
+//		board.insert(ScoreType.FULL_HOUSE, 30);
+//
+//		SinglePlayerAI ai = new SinglePlayerAI();
+//		System.out.println("Value: " + ai.bigDynamicProgramming(board));
+		
+		int t1 = YahtzeeMath.colex(new int[]{1,5});
+		System.out.println("t1: " + t1);
+		int t2 = YahtzeeMath.colex(new int[]{5,1});
+		System.out.println("t2: " + t2);
+		int t3 = YahtzeeMath.colex(new int[]{3,2});
+		System.out.println("t3: " + t3);
+		int t4 = YahtzeeMath.colex(new int[]{2,3});
+		System.out.println("t4: " + t4);
+		int t5 = YahtzeeMath.colex(new int[]{5,6});
+		System.out.println("t5: " + t5);
+		int t6 = YahtzeeMath.colex(new int[]{6,5});
+		System.out.println("t6: " + t6);
+		
 	}
 	
 	private static double getProb(boolean[] hold, int[] roll)
@@ -176,51 +198,60 @@ public class SinglePlayerAI implements Player {
 		
 		return (double)YahtzeeMath.prob(c, reducedRoll);
 	}
-	/*
-	public static void main(String[] args) {
-		SinglePlayerAI ai = new SinglePlayerAI();
-		ai.doIt();
-	}
+
+	static long timer = 0;
+	static long lastPrintedTime = 0;
 	
-	public void doIt()
-	{
-		double sum = 0;
-		boolean[] hold = new boolean[]{true,false,false,false,true};
-		int[] roll = new int[] {1,5,1,3,1};
-		for (int[] new_roll : getPossibleRolls(roll, hold))
-		{
-			System.out.println("new_roll: " + Arrays.toString(new_roll));
-			sum += getProb(hold, new_roll);
-			System.out.println("getProb(hold, new_roll): " + getProb(hold, new_roll));
-		}
-		System.out.println(sum);
-		
-	}
-	*/
 	private static ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
 	{
+//		long t = System.nanoTime();
+		
 		//TODO: calculate rolls once. Apply roll,hold dyn
 		ArrayList<int[]> rolls = new ArrayList<int[]>();
+		
+		boolean[] rollsColex = new boolean[252];
+		int[] r = new int[5];
 		for (int[] r_p : YahtzeeMath.allRolls)
 		{
-			int[] r = Arrays.copyOf(r_p, r_p.length);
-			//Apply hold
-			for (int j = 0; j < 5; j++)
-				if (hold[j])
-					r[j] = roll[j];
-			//Sort and filter unique
-			boolean has = false;
-			for (int[] ex : rolls)
-			{
-				if (Arrays.equals(ex, r))
-				{
-					has = true;
-					break;
-				}
+			
+//			int[] r = Arrays.copyOf(r_p, r_p.length);
+			for (int i=0; i<hold.length; i++) {
+				if (hold[i]) r[i] = roll[i];
+				else r[i] = r_p[i];
 			}
-			if (!has)
-				rolls.add(r);
+			int idx = YahtzeeMath.colex(r);
+			if (!rollsColex[idx]) rolls.add(Arrays.copyOf(r, r.length));
+			rollsColex[idx] = true;
+			
+//			int[] r = Arrays.copyOf(r_p, r_p.length);
+//			//Apply hold
+//			for (int j = 0; j < 5; j++)
+//				if (hold[j])
+//					r[j] = roll[j];
+//			//Sort and filter unique
+//			boolean has = false;
+//			for (int[] ex : rolls)
+//			{
+//				if (Arrays.equals(ex, r))
+//				{
+//					has = true;
+//					break;
+//				}
+//			}
+//			if (!has)
+//				rolls.add(r);
 		}
+		
+//		timer += System.nanoTime() - t;
+////		
+//		if (timer > 10000000 + lastPrintedTime){
+//			lastPrintedTime = timer;
+//			System.out.println("t: " + timer);
+//			YahtzeeMath.printout();
+//		}
+
+		
+		
 		return rolls;
 	}
 	
@@ -238,11 +269,19 @@ public class SinglePlayerAI implements Player {
 	private ArrayList<boolean[]> getInterestingHolds(int[] roll)
 	{
 		ArrayList<boolean[]> holds = new ArrayList<boolean[]>();
-		
-		//TODO: Filter out uninteresting holds maybe?
-		for (int i = 0; i < (1 << 5); i++)
-			holds.add(holdFromInt(i));
-		
+		for (int i = 0; i < (1 << 5); i++){
+			boolean[] hold = holdFromInt(i);
+			
+			//Filter out uninteresting holds
+			boolean add = true;
+			for (int j = 1; j < hold.length; j++) {
+				if (hold[j] && !hold[j-1] && roll[j-1] == roll[j]) add = false;
+			}
+			
+			if (add){
+				holds.add(hold);
+			}
+		}
 		return holds;
 	}
 	
@@ -301,4 +340,7 @@ public class SinglePlayerAI implements Player {
 		return "Single player AI";
 	}
 
+
 }
+
+
