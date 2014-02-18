@@ -105,7 +105,10 @@ public class SinglePlayerAI implements Player {
 			} 
 			else
 			{
+				/*
 				System.out.println("Calculating value from board " + board.ConvertMapToInt() + " (" + board.emptySpaces() + " empty)" + " - count: " + counter );
+				*/
+				System.out.println("Calculating value from board. Count: " + counter + ". " + (counter/4000.) + "%");
 				counter++;
 				boardValues[idx] = rollFromScoreboard(board);
 			}
