@@ -125,7 +125,7 @@ public class Scoreboard implements Cloneable {
 			}
 			i++;
 		}
-		int result = upperCounter;
+		int result = Math.min(upperCounter, 63);
 		for (int j = 0; j < scores.length; j++) {
 			result |= (scores[j] ? 1 : 0) << (6+j);
 		}		

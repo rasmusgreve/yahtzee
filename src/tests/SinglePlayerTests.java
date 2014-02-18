@@ -73,7 +73,8 @@ public class SinglePlayerTests {
 	@Test
 	public void testMissingOnesAndTwos()
 	{
-		assertEquals("Full board w/ bonus gave a wrong value", 16.729612099229513, ai.bigDynamicProgramming(boardAlmostFull), 1E-6);
+		double result = ai.bigDynamicProgramming(boardAlmostFull);
+		assertEquals("Full board w/ bonus gave a wrong value: " + result, 16.754955416455402, result , 1E-6);
 	}
 
 	@Test
