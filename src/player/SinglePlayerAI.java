@@ -122,8 +122,9 @@ public class SinglePlayerAI implements Player {
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (board.scoreArray[i] != -1) continue; //Skip filled entries
 				Scoreboard cloneBoard = board.clone();
-				cloneBoard.insert(i, GameLogic.valueOfRoll(i, roll));
-				max = Math.max(max, bigDynamicProgramming(cloneBoard) + GameLogic.valueOfRoll(i, roll));
+				int rollVal = GameLogic.valueOfRoll(i, roll);
+				cloneBoard.insert(i, rollVal);
+				max = Math.max(max, bigDynamicProgramming(cloneBoard) + rollVal);
 			}
 			return max;
 		}
