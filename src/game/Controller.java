@@ -6,7 +6,7 @@ public class Controller {
 	public boolean OUTPUT = true;
 	private final Player[] players;
 	private boolean gameRunning;
-	private GameLogic logic;
+	public GameLogic logic;
 	
 	public Controller(Player[] players, int seed){
 		this.players = players;

@@ -204,4 +204,9 @@ public class GameLogic {
 		return c;
 	}	
 	
+	
+	public void setScoreboardVal(int playerID, int type, int val){
+		scoreboards[playerID].insert(type, val);	
+	}
+	
 }

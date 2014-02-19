@@ -50,10 +50,14 @@ public class SinglePlayerAI implements Player {
 	{
 		ScoreType best = null;
 		double max = Double.NEGATIVE_INFINITY;
+		System.out.println("possible choices:");
 		for (ScoreType type : board.possibleScoreTypes()) {
 			Scoreboard cloneBoard = board.clone();
 			cloneBoard.insert(type, GameLogic.valueOfRoll(type, roll));
-			double newVal = bigDynamicProgramming(cloneBoard);
+			double newVal = bigDynamicProgramming(cloneBoard) + GameLogic.valueOfRoll(type, roll);
+			
+			System.out.println("type: " + type + ", value: " + newVal);
+			
 			
 			if (newVal > max){
 				max = newVal;
