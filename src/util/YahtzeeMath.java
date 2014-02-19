@@ -22,6 +22,13 @@ public class YahtzeeMath {
 
 	
 	public static int[][] allRolls = new int[252][];
+	
+	public static int[][] allRolls5 = new int[252][];
+	public static int[][] allRolls4 = new int[126][];
+	public static int[][] allRolls3 = new int[56][];
+	public static int[][] allRolls2 = new int[21][];
+	public static int[][] allRolls1 = new int[6][];
+	
 	static int[] specialToColexLookup = new int[6*6*6*6*6*6];
 	final static int[] multTable = new int[] {
 		0, // 0 ignore
@@ -34,6 +41,9 @@ public class YahtzeeMath {
 		6*6*6*6*6 // dice count
 	};
 	static {
+
+		
+		
 		int i = 0;
 		for (int a = 1; a <= 6; a++)
 		 for (int b = a; b <= 6; b++)
@@ -44,6 +54,24 @@ public class YahtzeeMath {
 		    	allRolls[i++] = new int[]{a,b,c,d,e};
 		    }
 
+		int j = 0, k=0,l=0,m=0,n=0;
+		for (int a = 1; a <= 6; a++){
+		 for (int b = a; b <= 6; b++){
+		  for (int c = b; c <= 6; c++){
+		   for (int d = c; d <= 6; d++){
+		    for (int e = d; e <= 6; e++)
+		    {
+		    	allRolls5[j++] = new int[]{a,b,c,d,e};
+		    }
+		    allRolls4[k++] = new int[]{a,b,c,d};
+		   }
+		   allRolls3[l++] = new int[]{a,b,c};
+		  }
+		  allRolls2[m++] = new int[]{a,b};
+		 }
+		 allRolls1[n++] = new int[]{a};
+		}
+		
 
 		ch = new long[1][0];
 		choose(10,5);
@@ -93,9 +121,39 @@ public class YahtzeeMath {
 		}
 	}
 	
-	
+	public static int rollNumber(int n){
+		switch (n) {
+		case 5:
+			return 252;
+		case 4:
+			return 126;
+		case 3:
+			return 56;
+		case 2:
+			return 21;
+		case 1:
+			return 6;
+		}
+		return 0;
+		
+	}
 
-	
+	public static int[][] allRolls(int n){
+		switch (n) {
+		case 5:
+			return allRolls5;
+		case 4:
+			return allRolls4;
+		case 3:
+			return allRolls3;
+		case 2:
+			return allRolls2;
+		case 1:
+			return allRolls1;
+		}
+		return null;
+		
+	}
 	
 	private static int convertToSpecial(int[] r){
 		int result = 0;

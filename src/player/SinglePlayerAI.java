@@ -204,58 +204,37 @@ public class SinglePlayerAI implements Player {
 		return (double)YahtzeeMath.prob(c, reducedRoll);
 	}
 
-	static long timer = 0;
-	static long lastPrintedTime = 0;
 	
 	private static ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
 	{
-//		long t = System.nanoTime();
-		
-		//TODO: calculate rolls once. Apply roll,hold dyn
-		ArrayList<int[]> rolls = new ArrayList<int[]>(252);
-		
-		boolean[] rollsColex = new boolean[252];
-		int[] r = new int[5];
-		for (int j = 0; j < YahtzeeMath.allRolls.length; j++)
-		{
-			int[] r_p = YahtzeeMath.allRolls[j];
-			
-//			int[] r = Arrays.copyOf(r_p, r_p.length);
-			for (int i=0; i<hold.length; i++) {
-				if (hold[i]) r[i] = roll[i];
-				else r[i] = r_p[i];
-			}
-			int idx = YahtzeeMath.colex(r);
-			if (!rollsColex[idx]) rolls.add(Arrays.copyOf(r, r.length));
-			rollsColex[idx] = true;
-			
-//			int[] r = Arrays.copyOf(r_p, r_p.length);
-//			//Apply hold
-//			for (int j = 0; j < 5; j++)
-//				if (hold[j])
-//					r[j] = roll[j];
-//			//Sort and filter unique
-//			boolean has = false;
-//			for (int[] ex : rolls)
-//			{
-//				if (Arrays.equals(ex, r))
-//				{
-//					has = true;
-//					break;
-//				}
-//			}
-//			if (!has)
-//				rolls.add(r);
+        int newRollsNeeded = 5;
+		for (int i = 0; i < hold.length; i++) if (hold[i]) newRollsNeeded--;
+		ArrayList<int[]> rolls;
+		if (newRollsNeeded == 0){
+			 rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(1));
+			 rolls.add(roll);
+			 return rolls;
+		}else{
+			 rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(newRollsNeeded));
 		}
 		
-//		timer += System.nanoTime() - t;
-////		
-//		if (timer > 10000000 + lastPrintedTime){
-//			lastPrintedTime = timer;
-//			System.out.println("t: " + timer);
-//			YahtzeeMath.printout();
-//		}
+		for (int j = 0; j < YahtzeeMath.rollNumber(newRollsNeeded); j++)
+		{
+			int[] r_p = YahtzeeMath.allRolls(newRollsNeeded)[j];
+			int[] r = new int[5];
 
+			int c = 0;
+			for (int i = 0; i < 5; i++) {
+				if (hold[i]){
+					r[i] = roll[i];
+					
+				}else{
+					r[i] = r_p[c];
+					c++;
+				}
+			}
+			rolls.add(r);
+		}
 		
 		
 		return rolls;
