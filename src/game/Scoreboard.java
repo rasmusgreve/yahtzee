@@ -43,63 +43,6 @@ public class Scoreboard implements Cloneable {
 		return (scoreboard & upperMask) >= 63 ? 35 : 0;
 	}
 	
-	public static void main(String[] args) {
-		int board = 2066;
-		System.out.println(Integer.toBinaryString(board));
-		for (int i = 0; i < ScoreType.count; i++) {
-			System.out.println(Scoreboard.isFilled(board, i));
-		}
-		/*
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 0, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 1, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 2, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 3, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 4, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 5, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 6, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 7, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 8, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 9, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 10, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 11, 0);
-		System.out.println("Is full: " + isFull(board1));
-		board1 = fill(board1, 12, 0);
-		System.out.println("Is full: " + isFull(board1));
-		//							  xxxxxxxxxxxxxvvvvvv
-		/*int board = Integer.parseInt("0000000000000000000", 2);
-		System.out.println(Integer.toBinaryString(board));
-		System.out.print("is filled scoretype 5: ");
-		System.out.println(isFilled(board, 5));
-		System.out.println("Upper value" + upperValue(board));
-		System.out.println("fill scoretype 5 with 6");
-		board = fill(board,5,6);
-		System.out.println(Integer.toBinaryString(board));
-		System.out.print("is filled scoretype 5: ");
-		System.out.println(isFilled(board, 0));
-		System.out.println("Upper value" + upperValue(board));
-		System.out.print("is filled scoretype 6: ");
-		System.out.println(isFilled(board, 6));
-		System.out.println("fill scoretype 6 with 25");
-		board = fill(board,6,25);
-		System.out.println(Integer.toBinaryString(board));
-		System.out.print("is filled scoretype 6: ");
-		System.out.println(isFilled(board, 6));
-		System.out.println("Upper value" + upperValue(board));*/
-	}
-	
-	
 	public Scoreboard() {
 		scoreArray = new int[ScoreType.values().length];
 		for (ScoreType typ : ScoreType.values())

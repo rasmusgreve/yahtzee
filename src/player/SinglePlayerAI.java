@@ -24,8 +24,8 @@ public class SinglePlayerAI implements Player {
 	private static double[] newRollValuesCache()
 	{
 
-		double[] rollValues = new double[1025];
-		for (int i = 0; i < 1025; i++){rollValues[i] = -1;}
+		double[] rollValues = new double[1020];
+		Arrays.fill(rollValues, -1);
 		return rollValues;
 	}
 	
@@ -241,8 +241,7 @@ public class SinglePlayerAI implements Player {
 		return holds;
 	}
 	
-	
-	private int rollIdx(int[] roll, int rollsLeft)
+	private static int rollIdx(int[] roll, int rollsLeft)
 	{
 		int v = YahtzeeMath.colex(roll);
 		v |= rollsLeft << 8;
