@@ -74,8 +74,6 @@ public class SinglePlayerAI implements Player {
 	{
 		double max = Double.NEGATIVE_INFINITY;
 		boolean[] best = null;
-		double[] probs = new double[300];
-		int k = 0;
 		for (boolean[] hold : getInterestingHolds(roll))
 		{
 			double sum = 0;
@@ -89,10 +87,6 @@ public class SinglePlayerAI implements Player {
 				max = sum;
 				best = hold;
 			}
-		}
-		if (best == null)
-		{
-			System.out.println("derp");
 		}
 		return best;
 	}
