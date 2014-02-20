@@ -10,6 +10,96 @@ public class Scoreboard implements Cloneable {
 
 	public int[] scoreArray;
 	
+	//Map layout
+	//      13       6
+	//xxxxxxxxxxxxxvvvvvv
+	//x: scoretypes
+	//v: upper value
+	final static int upperMask = (1 << 6) - 1;
+	final static int typesMask = ((1 << 13) - 1) << 6;
+	public static boolean isFilled(int scoreboard, int scoretype)
+	{
+		return (scoreboard & 1 << (6+scoretype)) != 0;
+	}
+	public static int fill(int scoreboard, int scoretype, int value)
+	{
+		if (scoretype < 6)
+		{
+			int upper = (scoreboard & upperMask) + value; //calculate new upper value
+			scoreboard = (scoreboard & typesMask) + upper; //reuse only types and add upper
+		}
+		return scoreboard | 1 << (6+scoretype);
+	}
+	public static int upperValue(int scoreboard)
+	{
+		return scoreboard & upperMask;
+	}
+	public static boolean isFull(int scoreboard)
+	{
+		return (scoreboard & typesMask) == typesMask;
+	}
+	public static int bonus(int scoreboard)
+	{
+		return (scoreboard & upperMask) >= 63 ? 35 : 0;
+	}
+	
+	public static void main(String[] args) {
+		int board = 2066;
+		System.out.println(Integer.toBinaryString(board));
+		for (int i = 0; i < ScoreType.count; i++) {
+			System.out.println(Scoreboard.isFilled(board, i));
+		}
+		/*
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 0, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 1, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 2, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 3, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 4, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 5, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 6, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 7, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 8, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 9, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 10, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 11, 0);
+		System.out.println("Is full: " + isFull(board1));
+		board1 = fill(board1, 12, 0);
+		System.out.println("Is full: " + isFull(board1));
+		//							  xxxxxxxxxxxxxvvvvvv
+		/*int board = Integer.parseInt("0000000000000000000", 2);
+		System.out.println(Integer.toBinaryString(board));
+		System.out.print("is filled scoretype 5: ");
+		System.out.println(isFilled(board, 5));
+		System.out.println("Upper value" + upperValue(board));
+		System.out.println("fill scoretype 5 with 6");
+		board = fill(board,5,6);
+		System.out.println(Integer.toBinaryString(board));
+		System.out.print("is filled scoretype 5: ");
+		System.out.println(isFilled(board, 0));
+		System.out.println("Upper value" + upperValue(board));
+		System.out.print("is filled scoretype 6: ");
+		System.out.println(isFilled(board, 6));
+		System.out.println("fill scoretype 6 with 25");
+		board = fill(board,6,25);
+		System.out.println(Integer.toBinaryString(board));
+		System.out.print("is filled scoretype 6: ");
+		System.out.println(isFilled(board, 6));
+		System.out.println("Upper value" + upperValue(board));*/
+	}
+	
+	
 	public Scoreboard() {
 		scoreArray = new int[ScoreType.values().length];
 		for (ScoreType typ : ScoreType.values())
@@ -110,7 +200,11 @@ public class Scoreboard implements Cloneable {
 	}
 	
 	
-	
+	//Map layout
+	//      13       6
+	//xxxxxxxxxxxxxvvvvvv
+	//x: scoretypes
+	//v: upper value
 	public int ConvertMapToInt(){				
 		int upperCounter = 0;
 		

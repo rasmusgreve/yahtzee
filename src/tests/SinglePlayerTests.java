@@ -44,7 +44,7 @@ public class SinglePlayerTests {
 		boardAlmostFull.insert(ScoreType.ONES, 2);
 		boardAlmostFull.insert(ScoreType.TWOS, 6);
 		
-		assertEquals("Full board w/o bonus gave a value > 0", 0, ai.getBoardValue(boardAlmostFull), 1E-6);		
+		assertEquals("Full board w/o bonus gave a value > 0", 0, ai.getBoardValue(boardAlmostFull.ConvertMapToInt()), 1E-6);		
 	}
 	
 	@Test
@@ -52,7 +52,7 @@ public class SinglePlayerTests {
 		boardAlmostFull.insert(ScoreType.ONES, 3);
 		boardAlmostFull.insert(ScoreType.TWOS, 6);
 		
-		assertEquals("Full board w/ bonus gave a value != 35", 35, ai.getBoardValue(boardAlmostFull), 1E-6);		
+		assertEquals("Full board w/ bonus gave a value != 35", 35, ai.getBoardValue(boardAlmostFull.ConvertMapToInt()), 1E-6);		
 	}
 	
 	@Test
@@ -60,20 +60,20 @@ public class SinglePlayerTests {
 	{
 		boardAlmostFull.insert(ScoreType.TWOS, 6);
 
-		assertEquals("Full board w/ bonus gave a wrong value", 14.526231410705554, ai.getBoardValue(boardAlmostFull), 1E-6);
+		assertEquals("Full board w/ bonus gave a wrong value", 14.526231410705554, ai.getBoardValue(boardAlmostFull.ConvertMapToInt()), 1E-6);
 	}
 
 	@Test
 	public void testMissingTwos()
 	{
 		boardAlmostFull.insert(ScoreType.ONES, 2);
-		assertEquals("Full board w/ bonus gave a wrong value", 7.867883003018436, ai.getBoardValue(boardAlmostFull), 1E-6);
+		assertEquals("Full board w/ bonus gave a wrong value", 7.867883003018436, ai.getBoardValue(boardAlmostFull.ConvertMapToInt()), 1E-6);
 	}
 	
 	@Test
 	public void testMissingOnesAndTwos()
 	{
-		double result = ai.getBoardValue(boardAlmostFull);
+		double result = ai.getBoardValue(boardAlmostFull.ConvertMapToInt());
 		assertEquals("Full board w/ bonus gave a wrong value: " + result, 16.754955416455402, result , 1E-6);
 	}
 

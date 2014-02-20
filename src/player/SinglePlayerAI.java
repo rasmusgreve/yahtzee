@@ -37,25 +37,26 @@ public class SinglePlayerAI implements Player {
 		Answer ans = new Answer();
 		
 		if (question.rollsLeft == 0)
-			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
+			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId].ConvertMapToInt());
 		else
-			ans.diceToHold = getBestHold(question.roll, question.rollsLeft, question.scoreboards[question.playerId]);
+			ans.diceToHold = getBestHold(question.roll, question.rollsLeft, question.scoreboards[question.playerId].ConvertMapToInt());
 		if (OUTPUT)
 			System.out.println("a: " + Arrays.toString(ans.diceToHold) + ", " + ans.selectedScoreEntry);
 
 		return ans;
 	}
 	
-	private ScoreType getBestScoreEntry(int[] roll, Scoreboard board)
+	private ScoreType getBestScoreEntry(int[] roll, int board)
 	{
-		ScoreType best = null;
+		int best = -1;
 		double max = Double.NEGATIVE_INFINITY;
 		if (OUTPUT)
 			System.out.println("possible choices:");
-		for (ScoreType type : board.possibleScoreTypes()) {
-			Scoreboard cloneBoard = board.clone();
-			cloneBoard.insert(type, GameLogic.valueOfRoll(type, roll));
-			double newVal = getBoardValue(cloneBoard) + GameLogic.valueOfRoll(type, roll);
+		for (int type = 0; type < ScoreType.count; type++) {
+			if (Scoreboard.isFilled(board, type)) continue; //Skip filled entries
+			int value_of_roll = GameLogic.valueOfRoll(type, roll);
+			int new_board = Scoreboard.fill(board, type, value_of_roll);
+			double newVal = getBoardValue(new_board) + value_of_roll;
 			
 			if (OUTPUT)
 				System.out.println("type: " + type + ", value: " + newVal);
@@ -66,13 +67,15 @@ public class SinglePlayerAI implements Player {
 				best = type;
 			}
 		}
-		return best;
+		return ScoreType.values()[best];
 	}
 	
-	private boolean[] getBestHold(int[] roll, int rollsLeft, Scoreboard board) //Kickoff
+	private boolean[] getBestHold(int[] roll, int rollsLeft, int board) //Kickoff
 	{
 		double max = Double.NEGATIVE_INFINITY;
 		boolean[] best = null;
+		double[] probs = new double[300];
+		int k = 0;
 		for (boolean[] hold : getInterestingHolds(roll))
 		{
 			double sum = 0;
@@ -80,15 +83,20 @@ public class SinglePlayerAI implements Player {
 			{
 				sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board, newRollValuesCache());
 			}
+			
 			if (sum > max)
 			{
 				max = sum;
 				best = hold;
 			}
 		}
+		if (best == null)
+		{
+			System.out.println("derp");
+		}
 		return best;
 	}
-	private double rollFromScoreboard(Scoreboard board) {
+	private double rollFromScoreboard(int board) {
 
 		double s = 0;
 		double[] cache = newRollValuesCache();
@@ -101,38 +109,38 @@ public class SinglePlayerAI implements Player {
 	
 	
 	int counter = 0;
-	public double getBoardValue(Scoreboard board) {
-		int idx = board.ConvertMapToInt();
-		if (boardValues[idx] == -1) {
-			if (board.isFull())
+	public double getBoardValue(int board) {
+		if (boardValues[board] == -1) {
+			if (Scoreboard.isFull(board))
 			{
 				if (OUTPUT)
 					System.out.println("Board is full");
-				boardValues[idx] = board.bonus();
+				boardValues[board] = Scoreboard.bonus(board);
 			} 
 			else
 			{
 				if (OUTPUT)
 					System.out.println("Calculating value from board. Count: " + counter + ". " + (counter/4000.) + "%");
 				counter++;
-				boardValues[idx] = rollFromScoreboard(board);
+				boardValues[board] = rollFromScoreboard(board);
 			}
 		}
 					
-		return boardValues[idx];
+		return boardValues[board];
 	}
 	
-	private double valueOfRoll(int[] roll, int rollsLeft, Scoreboard board, double[] rollValues)
+	private double valueOfRoll(int[] roll, int rollsLeft, int board, double[] rollValues)
 	{
 		if (rollsLeft == 0)
 		{		
 			double max = Double.NEGATIVE_INFINITY;
+			int k = 0;
 			for (int i = 0; i < ScoreType.count; i++) {
-				if (board.scoreArray[i] != -1) continue; //Skip filled entries
-				Scoreboard cloneBoard = board.clone();
+				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
+				k++;
 				int rollVal = GameLogic.valueOfRoll(i, roll);
-				cloneBoard.insert(i, rollVal);
-				max = Math.max(max, getBoardValue(cloneBoard) + rollVal);
+				double boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
+				max = Math.max(max, boardVal + rollVal);
 			}
 			return max;
 		}
@@ -171,7 +179,6 @@ public class SinglePlayerAI implements Player {
 			
 		}
 				
-		
 		return (double)YahtzeeMath.prob(c, reducedRoll);
 	}
 

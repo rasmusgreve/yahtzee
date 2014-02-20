@@ -7,6 +7,7 @@ import player.Player;
 public class MultiPlayerAI implements Player {
 
 	private int id;
+	private int targetScore = 200;
 	
 	@Override
 	public Answer PerformTurn(Question question) {
