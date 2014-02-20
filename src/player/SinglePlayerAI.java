@@ -1,10 +1,8 @@
 package player;
 
-import java.util.List;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 
 import game.Answer;
 import game.GameLogic;
@@ -57,7 +55,7 @@ public class SinglePlayerAI implements Player {
 		for (ScoreType type : board.possibleScoreTypes()) {
 			Scoreboard cloneBoard = board.clone();
 			cloneBoard.insert(type, GameLogic.valueOfRoll(type, roll));
-			double newVal = bigDynamicProgramming(cloneBoard) + GameLogic.valueOfRoll(type, roll);
+			double newVal = getBoardValue(cloneBoard) + GameLogic.valueOfRoll(type, roll);
 			
 			if (OUTPUT)
 				System.out.println("type: " + type + ", value: " + newVal);
@@ -103,7 +101,7 @@ public class SinglePlayerAI implements Player {
 	
 	
 	int counter = 0;
-	public double bigDynamicProgramming(Scoreboard board) {
+	public double getBoardValue(Scoreboard board) {
 		int idx = board.ConvertMapToInt();
 		if (boardValues[idx] == -1) {
 			if (board.isFull())
@@ -114,9 +112,6 @@ public class SinglePlayerAI implements Player {
 			} 
 			else
 			{
-				/*
-				System.out.println("Calculating value from board " + board.ConvertMapToInt() + " (" + board.emptySpaces() + " empty)" + " - count: " + counter );
-				*/
 				if (OUTPUT)
 					System.out.println("Calculating value from board. Count: " + counter + ". " + (counter/4000.) + "%");
 				counter++;
@@ -137,7 +132,7 @@ public class SinglePlayerAI implements Player {
 				Scoreboard cloneBoard = board.clone();
 				int rollVal = GameLogic.valueOfRoll(i, roll);
 				cloneBoard.insert(i, rollVal);
-				max = Math.max(max, bigDynamicProgramming(cloneBoard) + rollVal);
+				max = Math.max(max, getBoardValue(cloneBoard) + rollVal);
 			}
 			return max;
 		}
@@ -157,40 +152,6 @@ public class SinglePlayerAI implements Player {
 			}
 		}
 		return rollValues[idx];
-	}
-	
-	public static void main(String[] args) {
-//		Scoreboard board = new Scoreboard();
-//		//board.insert(ScoreType.ONES, 2);
-//		//board.insert(ScoreType.TWOS, 6);
-//		board.insert(ScoreType.THREES, 9);
-//		board.insert(ScoreType.FOURS, 12);
-//		board.insert(ScoreType.FIVES, 15);
-//		board.insert(ScoreType.SIXES, 18);
-//		board.insert(ScoreType.THREE_OF_A_KIND, 25);
-//		board.insert(ScoreType.FOUR_OF_A_KIND, 26);
-//		board.insert(ScoreType.SMALL_STRAIGHT, 25);
-//		board.insert(ScoreType.BIG_STRAIGHT, 30);
-//		board.insert(ScoreType.YAHTZEE, 50);
-//		board.insert(ScoreType.CHANCE, 20);
-//		board.insert(ScoreType.FULL_HOUSE, 30);
-//
-//		SinglePlayerAI ai = new SinglePlayerAI();
-//		System.out.println("Value: " + ai.bigDynamicProgramming(board));
-		
-		int t1 = YahtzeeMath.colex(new int[]{1,5});
-		System.out.println("t1: " + t1);
-		int t2 = YahtzeeMath.colex(new int[]{5,1});
-		System.out.println("t2: " + t2);
-		int t3 = YahtzeeMath.colex(new int[]{3,2});
-		System.out.println("t3: " + t3);
-		int t4 = YahtzeeMath.colex(new int[]{2,3});
-		System.out.println("t4: " + t4);
-		int t5 = YahtzeeMath.colex(new int[]{5,6});
-		System.out.println("t5: " + t5);
-		int t6 = YahtzeeMath.colex(new int[]{6,5});
-		System.out.println("t6: " + t6);
-		
 	}
 	
 	private static double getProb(boolean[] hold, int[] roll)
@@ -260,7 +221,6 @@ public class SinglePlayerAI implements Player {
 		return out;
 	}
 	
-	//TODO: Remove symmetries
 	private ArrayList<boolean[]> getInterestingHolds(int[] roll)
 	{
 		ArrayList<boolean[]> holds = new ArrayList<boolean[]>(32);

@@ -81,7 +81,7 @@ public class PersistenceTest {
 		for (double v : ai.boardValues)
 			assertEquals("Board values should be initialized to -1", v, -1, 1E-6);
 		
-		ai.bigDynamicProgramming(fullBoard);
+		ai.getBoardValue(fullBoard);
 		assertEquals("The found value should be 0", 0, ai.boardValues[524286], 1E-6);
 		ai.cleanUp(); //Stores file
 		
