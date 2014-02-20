@@ -26,6 +26,7 @@ public class Scoreboard implements Cloneable {
 		if (scoretype < 6)
 		{
 			int upper = (scoreboard & upperMask) + value; //calculate new upper value
+			upper = (upper > 63) ? 63 : upper;
 			scoreboard = (scoreboard & typesMask) + upper; //reuse only types and add upper
 		}
 		return scoreboard | 1 << (6+scoretype);
