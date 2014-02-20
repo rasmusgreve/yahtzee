@@ -17,6 +17,7 @@ public class SinglePlayerAI implements Player {
 
 	public double[] boardValues;
 	public static final String filename = "singlePlayerCache.bin";
+	public boolean OUTPUT = false;
 	
 	public SinglePlayerAI() {
 		loadArray();
@@ -31,8 +32,9 @@ public class SinglePlayerAI implements Player {
 	}
 	
 	@Override
-	public Answer PerformTurn(Question question) {		
-		System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
+	public Answer PerformTurn(Question question) {
+		if (OUTPUT)
+			System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 
 		Answer ans = new Answer();
 		
@@ -40,8 +42,8 @@ public class SinglePlayerAI implements Player {
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
 		else
 			ans.diceToHold = getBestHold(question.roll, question.rollsLeft, question.scoreboards[question.playerId]);
-
-		System.out.println("a: " + Arrays.toString(ans.diceToHold) + ", " + ans.selectedScoreEntry);
+		if (OUTPUT)
+			System.out.println("a: " + Arrays.toString(ans.diceToHold) + ", " + ans.selectedScoreEntry);
 
 		return ans;
 	}
@@ -50,13 +52,15 @@ public class SinglePlayerAI implements Player {
 	{
 		ScoreType best = null;
 		double max = Double.NEGATIVE_INFINITY;
-		System.out.println("possible choices:");
+		if (OUTPUT)
+			System.out.println("possible choices:");
 		for (ScoreType type : board.possibleScoreTypes()) {
 			Scoreboard cloneBoard = board.clone();
 			cloneBoard.insert(type, GameLogic.valueOfRoll(type, roll));
 			double newVal = bigDynamicProgramming(cloneBoard) + GameLogic.valueOfRoll(type, roll);
 			
-			System.out.println("type: " + type + ", value: " + newVal);
+			if (OUTPUT)
+				System.out.println("type: " + type + ", value: " + newVal);
 			
 			
 			if (newVal > max){
@@ -104,7 +108,8 @@ public class SinglePlayerAI implements Player {
 		if (boardValues[idx] == -1) {
 			if (board.isFull())
 			{
-				System.out.println("Board is full");
+				if (OUTPUT)
+					System.out.println("Board is full");
 				boardValues[idx] = board.bonus();
 			} 
 			else
@@ -112,7 +117,8 @@ public class SinglePlayerAI implements Player {
 				/*
 				System.out.println("Calculating value from board " + board.ConvertMapToInt() + " (" + board.emptySpaces() + " empty)" + " - count: " + counter );
 				*/
-				System.out.println("Calculating value from board. Count: " + counter + ". " + (counter/4000.) + "%");
+				if (OUTPUT)
+					System.out.println("Calculating value from board. Count: " + counter + ". " + (counter/4000.) + "%");
 				counter++;
 				boardValues[idx] = rollFromScoreboard(board);
 			}
