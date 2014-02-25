@@ -26,6 +26,11 @@ public abstract class BaseAI implements Player {
 		return v;
 	}
 	
+	/**
+	 * Reverse colex from hold (as int) to hold as boolean[]
+	 * @param v The integer to convert to boolean[] hold
+	 * @return The boolean array matching the given int
+	 */
 	protected boolean[] holdFromInt(int v)
 	{
 		boolean[] out = new boolean[5];
@@ -36,6 +41,12 @@ public abstract class BaseAI implements Player {
 		return out;
 	}
 	
+	/**
+	 * Get the rolls possible from a given roll and hold
+	 * @param roll The roll to base the new rolls on
+	 * @param hold The hold to apply to the given hold
+	 * @return A list of new possible rolls
+	 */
 	protected ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
 	{
         int newRollsNeeded = 5;
@@ -71,7 +82,12 @@ public abstract class BaseAI implements Player {
 		return rolls;
 	}
 	
-	
+	/**
+	 * Get a list of interesting holds from a roll
+	 * This method removes symmetries etc.
+	 * @param roll The roll to generated holds from
+	 * @return The list of interesting holds
+	 */
 	protected ArrayList<boolean[]> getInterestingHolds(int[] roll)
 	{
 		ArrayList<boolean[]> holds = new ArrayList<boolean[]>(32);
@@ -92,6 +108,12 @@ public abstract class BaseAI implements Player {
 	}
 	
 	
+	/**
+	 * Get the probability of rolling a given roll from a hold
+	 * @param hold The hold that was used
+	 * @param roll The roll that was roled
+	 * @return The probability (0-1) for rolling that roll 
+	 */
 	protected double getProb(boolean[] hold, int[] roll)
 	{
 		int c = 0;
