@@ -1,8 +1,7 @@
-package tests;
+package player;
 
 import game.Answer;
 import game.Question;
-import player.Player;
 
 public class MultiPlayerAI implements Player {
 

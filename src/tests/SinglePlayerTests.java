@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 
 import game.Answer;
+import game.Controller;
 import game.Question;
 import game.Scoreboard;
 import game.Scoreboard.ScoreType;
@@ -12,6 +13,7 @@ import game.Scoreboard.ScoreType;
 import org.junit.Before;
 import org.junit.Test;
 
+import player.Player;
 import player.SinglePlayerAI;
 
 public class SinglePlayerTests {
@@ -119,6 +121,14 @@ public class SinglePlayerTests {
 		Question q = new Question(0, roll, 2, new Scoreboard[]{boardAlmostFull});
 		Answer a = ai.PerformTurn(q);
 		assertTrue("AI held the wrong dice", Arrays.equals(expected, a.diceToHold));
+	}
+	
+	@Test
+	public void testScore()
+	{
+		Controller c = new Controller(new Player[]{new SinglePlayerAI()}, 0);
+		c.startGame();
+		assertEquals("Single player AI should score 300 on seed 0", 300, c.getResults()[0].totalInclBonus());
 	}
 	
 }
