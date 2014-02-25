@@ -3,9 +3,8 @@ package player;
 import game.Answer;
 import game.Question;
 
-public class MultiPlayerAI implements Player {
+public class MultiPlayerAI extends BaseAI {
 
-	private int id;
 	private int targetScore = 200;
 	
 	@Override
@@ -15,21 +14,15 @@ public class MultiPlayerAI implements Player {
 	}
 
 	
-	
-	
 	@Override
 	public String getName() {
 		return "Multi player AI";
 	}
 
 	@Override
-	public void reset(int id) {
-		this.id = id;
-	}
-
-	@Override
 	public void cleanUp() {
 		System.out.println("Multiplayer AI cleanup. Nothing to do?");
 	}
+
 
 }

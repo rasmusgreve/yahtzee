@@ -9,16 +9,17 @@ import game.GameLogic;
 import game.Question;
 import game.Scoreboard;
 import game.Scoreboard.ScoreType;
+import util.Persistence;
 import util.YahtzeeMath;
 
-public class SinglePlayerAI implements Player {
+public class SinglePlayerAI extends BaseAI {
 
 	public double[] boardValues;
 	public static final String filename = "singlePlayerCache.bin";
 	public boolean OUTPUT = false;
 	
 	public SinglePlayerAI() {
-		loadArray();
+		boardValues = Persistence.loadArray(filename);
 	}
 	
 	private static double[] newRollValuesCache()
@@ -156,137 +157,11 @@ public class SinglePlayerAI implements Player {
 		return rollValues[idx];
 	}
 	
-	private static double getProb(boolean[] hold, int[] roll)
-	{
-		int c = 0;
-		for (boolean b : hold)
-			if (!b)
-				c++;
-		
-		int[] reducedRoll = new int[c];
-		c = 0;
-		for (int i=0; i<5; i++){
-			if (!hold[i]){
-				reducedRoll[c] = roll[i];
-				c++;
-			}
-			
-		}
-				
-		return (double)YahtzeeMath.prob(c, reducedRoll);
-	}
 
-	
-	private static ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
-	{
-        int newRollsNeeded = 5;
-		for (int i = 0; i < hold.length; i++) if (hold[i]) newRollsNeeded--;
-		ArrayList<int[]> rolls;
-		if (newRollsNeeded == 0){
-			 rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(1));
-			 rolls.add(roll);
-			 return rolls;
-		}else{
-			 rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(newRollsNeeded));
-		}
-		
-		for (int j = 0; j < YahtzeeMath.rollNumber(newRollsNeeded); j++)
-		{
-			int[] r_p = YahtzeeMath.allRolls(newRollsNeeded)[j];
-			int[] r = new int[5];
 
-			int c = 0;
-			for (int i = 0; i < 5; i++) {
-				if (hold[i]){
-					r[i] = roll[i];
-					
-				}else{
-					r[i] = r_p[c];
-					c++;
-				}
-			}
-			rolls.add(r);
-		}
-		
-		
-		return rolls;
-	}
-	
-	private static boolean[] holdFromInt(int v)
-	{
-		boolean[] out = new boolean[5];
-		for (int i = 0; i < 5;i++)
-		{
-			out[i] = (v & (1 << i)) > 0;
-		}
-		return out;
-	}
-	
-	private ArrayList<boolean[]> getInterestingHolds(int[] roll)
-	{
-		ArrayList<boolean[]> holds = new ArrayList<boolean[]>(32);
-		for (int i = 0; i < (1 << 5); i++){
-			boolean[] hold = holdFromInt(i);
-			
-			//Filter out uninteresting holds
-			boolean add = true;
-			for (int j = 1; j < hold.length; j++) {
-				if (hold[j] && !hold[j-1] && roll[j-1] == roll[j]) add = false;
-			}
-			
-			if (add){
-				holds.add(hold);
-			}
-		}
-		return holds;
-	}
-	
-	private static int rollIdx(int[] roll, int rollsLeft)
-	{
-		int v = YahtzeeMath.colex(roll);
-		v |= rollsLeft << 8;
-		return v;
-	}
-
-	
-	
-	
-	
-	
-	@Override
-	public void reset(int id){
-		
-	}
-	
-	
-	public void loadArray()
-	{
-		try {
-			FileInputStream fis = new FileInputStream(filename);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			boardValues = (double[]) ois.readObject();
-			ois.close();
-			fis.close();
-		} catch (Exception e) {
-			System.out.println("WARNING! cache not loaded");
-			boardValues = new double[1000000];
-			for (int i = 0; i < 1000000; i++){boardValues[i] = -1;}
-		}
-	}
-	
 	@Override
 	public void cleanUp(){
-		//Save lookup table to persistent medium
-		try {
-			FileOutputStream fos = new FileOutputStream(filename);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(boardValues);
-			oos.close();
-			fos.close();
-			System.out.println("Cache stored to \"" + filename + "\"");
-		} catch (IOException e) {
-			System.out.println("WARNING! cache not stored");
-		}
+		Persistence.storeArray(boardValues, filename);
 	}
 	
 	@Override
