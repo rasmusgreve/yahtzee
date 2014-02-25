@@ -150,26 +150,22 @@ public class MultiPlayerAI extends BaseAI {
 	}
 	private double[] rollFromScoreboard(int board) {
 
+		double newMean = 0;
+		double newStddev = 0;
 		double[] result = new double[2];
 		double[][] cache = newRollValuesCache();
+		double[] probCache = new double[YahtzeeMath.allRolls.length];
+		double[][] valueOfRollCache = new double[YahtzeeMath.allRolls.length][];
 		
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
-			double[] value = valueOfRoll(YahtzeeMath.allRolls[i], 2, board, cache);
-			
-			
+			valueOfRollCache[i] = valueOfRoll(YahtzeeMath.allRolls[i], 2, board, cache);
+			probCache[i] = YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
+			newMean += probCache[i] * getAdjustedMean(valueOfRollCache[i]);
 		}
-		
-		
-		
-		
-		
-		double s = 0;
-		double[][] cache = newRollValuesCache();
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
-			double v = valueOfRoll(YahtzeeMath.allRolls[i], 2, board, cache);
-			s += v * YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
+			newStddev += probCache[i] * (valueOfRollCache[i][1] + Math.abs(valueOfRollCache[i][0] - newMean)); 
 		}
-		return s;
+		return new double[]{newMean, newStddev};
 	}
 	
 	public double[] getBoardValue(int board) {
@@ -190,29 +186,51 @@ public class MultiPlayerAI extends BaseAI {
 	private double[] valueOfRoll(int[] roll, int rollsLeft, int board, double[][] rollValues)
 	{
 		if (rollsLeft == 0)
-		{		
-			double max = Double.NEGATIVE_INFINITY;
+		{
+			double[] best = {Double.NEGATIVE_INFINITY, 0};
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
 				int rollVal = GameLogic.valueOfRoll(i, roll);
 				double[] boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
-				max = Math.max(max, boardVal + rollVal);
+				boardVal[0] = getAdjustedMean(boardVal) + rollVal;
+				if (best[0] < boardVal[0]) {
+					best = boardVal;
+				}
 			}
-			return max;
+			return best;
 		}
 		
 		int idx = rollIdx(roll, rollsLeft);
 		if (getMean(boardValues, idx) == -1)
 		{
-			rollValues[idx] = Integer.MIN_VALUE;
+			double[] probCache = new double[YahtzeeMath.allRolls.length];
+			double[][] valueOfRollCache = new double[YahtzeeMath.allRolls.length][];
+			rollValues[idx] = new double[] {Double.NEGATIVE_INFINITY, 0};
 			for (boolean[] hold : getInterestingHolds(roll))
 			{
 				double sum = 0;
-				for (int[] new_roll : getPossibleRolls(roll, hold))
-				{
-					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board, rollValues);
+				double newMean = 0;
+				double newStddev = 0;
+				ArrayList<int[]> possibleRolls = getPossibleRolls(roll, hold);
+				for (int i = 0; i < possibleRolls.size(); i++) {
+					int[] new_roll = possibleRolls.get(i);
+								
+					double[] rollVal = valueOfRoll(new_roll, rollsLeft-1, board, newRollValuesCache());
+					valueOfRollCache[i] = rollVal;
+					
+					probCache[i] = getProb(hold, new_roll);
+					
+					newMean += probCache[i] * getAdjustedMean(valueOfRollCache[i]);
 				}
-				rollValues[idx] = Math.max(rollValues[idx], sum);
+
+				for (int i = 0; i < possibleRolls.size(); i++) {
+					//TRO(ELS+R)
+					newStddev += probCache[i] * (valueOfRollCache[i][1] + Math.abs(valueOfRollCache[i][0] - newMean)); 
+					
+				}
+				if (getAdjustedMean(rollValues[idx]) < getAdjustedMean(newMean, newStddev)) {
+					rollValues[idx] = new double[] {newMean, newStddev};
+				}
 			}
 		}
 		return rollValues[idx];
@@ -229,6 +247,5 @@ public class MultiPlayerAI extends BaseAI {
 	public void cleanUp() {
 		Persistence.storeDoubleArray(boardValues, filename);
 	}
-
 
 }
