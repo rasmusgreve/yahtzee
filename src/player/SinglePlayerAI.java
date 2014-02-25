@@ -16,12 +16,11 @@ public class SinglePlayerAI extends BaseAI {
 	public boolean OUTPUT = false;
 	
 	public SinglePlayerAI() {
-		boardValues = Persistence.loadArray(filename);
+		boardValues = Persistence.loadArray(filename,1000000);
 	}
 	
 	private static double[] newRollValuesCache()
 	{
-
 		double[] rollValues = new double[1020];
 		Arrays.fill(rollValues, -1);
 		return rollValues;
@@ -99,21 +98,14 @@ public class SinglePlayerAI extends BaseAI {
 		return s;
 	}
 	
-	
-	int counter = 0;
 	public double getBoardValue(int board) {
 		if (boardValues[board] == -1) {
 			if (Scoreboard.isFull(board))
 			{
-				if (OUTPUT)
-					System.out.println("Board is full");
 				boardValues[board] = Scoreboard.bonus(board);
 			} 
 			else
 			{
-				if (OUTPUT)
-					System.out.println("Calculating value from board. Count: " + counter + ". " + (counter/4000.) + "%");
-				counter++;
 				boardValues[board] = rollFromScoreboard(board);
 			}
 		}
