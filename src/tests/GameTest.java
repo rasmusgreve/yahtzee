@@ -3,7 +3,6 @@ package tests;
 import java.util.ArrayList;
 
 import game.Controller;
-import game.Scoreboard;
 import game.Scoreboard.ScoreType;
 
 import org.junit.Before;

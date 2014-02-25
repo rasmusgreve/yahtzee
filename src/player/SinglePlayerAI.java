@@ -1,9 +1,6 @@
 package player;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-
 import game.Answer;
 import game.GameLogic;
 import game.Question;
@@ -129,10 +126,8 @@ public class SinglePlayerAI extends BaseAI {
 		if (rollsLeft == 0)
 		{		
 			double max = Double.NEGATIVE_INFINITY;
-			int k = 0;
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
-				k++;
 				int rollVal = GameLogic.valueOfRoll(i, roll);
 				double boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
 				max = Math.max(max, boardVal + rollVal);

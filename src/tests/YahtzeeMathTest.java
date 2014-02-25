@@ -1,12 +1,8 @@
 package tests;
 
 import static org.junit.Assert.*;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.junit.Test;
-
 import util.YahtzeeMath;
 
 public class YahtzeeMathTest {

@@ -3,7 +3,6 @@ package game;
 import game.Scoreboard.ScoreType;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
 import util.YahtzeeMath;

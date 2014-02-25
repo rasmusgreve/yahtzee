@@ -2,8 +2,6 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
 
 
 public class Scoreboard implements Cloneable {
