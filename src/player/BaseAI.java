@@ -73,6 +73,45 @@ public abstract class BaseAI implements Player {
 		return result;
 	}
 	
+	/**
+	 * Get the aggregated standard deviation
+	 * @param probabilities The probability that case i will happen
+	 * @param means The mean score of case i
+	 * @param standard_deviations The standard deviation of case i
+	 * @return The aggregated standard deviation
+	 */
+	protected static double getAggregatedVariance(double[] probabilities, double[][] prob_dist)
+	{
+		double r = 0;
+		int k = probabilities.length;
+		for (int i = 0 ; i < k ; i++) {
+		    r += probabilities[i] * (prob_dist[i][1] + prob_dist[i][0] * prob_dist[i][0] * (1 - probabilities[i]));
+		    for (int j = i + 1 ; j < k ; j++) {
+		        r -= 2 * probabilities[i] * probabilities[j] * prob_dist[i][0] * prob_dist[j][0];
+		    }
+		}
+		
+		return r;
+	}
+	
+	/**
+	 * Get the aggregated mean
+	 * @param probabilities The probability that case i will happen
+	 * @param means The mean score of case i
+	 * @return The aggregated mean
+	 */
+	protected static double getAggregatedMean(double[] probabilities, double[][] prob_dist)
+	{
+		double sum = 0;
+		double p = 0;
+		for (int i = 0; i < probabilities.length;i++)
+		{
+			p += probabilities[i];
+			sum += probabilities[i] * prob_dist[i][0];
+		}
+		return sum;
+	}
+	
 	
 	/**
 	 * Get the rolls possible from a given roll and hold
