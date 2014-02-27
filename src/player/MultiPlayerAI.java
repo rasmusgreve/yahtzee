@@ -155,7 +155,7 @@ public class MultiPlayerAI extends BaseAI {
 			}
 		}
 		//System.out.println("Returning " + boardValues[board][0]);
-		return boardValues[board];
+		return boardValues[board].clone();
 	}
 	
 	private double[] valueOfRoll(int[] roll, int rollsLeft, int board, double[][] rollValues)
