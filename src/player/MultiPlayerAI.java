@@ -1,6 +1,5 @@
 package player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import util.Persistence;
@@ -112,18 +111,18 @@ public class MultiPlayerAI extends BaseAI {
 	{
 		double max = Double.NEGATIVE_INFINITY;
 		boolean[] best = null;
-		for (boolean[] hold : getInterestingHolds(roll))
+		for (boolean[] hold : getInterestingHoldsInit(roll))
 		{
 			double newMean = 0;
 			double newStddev = 0;
 					
-			ArrayList<int[]> possibleRolls = getPossibleRolls(roll, hold);
-			double[][] valueOfRollCache = new double[possibleRolls.size()][];
-			double[] probCache = new double[possibleRolls.size()];
+			int[][] possibleRolls = getPossibleRollsInit(roll, hold);
+			double[][] valueOfRollCache = new double[possibleRolls.length][];
+			double[] probCache = new double[possibleRolls.length];
 			
 			
-			for (int i = 0; i < possibleRolls.size(); i++) {
-				int[] new_roll = possibleRolls.get(i);
+			for (int i = 0; i < possibleRolls.length; i++) {
+				int[] new_roll = possibleRolls[i];
 							
 				double[] rollVal = valueOfRoll(new_roll, rollsLeft-1, board, newRollValuesCache());
 				valueOfRollCache[i] = rollVal;
@@ -133,7 +132,7 @@ public class MultiPlayerAI extends BaseAI {
 				newMean += probCache[i] * getAdjustedMean(valueOfRollCache[i]);
 			}
 			
-			for (int i = 0; i < possibleRolls.size(); i++) {
+			for (int i = 0; i < possibleRolls.length; i++) {
 				//TRO(ELS+R)
 				newStddev += probCache[i] * (valueOfRollCache[i][1] + Math.abs(valueOfRollCache[i][0] - newMean)); 
 				
@@ -149,7 +148,8 @@ public class MultiPlayerAI extends BaseAI {
 		return best;
 	}
 	private double[] rollFromScoreboard(int board) {
-
+		System.out.println("ROLLFROMSCOREBORD");
+		
 		double newMean = 0;
 		double newStddev = 0;
 		double[] result = new double[2];
@@ -206,14 +206,15 @@ public class MultiPlayerAI extends BaseAI {
 			double[] probCache = new double[YahtzeeMath.allRolls.length];
 			double[][] valueOfRollCache = new double[YahtzeeMath.allRolls.length][];
 			rollValues[idx] = new double[] {Double.NEGATIVE_INFINITY, 0};
-			for (boolean[] hold : getInterestingHolds(roll))
+			for (boolean[] hold : getInterestingHoldsInit(roll))
 			{
+				if (hold == null) continue;
 				double sum = 0;
 				double newMean = 0;
 				double newStddev = 0;
-				ArrayList<int[]> possibleRolls = getPossibleRolls(roll, hold);
-				for (int i = 0; i < possibleRolls.size(); i++) {
-					int[] new_roll = possibleRolls.get(i);
+				int[][] possibleRolls = getPossibleRollsInit(roll, hold);
+				for (int i = 0; i < possibleRolls.length; i++) {
+					int[] new_roll = possibleRolls[i];
 								
 					double[] rollVal = valueOfRoll(new_roll, rollsLeft-1, board, newRollValuesCache());
 					valueOfRollCache[i] = rollVal;
@@ -223,7 +224,7 @@ public class MultiPlayerAI extends BaseAI {
 					newMean += probCache[i] * getAdjustedMean(valueOfRollCache[i]);
 				}
 
-				for (int i = 0; i < possibleRolls.size(); i++) {
+				for (int i = 0; i < possibleRolls.length; i++) {
 					//TRO(ELS+R)
 					newStddev += probCache[i] * (valueOfRollCache[i][1] + Math.abs(valueOfRollCache[i][0] - newMean)); 
 					

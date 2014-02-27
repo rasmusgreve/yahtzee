@@ -105,6 +105,10 @@ public class GameLogic {
 		return rollValues[type][YahtzeeMath.colex(roll)];
 	}
 	
+	public static int valueOfRoll(int type, int rollC){
+		return rollValues[type][rollC];
+	}
+	
 	private static int calculateValueOfRoll(ScoreType type, int[] roll){
 		
 		switch (type)

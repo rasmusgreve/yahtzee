@@ -1,11 +1,23 @@
 package player;
 
-import java.util.ArrayList;
-
 import util.YahtzeeMath;
 
 public abstract class BaseAI implements Player {
 	protected int id;
+	
+	static boolean[][][] interestingHoldsCache = new boolean[252][][];
+	static int[][][] possibleRollsCache = new int[252][][];
+	static double[][] probCache = new double[252][];
+	static double[][] smartProbCache = new double[252][];
+	static int[][][] holdDiceIntCache = new int[252][][];
+	static{
+		getInterestingHoldsCacheCalc();
+		getPossibleRollsCacheCalc();
+		probCacheCalc();
+		smartProbCacheCalc();
+		holdDiceCacheCalc();
+	}
+	
 	
 	@Override
 	public void reset(int id)
@@ -26,12 +38,19 @@ public abstract class BaseAI implements Player {
 		return v;
 	}
 	
+	protected int rollIdx(int rollC, int rollsLeft)
+	{
+		int v = rollC;
+		v |= rollsLeft << 8;
+		return v;
+	}
+	
 	/**
 	 * Reverse colex from hold (as int) to hold as boolean[]
 	 * @param v The integer to convert to boolean[] hold
 	 * @return The boolean array matching the given int
 	 */
-	protected boolean[] holdFromInt(int v)
+	protected static boolean[] holdFromInt(int v)
 	{
 		boolean[] out = new boolean[5];
 		for (int i = 0; i < 5;i++)
@@ -47,17 +66,22 @@ public abstract class BaseAI implements Player {
 	 * @param hold The hold to apply to the given hold
 	 * @return A list of new possible rolls
 	 */
-	protected ArrayList<int[]> getPossibleRolls(int[] roll, boolean[] hold)
+	protected int[] getPossibleRolls(int rollC, boolean[] hold)
+	{
+		return possibleRollsCache[rollC][holdToInt(hold)];
+	}
+	
+	protected static int[][] getPossibleRollsInit(int[] roll, boolean[] hold)
 	{
         int newRollsNeeded = 5;
 		for (int i = 0; i < hold.length; i++) if (hold[i]) newRollsNeeded--;
-		ArrayList<int[]> rolls;
+		int[][] rolls;
 		if (newRollsNeeded == 0){
-			 rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(1));
-			 rolls.add(roll);
+			 rolls = new int[1][];
+			 rolls[0] = roll;
 			 return rolls;
 		}else{
-			 rolls = new ArrayList<int[]>(YahtzeeMath.rollNumber(newRollsNeeded));
+			 rolls = new int[YahtzeeMath.rollNumber(newRollsNeeded)][];
 		}
 		
 		for (int j = 0; j < YahtzeeMath.rollNumber(newRollsNeeded); j++)
@@ -75,11 +99,48 @@ public abstract class BaseAI implements Player {
 					c++;
 				}
 			}
-			rolls.add(r);
+			
+			rolls[j] = r;
 		}
 		
 		
 		return rolls;
+	}
+	
+	
+	
+	protected static void getPossibleRollsCacheCalc(){
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
+			int[] roll = YahtzeeMath.allRolls[i];
+			int rollC = YahtzeeMath.colex(roll);
+			
+			possibleRollsCache[rollC] = new int[32][];
+			
+			for (int j = 0; j < (1 << 5); j++){
+				boolean[] hold = holdFromInt(j);
+				
+				int[][] possibleRolls = getPossibleRollsInit(roll, hold);
+				
+				possibleRollsCache[rollC][j] = new int [possibleRolls.length];
+				
+				for (int k = 0; k < possibleRolls.length; k++) {
+					possibleRollsCache[rollC][j][k] = YahtzeeMath.colex(possibleRolls[k]);
+				}
+				
+				
+				
+				//possibleRollsCache[rollC][j] = getPossibleRollsInit(roll, hold);
+			}
+		}		
+		
+	}
+	
+	protected static int holdToInt(boolean[] hold){
+		int result = 0;
+		for (int i = 0; i < 5; i++) {
+			if (hold[i]) result |= 1 << i;
+		}		
+		return result;
 	}
 	
 	/**
@@ -88,9 +149,16 @@ public abstract class BaseAI implements Player {
 	 * @param roll The roll to generated holds from
 	 * @return The list of interesting holds
 	 */
-	protected ArrayList<boolean[]> getInterestingHolds(int[] roll)
-	{
-		ArrayList<boolean[]> holds = new ArrayList<boolean[]>(32);
+	protected boolean[][] getInterestingHolds(int rollC)
+	{	
+		return interestingHoldsCache[rollC];
+	}
+	
+	
+	protected static boolean[][] getInterestingHoldsInit(int[] roll)
+	{	
+		
+		boolean[][] holds = new boolean[32][];
 		for (int i = 0; i < (1 << 5); i++){
 			boolean[] hold = holdFromInt(i);
 			
@@ -101,11 +169,73 @@ public abstract class BaseAI implements Player {
 			}
 			
 			if (add){
-				holds.add(hold);
+				holds[i] = hold;
 			}
 		}
 		return holds;
 	}
+	
+	
+	protected static void getInterestingHoldsCacheCalc()
+	{
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
+			int[] roll = YahtzeeMath.allRolls[i];
+			int rollC = YahtzeeMath.colex(roll);
+			interestingHoldsCache[rollC] = getInterestingHoldsInit(roll);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	protected double getProbSmart(int[] holdD, int rollC){
+		
+		return smartProbCache[rollC][holdDiceToInt(holdD)];
+	}
+	
+	protected static double getProbSmartInit(int[] holdD, int[] roll){
+		
+		int[] holdDice = holdD.clone();
+		
+		int c = 5;
+		for (int d : holdDice) c -= d;
+		
+		int[] reducedRoll = new int[c];
+		c = 0;
+		for (int i = 0; i < 5; i++) {
+			if (holdDice[roll[i]-1] > 0){
+				holdDice[roll[i]-1]--;
+			}else{
+				reducedRoll[c] = roll[i];
+				c++;
+			}
+		}
+		
+		return (double)YahtzeeMath.prob(c, reducedRoll);
+	}
+	
+	protected static void smartProbCacheCalc(){
+		for (int i = 0; i < YahtzeeMath.allRolls .length; i++) {
+			int[] roll = YahtzeeMath.allRolls[i];
+			int rollC = YahtzeeMath.colex(roll);
+			
+			smartProbCache[rollC] = new double[262144];
+			
+			for (int j = 0; j < (1 << 5); j++){
+				boolean[] hold = holdFromInt(j);
+				int[] holdDice = getHoldDiceInit(roll, hold);
+				int holdDiceInt = holdDiceToInt(holdDice);
+				
+				smartProbCache[rollC][holdDiceInt] = getProbSmartInit(holdDice, roll);
+			}
+		}
+
+	}
+	
+	
 	
 	
 	/**
@@ -115,6 +245,18 @@ public abstract class BaseAI implements Player {
 	 * @return The probability (0-1) for rolling that roll 
 	 */
 	protected double getProb(boolean[] hold, int[] roll)
+	{
+
+//		int[] holdDice = getHoldDice(roll, hold);		
+//		return getProbSmart(holdDice, roll);
+		
+		return getProbInit(hold, roll);
+		
+		//return probCache[rollC][holdToInt(hold)];
+	}
+	
+	
+	protected static double getProbInit(boolean[] hold, int[] roll)
 	{
 		int c = 0;
 		for (boolean b : hold)
@@ -132,6 +274,62 @@ public abstract class BaseAI implements Player {
 		}
 				
 		return (double)YahtzeeMath.prob(c, reducedRoll);
+	}
+	
+	protected static void probCacheCalc(){
+		for (int i = 0; i < YahtzeeMath.allRolls .length; i++) {
+			int[] roll = YahtzeeMath.allRolls[i];
+			int rollC = YahtzeeMath.colex(roll);
+			
+			probCache[rollC] = new double[32];
+			
+			for (int j = 0; j < (1 << 5); j++){
+				boolean[] hold = holdFromInt(j);
+				
+				probCache[rollC][j] = getProbInit(hold, roll);
+			}
+		}
+
+	}
+	
+	protected static int[] getHoldDice(int rollC, boolean[] hold){
+		return holdDiceIntCache[rollC][holdToInt(hold)];
+	}
+	
+	protected static int[] getHoldDiceInit(int[] roll, boolean[] hold){
+		int[] holdDices = new int[6];
+		for (int i = 0; i < hold.length; i++) {
+			if (hold[i]){
+				holdDices[roll[i]-1]++;
+			}
+		}
+		
+		return holdDices;
+	}
+	
+	protected static void holdDiceCacheCalc(){
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
+			int[] roll = YahtzeeMath.allRolls[i];
+			int rollC = YahtzeeMath.colex(roll);
+		
+			holdDiceIntCache[rollC] = new int[32][];
+			for (int j = 0; j < (1 << 5); j++){
+				boolean[] hold = holdFromInt(j);
+				holdDiceIntCache[rollC][j] = getHoldDiceInit(roll, hold);
+			}
+		}
+	}
+	
+	
+	
+	
+	protected static int holdDiceToInt(int[] holdDice){
+		int result = 0;
+		for (int i = 0; i < 6; i++) {
+			result |= holdDice[i] << (i*3);
+		}		
+		return result;
+	
 	}
 	
 	
