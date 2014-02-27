@@ -65,14 +65,14 @@ public abstract class BaseAI implements Player {
 	 * @param hold The hold to "hash"
 	 * @return The "hash" of the hold
 	 */
-	protected int holdToInt(boolean[] hold)
-	{
-		int res = 0;
-		for (int i = 0; i < hold.length; i++)
-			if (hold[i])
-				res += 1 << i;
-		return res;
+	protected static int holdToInt(boolean[] hold){
+		int result = 0;
+		for (int i = 0; i < 5; i++) {
+			if (hold[i]) result |= 1 << i;
+		}		
+		return result;
 	}
+	
 	
 	/**
 	 * Get the rolls possible from a given roll and hold
@@ -148,14 +148,7 @@ public abstract class BaseAI implements Player {
 		}		
 		
 	}
-	
-	protected static int holdToInt(boolean[] hold){
-		int result = 0;
-		for (int i = 0; i < 5; i++) {
-			if (hold[i]) result |= 1 << i;
-		}		
-		return result;
-	}
+
 	
 	/**
 	 * Get a list of interesting holds from a roll
