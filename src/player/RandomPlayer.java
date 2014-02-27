@@ -10,12 +10,12 @@ import game.Scoreboard.ScoreType;
 
 public class RandomPlayer implements Player {
 
-	Random random = new Random();
+	Random random;
 	int id;
 	
 	public RandomPlayer()
 	{
-		
+		random = new Random();
 	}
 	public RandomPlayer(int seed)
 	{

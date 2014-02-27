@@ -26,7 +26,7 @@ public abstract class BaseAI implements Player {
 	}
 	
 	/**
-	 * Hashing of roll and rollsleft
+	 * Hashing of roll and rolls left
 	 * @param roll The roll to hash
 	 * @param rollsLeft The # of rolls left to hash
 	 * @return An integer between 0 and 1020
@@ -46,7 +46,7 @@ public abstract class BaseAI implements Player {
 	}
 	
 	/**
-	 * Reverse colex from hold (as int) to hold as boolean[]
+	 * Reverse "hash" from hold (as int) to hold as boolean[]
 	 * @param v The integer to convert to boolean[] hold
 	 * @return The boolean array matching the given int
 	 */
@@ -58,6 +58,20 @@ public abstract class BaseAI implements Player {
 			out[i] = (v & (1 << i)) > 0;
 		}
 		return out;
+	}
+	
+	/**
+	 * "Hash" of hold to integer
+	 * @param hold The hold to "hash"
+	 * @return The "hash" of the hold
+	 */
+	protected int holdToInt(boolean[] hold)
+	{
+		int res = 0;
+		for (int i = 0; i < hold.length; i++)
+			if (hold[i])
+				res += 1 << i;
+		return res;
 	}
 	
 	/**
@@ -241,7 +255,7 @@ public abstract class BaseAI implements Player {
 	/**
 	 * Get the probability of rolling a given roll from a hold
 	 * @param hold The hold that was used
-	 * @param roll The roll that was roled
+	 * @param roll The roll that was rolled
 	 * @return The probability (0-1) for rolling that roll 
 	 */
 	protected double getProb(boolean[] hold, int[] roll)
