@@ -12,9 +12,12 @@ import game.Scoreboard.ScoreType;
 
 public class MultiPlayerAI extends BaseAI {
 
-	private double aggresivity = 0;
-	public double[][] boardValues; //boardValues[boardhash][0=mean, 1=variance]
-	public static final String filename = "multiPlayerCache.bin";
+	private final int pointDiffMax = 100;		//These are tied to the .bin cache files 
+	private final int aggresivityLevels = 11;	//These are tied to the .bin cache files
+	private int aggresivityLevel = 0;
+	public double[][][] boardValues; //boardValues[aggresivity_level][boardhash][0=mean, 1=variance]
+	public static final String filename = "multiPlayerCache";
+	public static final String fileext = ".bin";
 	public boolean OUTPUT = false;
 	
 	
@@ -31,7 +34,9 @@ public class MultiPlayerAI extends BaseAI {
 	
 	public MultiPlayerAI()
 	{
-		boardValues = Persistence.loadDoubleArray(filename, 1000000, 2);
+		boardValues = new double[aggresivityLevels][][];
+		for (int i = 0; i < aggresivityLevels; i++)
+			boardValues[i] = Persistence.loadDoubleArray(filename + i + fileext, 1000000, 2);
 	}
 	
 	@Override
@@ -40,9 +45,9 @@ public class MultiPlayerAI extends BaseAI {
 			System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 
 		Answer ans = new Answer();
-		
+
 		updateAggressivity(question.scoreboards[question.playerId], question.scoreboards[question.playerId == 0 ? 1 : 0]);
-		
+
 		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId].ConvertMapToInt());
@@ -59,15 +64,20 @@ public class MultiPlayerAI extends BaseAI {
 	
 	
 	private void updateAggressivity(Scoreboard mine, Scoreboard other){
-		double myExpectedVal = boardValues[mine.ConvertMapToInt()][0];
-		double otherExpectedVal = boardValues[mine.ConvertMapToInt()][0];
+		double myExpectedVal = boardValues[aggresivityLevels/2][mine.ConvertMapToInt()][0];
+		double otherExpectedVal = boardValues[aggresivityLevels/2][other.ConvertMapToInt()][0];
 		
 		myExpectedVal += mine.sum();
 		otherExpectedVal += other.sum();
 		
-		
-		if (myExpectedVal > otherExpectedVal) aggresivity = 0;
-		else aggresivity = 1;		
+		double temp = (otherExpectedVal - myExpectedVal) / (double)pointDiffMax;
+		temp = Math.max(-1, temp);
+		temp = Math.min(1, temp); //-1 to 1
+		temp = temp + 1; //0 to 2
+		temp = temp / 2; //0 to 1
+		temp = temp * aggresivityLevels; //0 to (10?)
+		temp = Math.round(temp);
+		aggresivityLevel = (int)temp;
 	}
 	
 	private ScoreType getBestScoreEntry(int[] roll, int board)
@@ -103,8 +113,11 @@ public class MultiPlayerAI extends BaseAI {
 	private double getAdjustedMean(double mean, double variance){
 		
 		double stdDev = Math.sqrt(variance);
-		
-		return mean + stdDev * aggresivity;
+		double agg = (aggresivityLevel/(double)aggresivityLevels); //0 to 1
+		agg = agg * 2;//0 to 2;
+		agg = agg - 1;//-1 to 1;
+		return mean + stdDev * agg;
+
 	}
 	
 	private double getAdjustedMean(double[] data){
@@ -180,24 +193,24 @@ public class MultiPlayerAI extends BaseAI {
 	}
 	
 	public double[] getBoardValue(int board) {
-		if (boardValues[board][0] == -1) {
+		if (boardValues[aggresivityLevel][board][0] == -1) {
 			if (Scoreboard.isFull(board))
 			{
 				if (OUTPUT)
 					System.out.println("board is full");
-				boardValues[board] = new double[]{Scoreboard.bonus(board), 0};
+				boardValues[aggresivityLevel][board] = new double[]{Scoreboard.bonus(board), 0};
 			} 
 			else
 			{
 				if (OUTPUT)
 					System.out.println("Calculating board value: " + board);
-				boardValues[board] = rollFromScoreboard(board);
+				boardValues[aggresivityLevel][board] = rollFromScoreboard(board);
 				if (OUTPUT)
-					System.out.println("Board value was: " + boardValues[board][0]);
+					System.out.println("Board value was: " + boardValues[aggresivityLevel][board][0]);
 			}
 		}
 		//System.out.println("Returning " + boardValues[board][0]);
-		return boardValues[board].clone();
+		return boardValues[aggresivityLevel][board].clone();
 	}
 	
 	private double[] valueOfRoll(int rollC, int rollsLeft, int board, double[][] rollValues)
@@ -260,7 +273,8 @@ public class MultiPlayerAI extends BaseAI {
 
 	@Override
 	public void cleanUp() {
-		Persistence.storeDoubleArray(boardValues, filename);
+		for (int i = 0; i < aggresivityLevels; i++)
+			Persistence.storeDoubleArray(boardValues[i], filename + i + fileext);
 	}
 
 }
