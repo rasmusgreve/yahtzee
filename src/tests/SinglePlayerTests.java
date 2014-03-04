@@ -123,12 +123,24 @@ public class SinglePlayerTests {
 		assertTrue("AI held the wrong dice", Arrays.equals(expected, a.diceToHold));
 	}
 	
-	@Test
-	public void testScore()
+	private int testScore(int seed)
 	{
-		Controller c = new Controller(new Player[]{new SinglePlayerAI()}, 0);
+		Controller c = new Controller(new Player[]{ai}, seed);
 		c.startGame();
-		assertEquals("Single player AI should score 300 on seed 0", 300, c.getResults()[0].totalInclBonus());
+		return c.getResults()[0].totalInclBonus();
+	}
+	
+	
+	private int[] scores = new int[]{300,268,237,240,205,252,220,329,230,157};
+	@Test
+	public void testScores()
+	{
+		for (int i = 0; i < scores.length; i++)
+		{
+			assertEquals("SinglePlayerAI should score "+scores[i]+" on seed "+i, 
+					scores[i], 
+					testScore(i));
+		}
 	}
 	
 }
