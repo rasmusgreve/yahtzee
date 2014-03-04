@@ -13,8 +13,9 @@ import game.Scoreboard.ScoreType;
 public class MultiPlayerAI extends BaseAI {
 
 	private final int pointDiffMax = 100;		//These are tied to the .bin cache files 
-	private final int aggresivityLevels = 11;	//These are tied to the .bin cache files
-	private int aggresivityLevel = 0;
+	public final int aggresivityLevels = 11;	//These are tied to the .bin cache files
+	public int aggresivityLevel = 0;
+	public boolean staticAggresivity = false;
 	public double[][][] boardValues; //boardValues[aggresivity_level][boardhash][0=mean, 1=variance]
 	public static final String filename = "multiPlayerCache";
 	public static final String fileext = ".bin";
@@ -64,6 +65,7 @@ public class MultiPlayerAI extends BaseAI {
 	
 	
 	private void updateAggressivity(Scoreboard mine, Scoreboard other){
+		if (staticAggresivity) return;
 		double myExpectedVal = boardValues[aggresivityLevels/2][mine.ConvertMapToInt()][0];
 		double otherExpectedVal = boardValues[aggresivityLevels/2][other.ConvertMapToInt()][0];
 		
@@ -174,8 +176,8 @@ public class MultiPlayerAI extends BaseAI {
 	}
 	
 	private double[] rollFromScoreboard(int board) {
-		if (OUTPUT)
-			System.out.println("ROLLFROMSCOREBORD");
+		//if (OUTPUT)
+			System.out.println("Roll from scoreboard: " + board);
 		
 		double[][] cache = newRollValuesCache();
 				
