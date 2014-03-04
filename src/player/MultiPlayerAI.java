@@ -15,7 +15,7 @@ public class MultiPlayerAI extends BaseAI {
 	private double aggresivity = 0;
 	public double[][] boardValues; //boardValues[boardhash][0=mean, 1=variance]
 	public static final String filename = "multiPlayerCache.bin";
-	public boolean OUTPUT = true;
+	public boolean OUTPUT = false;
 	
 	
 	private static double[][] newRollValuesCache()
@@ -55,7 +55,8 @@ public class MultiPlayerAI extends BaseAI {
 	{
 		int rollC = YahtzeeMath.colex(roll);
 		
-		System.out.println("Get best score entry");
+		if (OUTPUT)
+			System.out.println("Get best score entry");
 		int best = -1;
 		double max = Double.NEGATIVE_INFINITY;
 		if (OUTPUT)
@@ -97,8 +98,9 @@ public class MultiPlayerAI extends BaseAI {
 		int[] rollSorted = roll.clone();
 		Arrays.sort(rollSorted);
 		int rollC = YahtzeeMath.colex(roll);
-		
-		System.out.println("Get best hold");
+
+		if (OUTPUT)
+			System.out.println("Get best hold");
 		double max = Double.NEGATIVE_INFINITY;
 		int[] bestHoldDice = new int[6];
 		for (boolean[] hold : getInterestingHolds(rollC))
@@ -139,7 +141,8 @@ public class MultiPlayerAI extends BaseAI {
 	}
 	
 	private double[] rollFromScoreboard(int board) {
-		System.out.println("ROLLFROMSCOREBORD");
+		if (OUTPUT)
+			System.out.println("ROLLFROMSCOREBORD");
 		
 		double[][] cache = newRollValuesCache();
 				
@@ -160,14 +163,17 @@ public class MultiPlayerAI extends BaseAI {
 		if (boardValues[board][0] == -1) {
 			if (Scoreboard.isFull(board))
 			{
-				System.out.println("board is full");
+				if (OUTPUT)
+					System.out.println("board is full");
 				boardValues[board] = new double[]{Scoreboard.bonus(board), 0};
 			} 
 			else
 			{
-				System.out.println("Calculating board value: " + board);
+				if (OUTPUT)
+					System.out.println("Calculating board value: " + board);
 				boardValues[board] = rollFromScoreboard(board);
-				System.out.println("Board value was: " + boardValues[board][0]);
+				if (OUTPUT)
+					System.out.println("Board value was: " + boardValues[board][0]);
 			}
 		}
 		//System.out.println("Returning " + boardValues[board][0]);
