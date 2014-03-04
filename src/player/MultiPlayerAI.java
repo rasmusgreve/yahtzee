@@ -53,6 +53,8 @@ public class MultiPlayerAI extends BaseAI {
 	
 	private ScoreType getBestScoreEntry(int[] roll, int board)
 	{
+		int rollC = YahtzeeMath.colex(roll);
+		
 		if (OUTPUT)
 			System.out.println("Get best score entry");
 		int best = -1;
@@ -62,7 +64,7 @@ public class MultiPlayerAI extends BaseAI {
 		for (int type = 0; type < ScoreType.count; type++) {
 			if (Scoreboard.isFilled(board, type)) continue; //Skip filled entries
 			
-			int value_of_roll = GameLogic.valueOfRoll(type, roll);
+			int value_of_roll = GameLogic.valueOfRoll(type, rollC);
 			double[] boardValue = getBoardValue(Scoreboard.fill(board, type, value_of_roll));
 			double newVal = getAdjustedMean(boardValue) + value_of_roll;
 						
@@ -93,21 +95,26 @@ public class MultiPlayerAI extends BaseAI {
 	
 	private boolean[] getBestHold(int[] roll, int rollsLeft, int board) //Kickoff
 	{
+		int[] rollSorted = roll.clone();
+		Arrays.sort(rollSorted);
+		int rollC = YahtzeeMath.colex(roll);
+
 		if (OUTPUT)
 			System.out.println("Get best hold");
 		double max = Double.NEGATIVE_INFINITY;
-		boolean[] best = null;
-		for (boolean[] hold : getInterestingHoldsInit(roll))
+		int[] bestHoldDice = new int[6];
+		for (boolean[] hold : getInterestingHolds(rollC))
 		{
 			if (hold == null) continue;
-			int[][] possibleRolls = getPossibleRollsInit(roll, hold);
+			int[] possibleRolls = getPossibleRolls(rollC, hold);
+			int[] holdDice = getHoldDice(rollC, hold);	
 			
 			double[][] valueOfRollCache = new double[possibleRolls.length][];
 			double[] probCache = new double[possibleRolls.length];
 			
 			for (int i = 0; i < possibleRolls.length; i++) {
 				valueOfRollCache[i] = valueOfRoll(possibleRolls[i], rollsLeft-1, board, newRollValuesCache());
-				probCache[i] = getProb(hold, possibleRolls[i]);
+				probCache[i] = getProbSmart(holdDice, possibleRolls[i]);
 			}
 			
 			double newMean = getAggregatedMean(probCache, valueOfRollCache);
@@ -118,10 +125,19 @@ public class MultiPlayerAI extends BaseAI {
 			if (newMean > max)
 			{
 				max = newMean;
-				best = hold;
+				bestHoldDice = getHoldDiceInit(rollSorted, hold);
 			}
 		}
-		return best;
+		
+		boolean[] resortedBestHold = new boolean[5];
+		for (int i = 0; i < 5; i++) {
+			if (bestHoldDice[roll[i]-1] > 0){
+				resortedBestHold[i] = true;
+				bestHoldDice[roll[i]-1]--;
+			}
+		}
+		
+		return resortedBestHold;
 	}
 	
 	private double[] rollFromScoreboard(int board) {
@@ -134,7 +150,7 @@ public class MultiPlayerAI extends BaseAI {
 		double[][] valueOfRollCache = new double[YahtzeeMath.allRolls.length][];
 		
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
-			valueOfRollCache[i] = valueOfRoll(YahtzeeMath.allRolls[i], 2, board, cache);
+			valueOfRollCache[i] = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, board, cache);
 			probCache[i] = YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
 		}
 		double newMean = getAggregatedMean(probCache, valueOfRollCache);
@@ -164,7 +180,7 @@ public class MultiPlayerAI extends BaseAI {
 		return boardValues[board].clone();
 	}
 	
-	private double[] valueOfRoll(int[] roll, int rollsLeft, int board, double[][] rollValues)
+	private double[] valueOfRoll(int rollC, int rollsLeft, int board, double[][] rollValues)
 	{
 		if (rollsLeft == 0)
 		{
@@ -172,7 +188,7 @@ public class MultiPlayerAI extends BaseAI {
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
 				
-				int rollVal = GameLogic.valueOfRoll(i, roll);
+				int rollVal = GameLogic.valueOfRoll(i, rollC);
 				double[] boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
 				//System.out.println("Boardval: " + (Scoreboard.fill(board, i, rollVal)) + " + " + rollVal + " = " + boardVal[0]);
 				boardVal[0] = getAdjustedMean(boardVal) + rollVal;
@@ -184,20 +200,22 @@ public class MultiPlayerAI extends BaseAI {
 			return best;
 		}
 		
-		int idx = rollIdx(roll, rollsLeft);
+		int idx = rollIdx(rollC, rollsLeft);
 		if (rollValues[idx][0] == -1)
 		{
 			rollValues[idx] = new double[] {Double.NEGATIVE_INFINITY, 0};
-			for (boolean[] hold : getInterestingHoldsInit(roll))
+			for (boolean[] hold : getInterestingHolds(rollC))
 			{
 				if (hold == null) continue;
 				
-				int[][] possibleRolls = getPossibleRollsInit(roll, hold);
+				int[] holdDice = getHoldDice(rollC, hold);	
+				
+				int[] possibleRolls = getPossibleRolls(rollC, hold);
 				double[] probCache = new double[possibleRolls.length];
 				double[][] valueOfRollCache = new double[possibleRolls.length][];
 				for (int i = 0; i < possibleRolls.length; i++) { 
 					valueOfRollCache[i] = valueOfRoll(possibleRolls[i], rollsLeft-1, board, rollValues);
-					probCache[i] = getProb(hold, possibleRolls[i]);
+					probCache[i] = getProbSmart(holdDice, possibleRolls[i]);
 				}
 
 				double newMean = getAggregatedMean(probCache, valueOfRollCache);
