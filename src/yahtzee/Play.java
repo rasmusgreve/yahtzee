@@ -5,6 +5,7 @@ import game.Controller;
 import java.util.ArrayList;
 
 import player.Player;
+import tests.MonteCarloTest;
 
 public class Play {
 
@@ -26,15 +27,27 @@ public class Play {
 		
 		System.out.println("Starting game with seed " + seed);
 		System.out.println("Loading players...");
+		boolean monteCarlo = false;
 		for (int i = 1; i < args.length; i++)
 		{
-			Player p = loadPlayer(args[i]);
+			String arg = args[i];
+			if (arg.equals("MonteCarlo")) {
+				monteCarlo = true;
+				System.out.println("Doing MonteCarlo Test");
+				continue;
+			}
+			Player p = loadPlayer(arg);
 			System.out.println("\t" + args[i] + " -> ["+(i-1)+"] = " + p.getName());
 			players.add(p);
 			p.reset(i - 1);
 		}
-		Controller c = new Controller(players.toArray(new Player[players.size()]), seed);
-		c.startGame();
+		if (!monteCarlo) {
+			Controller c = new Controller(players.toArray(new Player[players.size()]), seed);
+			c.startGame();
+		}
+		else {
+			MonteCarloTest run = new MonteCarloTest(100, players);
+		}
 		
 		for (Player p : players)
 		{
