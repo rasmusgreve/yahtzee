@@ -41,6 +41,9 @@ public class MultiPlayerAI extends BaseAI {
 
 		Answer ans = new Answer();
 		
+		updateAggressivity(question.scoreboards[question.playerId], question.scoreboards[question.playerId == 0 ? 1 : 0]);
+		
+		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId].ConvertMapToInt());
 		else
@@ -48,7 +51,23 @@ public class MultiPlayerAI extends BaseAI {
 		if (OUTPUT)
 			System.out.println("a: " + Arrays.toString(ans.diceToHold) + ", " + ans.selectedScoreEntry);
 
+		
+		
+		
 		return ans;
+	}
+	
+	
+	private void updateAggressivity(Scoreboard mine, Scoreboard other){
+		double myExpectedVal = boardValues[mine.ConvertMapToInt()][0];
+		double otherExpectedVal = boardValues[mine.ConvertMapToInt()][0];
+		
+		myExpectedVal += mine.sum();
+		otherExpectedVal += other.sum();
+		
+		
+		if (myExpectedVal > otherExpectedVal) aggresivity = 0;
+		else aggresivity = 1;		
 	}
 	
 	private ScoreType getBestScoreEntry(int[] roll, int board)
@@ -82,9 +101,10 @@ public class MultiPlayerAI extends BaseAI {
 	
 	
 	private double getAdjustedMean(double mean, double variance){
-		double val = mean;
 		
-		return val;
+		double stdDev = Math.sqrt(variance);
+		
+		return mean + stdDev * aggresivity;
 	}
 	
 	private double getAdjustedMean(double[] data){
