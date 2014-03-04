@@ -9,7 +9,7 @@ import player.Player;
 
 public class Stats {
 
-	private static final int ROUNDS = 300;
+	private static final int ROUNDS = 10;
 	/**
 	 * Args:
 	 * 	[0]   int seed
@@ -37,6 +37,7 @@ public class Stats {
 		}
 		
 		int[][] results = new int[players.size()][ROUNDS];
+		int[] wins = new int[players.size()];
 		
 		System.out.println("Results:");
 		System.out.print("             Player | ");
@@ -44,6 +45,8 @@ public class Stats {
 			System.out.print("  ["+p+"]   | ");
 		System.out.println();
 		long start = System.currentTimeMillis();
+		
+		//Play games
 		for (int i = 0; i < ROUNDS; i++)
 		{
 			long inner_start = System.currentTimeMillis();
@@ -51,11 +54,25 @@ public class Stats {
 			c.OUTPUT = false;
 			c.startGame();
 			System.out.print(String.format("Seed %11d -> | ",seed));
+			double winning_score = -1;
+			boolean no_winner = false;
+			//Store scores
 			for (int p = 0; p < players.size(); p++)
 			{
 				results[p][i] = c.getResults()[p].totalInclBonus();
+				if (results[p][i] == winning_score) no_winner = true;
+				winning_score = Math.max(winning_score, results[p][i]);
 				System.out.print(String.format("%3d     | ",results[p][i]));
 				players.get(p).reset(p);
+			}
+			//Store wins
+			if (!no_winner)
+			{
+				for (int p = 0; p < players.size(); p++)
+				{
+					if (winning_score == results[p][i])
+						wins[p]++;
+				}
 			}
 			long duration = System.currentTimeMillis() - start;
 			long inner_duration = System.currentTimeMillis() - inner_start;
@@ -65,11 +82,15 @@ public class Stats {
 		}
 		long duration = System.currentTimeMillis() - start;
 		
+		//Perform calculations
 		Statsmath[] maths = new Statsmath[players.size()];
 		for (int p = 0; p < players.size(); p++)
 		{
 			maths[p] = new Statsmath(results[p]);
 		}
+		
+		
+		//Print the stats
 		System.out.println();
 		for (int p = 0; p < players.size(); p++)
 		{
@@ -77,7 +98,7 @@ public class Stats {
 		}
 		
 		System.out.println();
-		System.out.print("             Player | ");
+		System.out.print(String.format("%22s","Player | "));
 		for (int p = 0; p < players.size(); p++)
 			System.out.print("  ["+p+"]   | ");
 		System.out.println();
@@ -101,6 +122,10 @@ public class Stats {
 		for (int p = 0; p < players.size(); p++)
 			System.out.print(String.format("%7.3f | ", maths[p].std_dev));
 		System.out.println();
+		System.out.print(String.format("%22s","Wins: | "));
+		for (int p = 0; p < players.size(); p++)
+			System.out.print(String.format("%7d | ", wins[p]));
+		System.out.println();
 		System.out.println();
 		System.out.println("Total time: " + msToString(duration));
 		
@@ -109,6 +134,7 @@ public class Stats {
 			p.cleanUp();
 		}
 	}
+
 	
 	private static String msToString(long ms)
 	{
