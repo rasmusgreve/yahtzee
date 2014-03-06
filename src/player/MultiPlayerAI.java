@@ -35,6 +35,8 @@ public class MultiPlayerAI extends BaseAI {
 	
 	public MultiPlayerAI()
 	{
+		System.out.println("Making ai " + aggresivityLevel);
+		
 		boardValues = new double[aggresivityLevels][][];
 		for (int i = 0; i < aggresivityLevels; i++)
 			boardValues[i] = Persistence.loadDoubleArray(filename + i + fileext, 1000000, 2);
@@ -77,7 +79,7 @@ public class MultiPlayerAI extends BaseAI {
 		temp = Math.min(1, temp); //-1 to 1
 		temp = temp + 1; //0 to 2
 		temp = temp / 2; //0 to 1
-		temp = temp * aggresivityLevels; //0 to (10?)
+		temp = temp * (aggresivityLevels-1); //0 to (10?)
 		temp = Math.round(temp);
 		aggresivityLevel = (int)temp;
 	}
@@ -209,6 +211,10 @@ public class MultiPlayerAI extends BaseAI {
 				boardValues[aggresivityLevel][board] = rollFromScoreboard(board);
 				if (OUTPUT)
 					System.out.println("Board value was: " + boardValues[aggresivityLevel][board][0]);
+				
+				System.out.println("AGGRO LEVEL: " + aggresivityLevel);
+				System.out.println("Just rolled from scoreboard: " + board);
+				System.out.println("Values: " + Arrays.toString(boardValues[aggresivityLevel][board]));
 			}
 		}
 		//System.out.println("Returning " + boardValues[board][0]);
@@ -220,24 +226,32 @@ public class MultiPlayerAI extends BaseAI {
 		if (rollsLeft == 0)
 		{
 			double[] best = {Double.NEGATIVE_INFINITY, 0};
+			double bestAdjustedMean = Double.NEGATIVE_INFINITY;
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
 				
 				int rollVal = GameLogic.valueOfRoll(i, rollC);
 				double[] boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
-				//System.out.println("Boardval: " + (Scoreboard.fill(board, i, rollVal)) + " + " + rollVal + " = " + boardVal[0]);
-				boardVal[0] = getAdjustedMean(boardVal) + rollVal;
-				if (best[0] < boardVal[0]) {
+				
+				double adjustedMean = getAdjustedMean(boardVal) + rollVal;
+				
+				
+				if (bestAdjustedMean < adjustedMean){
+					bestAdjustedMean = adjustedMean;
 					best = boardVal;
+					best[0] += rollVal;
 				}
+				
 			}
-			//System.out.println("Best is: " + best[0]);
 			return best;
 		}
 		
 		int idx = rollIdx(rollC, rollsLeft);
 		if (rollValues[idx][0] == -1)
 		{
+			
+			double bestAdjustedMean = Double.NEGATIVE_INFINITY;
+			
 			rollValues[idx] = new double[] {Double.NEGATIVE_INFINITY, 0};
 			for (boolean[] hold : getInterestingHolds(rollC))
 			{
@@ -258,7 +272,8 @@ public class MultiPlayerAI extends BaseAI {
 				
 				double aggressiveMean = getAdjustedMean(newMean, newVariance);
 				
-				if (getAdjustedMean(rollValues[idx]) < aggressiveMean) {
+				if (bestAdjustedMean < aggressiveMean) {
+					bestAdjustedMean = aggressiveMean;
 					rollValues[idx] = new double[] {newMean, newVariance};
 				}
 			}
