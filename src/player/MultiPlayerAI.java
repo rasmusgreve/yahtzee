@@ -16,9 +16,7 @@ import org.apache.commons.math3.distribution.*;
 public class MultiPlayerAI extends BaseAI {
 
 	public static final int MEAN = 0, VARIANCE = 1;
-	
-	
-	private final int pointDiffMax = 100;		//These are tied to the .bin cache files 
+	 
 	public final int aggresivityLevels = 11;	//These are tied to the .bin cache files
 	private int[] aggresivityLevelUsage = new int[aggresivityLevels];
 	public int aggresivityLevel = 0;
