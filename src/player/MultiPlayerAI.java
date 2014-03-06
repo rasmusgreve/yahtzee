@@ -63,9 +63,22 @@ public class MultiPlayerAI extends BaseAI {
 		return ans;
 	}
 	
-	
 	private void updateAggressivity(Scoreboard mine, Scoreboard other){
 		if (staticAggresivity) return;
+		double bestAggresivity = Double.MIN_VALUE;
+		double otherExpectedVal = boardValues[aggresivityLevels/2][other.ConvertMapToInt()][0];
+		double bestCND = Double.MIN_VALUE;
+		for (int i = 0; i < aggresivityLevels; i++) {
+			double myExpectedVal = boardValues[i][mine.ConvertMapToInt()][0];
+			double myStd = boardValues[i][mine.ConvertMapToInt()][1];
+			double myCND = getCommulativeNormalDistribution(myExpectedVal, myStd); //TODO calculate the CND from std and expectedVal.
+			if (bestCND > myCND) {
+				bestCND = myCND;
+				aggresivityLevel = i;
+			}
+		}
+		
+		
 		double myExpectedVal = boardValues[aggresivityLevels/2][mine.ConvertMapToInt()][0];
 		double otherExpectedVal = boardValues[aggresivityLevels/2][other.ConvertMapToInt()][0];
 		
@@ -80,6 +93,10 @@ public class MultiPlayerAI extends BaseAI {
 		temp = temp * aggresivityLevels; //0 to (10?)
 		temp = Math.round(temp);
 		aggresivityLevel = (int)temp;
+	}
+	
+	private double getCommulativeNormalDistribution(double expectedVal, double Std) {
+		return 0.0; //TODO calculate the cummulative Normal Distribution from the expected value and standard deviation.
 	}
 	
 	private ScoreType getBestScoreEntry(int[] roll, int board)
@@ -230,6 +247,7 @@ public class MultiPlayerAI extends BaseAI {
 				if (best[0] < boardVal[0]) {
 					best = boardVal;
 				}
+				//TODO: Return actual value, not adjusted!
 			}
 			//System.out.println("Best is: " + best[0]);
 			return best;
