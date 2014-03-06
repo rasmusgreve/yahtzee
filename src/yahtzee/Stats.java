@@ -2,8 +2,13 @@ package yahtzee;
 
 import game.Controller;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 
 import player.Player;
 
@@ -15,8 +20,9 @@ public class Stats {
 	 * 	[0]   int seed
 	 *  [1-?] class name for players to load
 	 * @param args
+	 * @throws FileNotFoundException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		ArrayList<Player> players = new ArrayList<Player>();
 		
 		int seed = new java.util.Random().nextInt();
@@ -89,46 +95,58 @@ public class Stats {
 			maths[p] = new Statsmath(results[p]);
 		}
 		
-		
-		//Print the stats
-		System.out.println();
-		for (int p = 0; p < players.size(); p++)
+		for (int k = 0; k < 2; k++)
 		{
-			System.out.println("["+p+"] : " + players.get(p).getName());
+			if (k == 1)
+			{
+				PrintStream out = new PrintStream(new FileOutputStream("output.txt", true));
+				System.setOut(out);
+				System.out.println("------------------------------------------------------------------------------------------");
+				System.out.println(new SimpleDateFormat("dd/MM/YYYY  - HH:mm:ss").format(Calendar.getInstance().getTime()));
+			}
+			
+			System.out.println("Stats with " + String.format("%,d",ROUNDS) + " rounds from seed " + (seed-ROUNDS));
+			//Print the stats
+			System.out.println();
+			for (int p = 0; p < players.size(); p++)
+			{
+				System.out.println("["+p+"] : " + players.get(p).getName());
+			}
+			
+			System.out.println();
+			System.out.print(String.format("%22s","Player | "));
+			for (int p = 0; p < players.size(); p++)
+				System.out.print("  ["+p+"]   | ");
+			System.out.println();
+			System.out.print(String.format("%22s","Mean: | "));
+			for (int p = 0; p < players.size(); p++)
+				System.out.print(String.format("%7.3f | ", maths[p].mean));
+			System.out.println();
+			System.out.print(String.format("%22s","Median: | "));
+			for (int p = 0; p < players.size(); p++)
+				System.out.print(String.format("%3d     | ", maths[p].median));
+			System.out.println();
+			System.out.print(String.format("%22s","Min: | "));
+			for (int p = 0; p < players.size(); p++)
+				System.out.print(String.format("%3d     | ", maths[p].min));
+			System.out.println();
+			System.out.print(String.format("%22s","Max: | "));
+			for (int p = 0; p < players.size(); p++)
+				System.out.print(String.format("%3d     | ", maths[p].max));
+			System.out.println();
+			System.out.print(String.format("%22s","Std. dev.: | "));
+			for (int p = 0; p < players.size(); p++)
+				System.out.print(String.format("%7.3f | ", maths[p].std_dev));
+			System.out.println();
+			System.out.print(String.format("%22s","Wins: | "));
+			for (int p = 0; p < players.size(); p++)
+				System.out.print(String.format("%7d | ", wins[p]));
+			System.out.println();
+			System.out.println();
+			System.out.println("Total time: " + msToString(duration));
+		
 		}
-		
-		System.out.println();
-		System.out.print(String.format("%22s","Player | "));
-		for (int p = 0; p < players.size(); p++)
-			System.out.print("  ["+p+"]   | ");
-		System.out.println();
-		System.out.print(String.format("%22s","Mean: | "));
-		for (int p = 0; p < players.size(); p++)
-			System.out.print(String.format("%7.3f | ", maths[p].mean));
-		System.out.println();
-		System.out.print(String.format("%22s","Median: | "));
-		for (int p = 0; p < players.size(); p++)
-			System.out.print(String.format("%3d     | ", maths[p].median));
-		System.out.println();
-		System.out.print(String.format("%22s","Min: | "));
-		for (int p = 0; p < players.size(); p++)
-			System.out.print(String.format("%3d     | ", maths[p].min));
-		System.out.println();
-		System.out.print(String.format("%22s","Max: | "));
-		for (int p = 0; p < players.size(); p++)
-			System.out.print(String.format("%3d     | ", maths[p].max));
-		System.out.println();
-		System.out.print(String.format("%22s","Std. dev.: | "));
-		for (int p = 0; p < players.size(); p++)
-			System.out.print(String.format("%7.3f | ", maths[p].std_dev));
-		System.out.println();
-		System.out.print(String.format("%22s","Wins: | "));
-		for (int p = 0; p < players.size(); p++)
-			System.out.print(String.format("%7d | ", wins[p]));
-		System.out.println();
-		System.out.println();
-		System.out.println("Total time: " + msToString(duration));
-		
+			
 		for (Player p : players)
 		{
 			p.cleanUp();
