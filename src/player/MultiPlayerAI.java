@@ -45,17 +45,10 @@ public class MultiPlayerAI extends BaseAI {
 		System.out.println("Making ai " + aggresivityLevel);
 		
 		boardValues = new double[aggresivityLevels][][];
-		int hash = 0;
 		for (int i = 0; i < aggresivityLevels; i++)
 		{
 			boardValues[i] = Persistence.loadDoubleArray(filename + i + fileext, 1000000, 2);
-			for (double[] d : boardValues[i])
-			{
-				for (double c : d)
-					hash += c;
-			}
 		}
-		System.out.println("hash: " + hash);
 	}
 	
 	@Override
@@ -313,16 +306,9 @@ public class MultiPlayerAI extends BaseAI {
 
 	@Override
 	public void cleanUp() {
-		int hash = 0;
 		for (int i = 0; i < aggresivityLevels; i++){
 			Persistence.storeDoubleArray(boardValues[i], filename + i + fileext);
-			for (double[] d : boardValues[i])
-			{
-				for (double c : d)
-					hash += c;
-			}
 		}
-		System.out.println("end hash: " + hash);
 		System.out.println("Aggro level usage:");
 		System.out.println(Arrays.toString(aggresivityLevelUsage));
 	}
