@@ -83,7 +83,7 @@ public class MultiPlayerAI extends BaseAI {
 		double bestWinningProb = Double.MIN_VALUE;
 		for (int i = 0; i < aggresivityLevels; i++) {
 			//Calculate the expected value of my board
-			double[] myExpected = boardValues[i][mine.ConvertMapToInt()];
+			double[] myExpected = boardValues[i][mine.ConvertMapToInt()].clone();
 			myExpected[MEAN] += mine.sum();
 			
 			//Calculate the probability that we win with aggresivity level i
