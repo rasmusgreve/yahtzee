@@ -1,1 +1,5 @@
 /bin
+/report/*.aux
+/report/*.log
+/report/*.synctex.gz
+/report/*.pdf
