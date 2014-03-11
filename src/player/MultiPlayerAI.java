@@ -76,6 +76,7 @@ public class MultiPlayerAI extends BaseAI {
 		if (staticAggresivity) return; //TODO: Remove this statement when done building caches
 		
 		//Opponents expected value is estimated remaining scores + the scores in the board
+		//TODO: Compare using the variance too
 		double otherExpectedVal =  boardValues[aggresivityLevels/2][other.ConvertMapToInt()][MEAN] + other.sum();
 		double bestWinningProb = Double.MIN_VALUE;
 		for (int i = 0; i < aggresivityLevels; i++) {
