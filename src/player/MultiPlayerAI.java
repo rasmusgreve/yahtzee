@@ -55,6 +55,14 @@ public class MultiPlayerAI extends BaseAI {
 		{
 			boardValues[i] = Persistence.loadDoubleArray(filename + i + fileext, 1000000, 2);
 		}
+		
+		
+		for (int i = 0; i < aggresivityLevels; i++)
+		{
+			System.out.println("BOARD VALUE 0, aggro: " + i + ", " + Arrays.toString(boardValues[i][0]));
+		}
+		
+		
 	}
 	
 	@Override

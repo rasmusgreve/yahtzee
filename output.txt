@@ -142,3 +142,21 @@ Stats with 40 rounds from seed 122225357
 Total time: 5m 24s
 Aggro level usage:
 [207, 36, 21, 60, 273, 351, 216, 159, 105, 57, 75]
+------------------------------------------------------------------------------------------
+11/03/2014  - 14:04:37
+Stats with 500 rounds from seed 1104391941
+
+[0] : Multi player AI
+[1] : Single player AI
+
+             Player |   [0]   |   [1]   | 
+              Mean: | 239,356 | 243,380 | 
+            Median: | 243     | 245     | 
+               Min: | 109     | 142     | 
+               Max: | 333     | 341     | 
+         Std. dev.: |  39,231 |  39,061 | 
+              Wins: |     241 |     252 | 
+
+Total time: 69m  0s
+Aggro level usage:
+[2850, 609, 270, 798, 2745, 3933, 2550, 1986, 1446, 825, 1488]
