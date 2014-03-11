@@ -19,9 +19,9 @@ public class MultiPlayerAI extends BaseAI {
 	 
 	public final int aggresivityLevels = 11;	//These are tied to the .bin cache files
 	private int[] aggresivityLevelUsage = new int[aggresivityLevels];
-	public int aggresivityLevel = 0;
+	public int aggresivityLevel = 5;
 	public boolean staticAggresivity = false;
-	public static double[][][] boardValues; //boardValues[aggresivity_level][boardhash][0=mean, 1=variance]
+	public double[][][] boardValues; //boardValues[aggresivity_level][boardhash][0=mean, 1=variance]
 	public static final String filename = "multiPlayerCache";
 	public static final String fileext = ".bin";
 	public boolean OUTPUT = true;
@@ -37,6 +37,16 @@ public class MultiPlayerAI extends BaseAI {
 		return rollValues;
 	}
 	
+	public MultiPlayerAI(boolean staticAggro, int aggresivity)
+	{
+		staticAggresivity = staticAggro;
+		aggresivityLevel = aggresivity;
+		if (staticAggresivity)
+		{
+			boardValues = new double[aggresivityLevels][][];
+			boardValues[aggresivity] = Persistence.loadDoubleArray(filename + aggresivity + fileext, 1000000, 2);
+		}
+	}
 	
 	public MultiPlayerAI()
 	{		
@@ -144,7 +154,6 @@ public class MultiPlayerAI extends BaseAI {
 		
 		return getAdjustedMean(data[MEAN], data[VARIANCE]);
 	}
-	
 	
 	private boolean[] getBestHold(int[] roll, int rollsLeft, int board) //Kickoff
 	{

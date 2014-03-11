@@ -22,10 +22,8 @@ public class MultiPlayerBinBuilder implements Runnable {
 
 	@Override
 	public void run() {
-		MultiPlayerAI ai = new MultiPlayerAI();
-		ai.staticAggresivity = true;
+		MultiPlayerAI ai = new MultiPlayerAI(true, agg);
 		System.out.println("Calculating boardValues for aggresivitylevel: " + agg);
-		ai.aggresivityLevel = agg;
 		ai.getBoardValue(0);
 		Persistence.storeDoubleArray(ai.boardValues[agg], MultiPlayerAI.filename + agg + MultiPlayerAI.fileext);
 	}
