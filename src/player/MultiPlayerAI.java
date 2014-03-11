@@ -24,7 +24,7 @@ public class MultiPlayerAI extends BaseAI {
 	public static double[][][] boardValues; //boardValues[aggresivity_level][boardhash][0=mean, 1=variance]
 	public static final String filename = "multiPlayerCache";
 	public static final String fileext = ".bin";
-	public boolean OUTPUT = false;
+	public boolean OUTPUT = true;
 	
 	
 	private static double[][] newRollValuesCache()
@@ -39,9 +39,7 @@ public class MultiPlayerAI extends BaseAI {
 	
 	
 	public MultiPlayerAI()
-	{
-		System.out.println("Making ai " + aggresivityLevel);
-		
+	{		
 		boardValues = new double[aggresivityLevels][][];
 		for (int i = 0; i < aggresivityLevels; i++)
 		{
@@ -54,10 +52,15 @@ public class MultiPlayerAI extends BaseAI {
 		if (OUTPUT)
 			System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 
+		if (OUTPUT)
+			System.out.println("Current scores. MultiPlayerAI: " + question.scoreboards[question.playerId].sum() + ", opponent: " + question.scoreboards[question.playerId == 0 ? 1 : 0].sum());
+		
+		
 		Answer ans = new Answer();
 
 		updateAggressivity(question.scoreboards[question.playerId], question.scoreboards[question.playerId == 0 ? 1 : 0]);
-
+			
+		System.out.println("New aggresivity level: " + aggresivityLevel);
 		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId].ConvertMapToInt());
@@ -81,7 +84,7 @@ public class MultiPlayerAI extends BaseAI {
 		double bestWinningProb = Double.MIN_VALUE;
 		for (int i = 0; i < aggresivityLevels; i++) {
 			//Calculate the expected value of my board
-			double[] myExpected = boardValues[i][mine.ConvertMapToInt()];
+			double[] myExpected = boardValues[i][mine.ConvertMapToInt()].clone();
 			myExpected[MEAN] += mine.sum();
 			
 			//Calculate the probability that we win with aggresivity level i
@@ -211,26 +214,20 @@ public class MultiPlayerAI extends BaseAI {
 	
 	public double[] getBoardValue(int board) {
 		if (boardValues[aggresivityLevel][board][MEAN] == -1) {
-			System.out.println("Board: " + board);
 			if (Scoreboard.isFull(board))
 			{
-				System.out.println("Is full");
 				if (OUTPUT)
 					System.out.println("board is full");
 				boardValues[aggresivityLevel][board] = new double[]{Scoreboard.bonus(board), 0};
 			} 
 			else
 			{
-				System.out.println("Is not full");
 				if (OUTPUT)
 					System.out.println("Calculating board value: " + board);
 				boardValues[aggresivityLevel][board] = rollFromScoreboard(board);
 				if (OUTPUT)
 					System.out.println("Board value was: " + boardValues[aggresivityLevel][board][MEAN]);
 				
-				System.out.println("AGGRO LEVEL: " + aggresivityLevel);
-				System.out.println("Just rolled from scoreboard: " + board);
-				System.out.println("Values: " + Arrays.toString(boardValues[aggresivityLevel][board]));
 			}
 		}
 		//System.out.println("Returning " + boardValues[board][MEAN]);

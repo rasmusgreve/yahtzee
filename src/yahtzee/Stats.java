@@ -14,7 +14,7 @@ import player.Player;
 
 public class Stats {
 
-	private static final int ROUNDS = 10;
+	private static final int ROUNDS = 40;
 	/**
 	 * Args:
 	 * 	[0]   int seed
