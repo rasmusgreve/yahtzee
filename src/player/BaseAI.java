@@ -1,5 +1,7 @@
 package player;
 
+import java.util.HashMap;
+
 import util.YahtzeeMath;
 
 public abstract class BaseAI implements Player {
@@ -8,7 +10,8 @@ public abstract class BaseAI implements Player {
 	static boolean[][][] interestingHoldsCache = new boolean[252][][];
 	static int[][][] possibleRollsCache = new int[252][][];
 	static double[][] probCache = new double[252][];
-	static double[][] smartProbCache = new double[252][];
+	static HashMap<Integer, Double>[] smartProbCache = new HashMap[252];
+	
 	static int[][][] holdDiceIntCache = new int[252][][];
 	static{
 		getInterestingHoldsCacheCalc();
@@ -238,8 +241,7 @@ public abstract class BaseAI implements Player {
 	
 	
 	protected double getProbSmart(int[] holdD, int rollC){
-		
-		return smartProbCache[rollC][holdDiceToInt(holdD)];
+		return smartProbCache[rollC].get(holdDiceToInt(holdD));
 	}
 	
 	protected static double getProbSmartInit(int[] holdD, int[] roll){
@@ -268,14 +270,14 @@ public abstract class BaseAI implements Player {
 			int[] roll = YahtzeeMath.allRolls[i];
 			int rollC = YahtzeeMath.colex(roll);
 			
-			smartProbCache[rollC] = new double[262144];
+			smartProbCache[rollC] = new HashMap<Integer,Double>();
 			
 			for (int j = 0; j < (1 << 5); j++){
 				boolean[] hold = holdFromInt(j);
 				int[] holdDice = getHoldDiceInit(roll, hold);
 				int holdDiceInt = holdDiceToInt(holdDice);
 				
-				smartProbCache[rollC][holdDiceInt] = getProbSmartInit(holdDice, roll);
+				smartProbCache[rollC].put(holdDiceInt, getProbSmartInit(holdDice, roll));
 			}
 		}
 
