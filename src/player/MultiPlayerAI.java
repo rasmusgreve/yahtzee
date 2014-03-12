@@ -54,6 +54,7 @@ public class MultiPlayerAI extends BaseAI {
 		for (int i = 0; i < aggresivityLevels; i++)
 		{
 			boardValues[i] = Persistence.loadDoubleArray(filename + i + fileext, 1000000, 2);
+			System.out.println("Loaded boardValue-cache for aggro: " + i);
 		}
 		
 		
@@ -151,7 +152,7 @@ public class MultiPlayerAI extends BaseAI {
 	private double getAdjustedMean(double mean, double variance){
 		
 		double stdDev = Math.sqrt(variance);
-		double agg = (aggresivityLevel/(double)aggresivityLevels); //0 to 1
+		double agg = ((aggresivityLevel)/((double)(aggresivityLevels-1))); //0 to 1
 		agg = agg * 2;//0 to 2;
 		agg = agg - 1;//-1 to 1;
 		return mean + stdDev * agg;
