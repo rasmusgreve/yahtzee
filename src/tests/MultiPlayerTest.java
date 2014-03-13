@@ -13,7 +13,7 @@ import player.MultiPlayerAI;
 import player.Player;
 import player.SinglePlayerAI;
 
-public class MultiPlayerAloneTest {
+public class MultiPlayerTest {
 
 	SinglePlayerAI spai;
 	MultiPlayerAI mpai;
@@ -40,17 +40,29 @@ public class MultiPlayerAloneTest {
 	}
 	
 	
-	//private int[] scores = new int[]{300,268,237,240,205,252,220,329,230,157};
+	private int[][] scores = new int[][]{{278,261},
+			{240,226},
+			{232,199},
+			{293,253},
+			{256,253},
+			{212,270},
+			{152,221},
+			{287,269},
+			{276,264},
+			{290,268}};
 	@Test
 	public void testScores()
 	{
 		
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 10; i++)
 		{
-			System.out.println(i + " = " + Arrays.toString(testScore(i)));
-			/*assertEquals("MultiPlayerAI with aggresivity 0 should score "+scores[i]+" on seed "+i, 
-					scores[i], 
-					testScore(i));*/
+			int[] d = testScore(i);
+			assertEquals("MultiPlayerAI with should score "+scores[i][0]+" on seed "+i, 
+					scores[i][0], 
+					d[0]);
+			assertEquals("SinglePlayerAI with should score "+scores[i][1]+" on seed "+i, 
+					scores[i][1], 
+					d[1]);
 		}
 		mpai.cleanUp();
 	}
