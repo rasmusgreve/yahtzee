@@ -95,7 +95,9 @@ public class Persistence {
 		try {
 			fis = new FileInputStream(filename);
 			ois = new ObjectInputStream(fis);
-			return (double[]) ois.readObject();
+			double[] data = new double[defaultSize];
+			System.arraycopy(ois.readObject(), 0, data, 0, defaultSize);
+			return data;
 			
 		} catch (Exception e) {
 			double[] boardValues = new double[defaultSize];
