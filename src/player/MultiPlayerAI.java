@@ -24,7 +24,7 @@ public class MultiPlayerAI extends BaseAI {
 	public double[][] boardValues; //boardValues[aggresivity_level][boardhash * 2 + (0=mean, 1=variance)]
 	public static final String filename = "multiPlayerCache";
 	public static final String fileext = ".bin";
-	public boolean OUTPUT = true;
+	public boolean OUTPUT = false;
 	
 	
 	private static double[][] newRollValuesCache()
@@ -215,7 +215,7 @@ public class MultiPlayerAI extends BaseAI {
 	}
 	
 	private double[] rollFromScoreboard(int board) {
-		//if (OUTPUT)
+		if (OUTPUT)
 			System.out.println("Roll from scoreboard: " + board);
 		
 		double[][] cache = newRollValuesCache();

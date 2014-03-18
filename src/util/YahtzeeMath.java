@@ -260,6 +260,20 @@ public class YahtzeeMath {
 		}
 	}
 	
+	public static double prob(int n, int rollC) 
+	{
+		switch(n){
+			case 0: return 1;
+			case 1: return prob1[rollC];
+			case 2: return prob2[rollC];
+			case 3: return prob3[rollC];
+			case 4: return prob4[rollC];
+			case 5: return prob5[rollC];
+			default:
+				throw new IllegalArgumentException("Max n is 5. you gave " + n);
+		}
+	}
+	
 	
 	public static long choose(int ii, int jj) { // Access method with init check
 		if (ii >= ch.length || jj >= ch[0].length) {
