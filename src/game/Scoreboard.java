@@ -59,6 +59,20 @@ public class Scoreboard implements Cloneable {
 			scoreArray[typ.ordinal()] = -1;
 	}
 	
+	public Scoreboard(int firstEmptyScore, int amountEmptyScore) {
+		scoreArray = new int[ScoreType.values().length];
+		for (ScoreType typ : ScoreType.values())
+			scoreArray[typ.ordinal()] = -1;
+		
+		for (ScoreType typ : ScoreType.values()){
+			if (typ.ordinal() < firstEmptyScore){
+				scoreArray[typ.ordinal()] = 0;
+			}else if (typ.ordinal() >= firstEmptyScore + amountEmptyScore){
+				scoreArray[typ.ordinal()] = 0;
+			}
+		}
+	}
+	
 	@Override
 	public Scoreboard clone(){
 		Scoreboard n = new Scoreboard();

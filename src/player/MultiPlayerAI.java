@@ -21,7 +21,7 @@ public class MultiPlayerAI extends BaseAI {
 	public int aggresivityLevel = 5;
 	public boolean staticAggresivity = false;
 	public double[][] boardValues; //boardValues[aggresivity_level][boardhash * 2 + (0=mean, 1=variance)]
-	public static final String filename = "multiPlayerCache";
+	public static String filename = "multiPlayerCache";
 	public static final String fileext = ".bin";
 	public boolean OUTPUT = false;
 	
@@ -110,7 +110,7 @@ public class MultiPlayerAI extends BaseAI {
 			
 			//Calculate the probability that we win with aggresivity level i
 			NormalDistribution nd = new NormalDistribution(myExpectedMean, Math.sqrt(myExpectedVariance));
-			
+		
 			double winningProb = 1-nd.cumulativeProbability(otherExpectedVal-1);
 			//-y + x?? eller omvendt. Do it.
 			//mean - mean
