@@ -8,132 +8,130 @@ import util.YahtzeeMath;
 public class YahtzeeMathTest {
 
 	@Test
-	public void testProb5() {
-		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
-			assertEquals("The probabilities are not the same", prob(YahtzeeMath.allRolls[i].length,YahtzeeMath.allRolls[i]), YahtzeeMath.prob(YahtzeeMath.allRolls[i].length, YahtzeeMath.allRolls[i]), 1E-6);
+	public void testProbs(){
+		int[] roll1 = new int[1];
+		int[] roll2 = new int[2];
+		int[] roll3 = new int[3];
+		int[] roll4 = new int[4];
+		int[] roll5 = new int[5];
+		
+		
+		int[] counts1 = new int[6];
+		int[] counts2 = new int[21];
+		int[] counts3 = new int[56];
+		int[] counts4 = new int[126];
+		int[] counts5 = new int[252];
+		
+		double totalProb = 0;
+		for (int a = 1; a <= 6; a++){
+		 for (int b = 1; b <= 6; b++){
+		  for (int c = 1; c <= 6; c++){
+		   for (int d = 1; d <= 6; d++){
+		    for (int e = 1; e <= 6; e++){
+		    	roll5 = new int[]{a,b,c,d,e};
+		    	int colex = YahtzeeMath.colex(roll5);
+		    	counts5[colex]++;
+		    }
+	    	roll4 = new int[]{a,b,c,d};
+	    	int colex = YahtzeeMath.colex(roll4);
+	    	counts4[colex]++;
+		   }
+		    roll3 = new int[]{a,b,c};
+	    	int colex = YahtzeeMath.colex(roll3);
+	    	counts3[colex]++;
+		  }
+		    roll2 = new int[]{a,b};
+	    	int colex = YahtzeeMath.colex(roll2);
+	    	counts2[colex]++;
+		 }
+	    	roll1 = new int[]{a};
+	    	int colex = YahtzeeMath.colex(roll1);
+	    	counts1[colex]++;
+		}
+		    
+		
+		for (int i = 0; i < counts5.length; i++) {
+			double prob = counts5[i]/7776d;
+			totalProb += prob;
+			assertEquals("The consequences will never be the same!", prob, YahtzeeMath.prob(5, i), 0);
+		}
+		System.out.println("total prob 5: " + totalProb);
+		totalProb = 0;
+		
+		for (int i = 0; i < counts4.length; i++) {
+			double prob = counts4[i]/1296d;
+			totalProb += prob;
+			assertEquals("The consequences will never be the same!", prob, YahtzeeMath.prob(4, i), 0);
+		}
+		System.out.println("total prob 4: " + totalProb);
+		totalProb = 0;
+		
+		for (int i = 0; i < counts3.length; i++) {
+			double prob = counts3[i]/216d;
+			totalProb += prob;
+			assertEquals("The consequences will never be the same!", prob, YahtzeeMath.prob(3, i), 0);
+		}
+		System.out.println("total prob 3: " + totalProb);
+		totalProb = 0;
+		
+		for (int i = 0; i < counts2.length; i++) {
+			double prob = counts2[i]/36d;
+			totalProb += prob;
+			assertEquals("The consequences will never be the same!", prob, YahtzeeMath.prob(2, i), 0);
+		}
+		System.out.println("total prob 2: " + totalProb);
+		totalProb = 0;
+		
+		for (int i = 0; i < counts1.length; i++) {
+			double prob = counts1[i]/6d;
+			totalProb += prob;
+			assertEquals("The consequences will never be the same!", prob, YahtzeeMath.prob(1, i), 0);
+		}
+		System.out.println("total prob 1: " + totalProb);
 	}
 	
-	@Test
-	public void testProb4() {
-		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
-		{
-			int[] roll = Arrays.copyOf(YahtzeeMath.allRolls[i], 4);
-			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
-		}
-	}
+	
+	
 	
 	@Test
-	public void testProb3() {
-		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
-		{
-			int[] roll = Arrays.copyOf(YahtzeeMath.allRolls[i], 3);
-			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
-		}
-	}
-	
-	@Test
-	public void testProb2() {
-		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
-		{
-			int[] roll = Arrays.copyOf(YahtzeeMath.allRolls[i], 2);
-			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
-		}
-	}
-	
-	@Test
-	public void testProb1() {
-		for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
-		{
-			int[] roll = Arrays.copyOf(YahtzeeMath.allRolls[i], 1);
-			assertEquals("The probabilities are not the same", prob(roll.length,roll), YahtzeeMath.prob(roll.length, roll), 1E-6);
-		}
-	}
+	public void testColex(){
+		int[] roll1 = new int[1];
+		int[] roll2 = new int[2];
+		int[] roll3 = new int[3];
+		int[] roll4 = new int[4];
+		int[] roll5 = new int[5];
+		
+		for (int a = 1; a <= 6; a++){
+			 for (int b = 1; b <= 6; b++){
+			  for (int c = 1; c <= 6; c++){
+			   for (int d = 1; d <= 6; d++){
+			    for (int e = 1; e <= 6; e++){
+			    	roll5 = new int[]{a,b,c,d,e};
 
-	/*
-	 * OLD CODE FOR VERIFICATION PURPOSES
-	 */
+			    	int oColex = YahtzeeMath.colex(roll5);
+			    	int colex = YahtzeeMath.colexInit(roll5);
+			    	assertEquals(oColex, colex);			    	
+			    }
+		    	roll4 = new int[]{a,b,c,d};
+		    	int oColex = YahtzeeMath.colex(roll4);
+		    	int colex = YahtzeeMath.colexInit(roll4);
+		    	assertEquals(oColex, colex);	
+			   }
+			    roll3 = new int[]{a,b,c};
+		    	int oColex = YahtzeeMath.colex(roll3);
+		    	int colex = YahtzeeMath.colexInit(roll3);
+		    	assertEquals(oColex, colex);	
+			  }
+			    roll2 = new int[]{a,b};
+		    	int oColex = YahtzeeMath.colex(roll2);
+		    	int colex = YahtzeeMath.colexInit(roll2);
+		    	assertEquals(oColex, colex);	
+			 }
+		    	roll1 = new int[]{a};
+		    	int oColex = YahtzeeMath.colex(roll1);
+		    	int colex = YahtzeeMath.colexInit(roll1);
+		    	assertEquals(oColex, colex);	
+			}
 	
-	public static double prob5(int[] r)
-	{
-		//count occurrences
-		int[] c = new int[6];
-		for (int i = 0; i < 5; i++)
-			c[r[i]-1]++;
-		//sort them and find prob
-		Arrays.sort(c);
-		//(A/B) / C
-		//Probability = (A/C)
-		//Occurences = B
-		//Could be rewritten to: (A/C)/B (makes more sense?)
-		if 		(c[5] == 5){			return     (6/6.) / 7776.;} /*AAAAA*/
-		else if (c[5] == 4){			return  (150/30.) / 7776.;} /*AAAAB*/
-		else if (c[5] == 3){
-				if (c[4] == 2) {		return  (300/30.) / 7776.;} /*AAABB*/
-				else 		   {		return (1200/60.) / 7776.;} /*AAABC*/
-		}
-		else if (c[5] == 2){
-				if (c[4] == 2) {		return (1800/60.) / 7776.;} /*AABBC*/
-				else 		   {		return (3600/60.) / 7776.;} /*AABCD*/
-		}
-		else 				{			return   (720/6.) / 7776.;} /*ABCDE*/
-	}
-	public static double prob4(int[] r)
-	{
-		//count occurrences
-		int[] c = new int[6];
-		for (int i = 0; i < 4; i++)
-			c[r[i]-1]++;
-		//sort them and find prob
-		Arrays.sort(c);
-		if (c[5] == 4){ 				return  (6/6.) / 1296.;} /*AAAA*/
-		else if (c[5] == 3) { 			return (120/30.) / 1296.;} /*AAAB*/
-		else if (c[5] == 2){
-			if (c[4] == 2) { 			return (90/15.) / 1296.;} /*AABB*/
-			else {						return (720/60.) / 1296.;} /*AABC*/
-		}
-		else {							return  (360/15.) / 1296.;} /*ABCD*/
-	}
-
-	public static double prob3(int[] r)
-	{
-		//count occurrences
-		int[] c = new int[6];
-		for (int i = 0; i < 3; i++)
-			c[r[i]-1]++;
-		//sort them and find prob
-		Arrays.sort(c);
-		if (c[5] == 3){ 				return  (6/6.) / 216.;} /*AAA*/
-		else if (c[5] == 2) { 			return (90/30.) / 216.;} /*AAB*/
-		else {							return  (120/20.) / 216.;} /*ABC*/
-	}
-
-	public static double prob2(int[] r)
-	{
-		//count occurrences
-		int[] c = new int[6];
-		for (int i = 0; i < 2; i++)
-			c[r[i]-1]++;
-		//sort them and find prob
-		Arrays.sort(c);
-		if (c[5] == 2){ 				return  (6/6.) / 36.;} /*AA*/
-		else {							return  (30/15.) / 36.;} /*AB*/
-	}
-	public static double prob1(int[] r)
-	{
-		return 1 / 6.;
-	}
-	
-	public static double prob(int n, int[] roll)
-	{
-		switch(n){
-			case 0: return 1;
-			case 1: return prob1(roll);
-			case 2: return prob2(roll);
-			case 3: return prob3(roll);
-			case 4: return prob4(roll);
-			case 5: return prob5(roll);
-			default:
-				throw new IllegalArgumentException("Max n is 5. you gave " + n);
-		}
 	}
 }
