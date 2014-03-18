@@ -11,6 +11,7 @@ import game.Scoreboard;
 import game.Scoreboard.ScoreType;
 
 import org.apache.commons.math3.distribution.*;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 
 public class MultiPlayerAI extends BaseAI {
@@ -111,7 +112,13 @@ public class MultiPlayerAI extends BaseAI {
 			
 			//Calculate the probability that we win with aggresivity level i
 			NormalDistribution nd = new NormalDistribution(myExpectedMean, Math.sqrt(myExpectedVariance));
+			
 			double winningProb = 1-nd.cumulativeProbability(otherExpectedVal-1);
+			//-y + x?? eller omvendt. Do it.
+			//mean - mean
+			//vari + vari
+			//cumulativeProb 0
+			
 			
 			//Select the aggresivity level with the highest winning prob
 			if (bestWinningProb < winningProb) {
