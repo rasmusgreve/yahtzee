@@ -5,6 +5,21 @@ import java.util.Arrays;
 
 public class Persistence {
 	
+	
+	public static float[] loadFloatArray(String filename, int size)
+	{
+		float[] data = new float[size];
+		ObjectInputStream inputStream = null;
+		try {
+			inputStream = new ObjectInputStream(new FileInputStream(filename));	
+			System.arraycopy(inputStream.readObject(), 0, data, 0, size);
+			inputStream.close();
+		} catch (Exception e) {
+			Arrays.fill(data, -1);
+		}
+		return data;
+	}
+	
 	/**
 	 * Load a double array from a file on disc
 	 * If the file cannot be found a default array filled with -1's will be returned
@@ -31,7 +46,7 @@ public class Persistence {
 	 * @param data The data to write to disc
 	 * @param filename The name of the file to write
 	 */
-	public static void storeArray(double[] data, String filename)
+	public static void storeArray(Object data, String filename)
 	{
 		try {
 			ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename));
