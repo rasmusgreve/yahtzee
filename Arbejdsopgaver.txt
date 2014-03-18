@@ -1,0 +1,27 @@
+Arbejdsopgaver
+1)	I updateAggresivity; Sammenlign hver aggro level med normal-distribution for modstanderen
+2)	Efter A -> Få single player ai til at få samme score som: http://www-set.win.tue.nl/~wstomv/misc/yahtzee/slides-2up.pdf (Glenn: 	245,87)
+3)	Efter B -> Test om single player AI float får samme score som glenn (245,87)
+4)	Kilde på varianssammenlægning. Tobias er kilde. Og wikipedia. Og statistikbøger.
+5)	Skriv optimal AI
+
+-- Ekstra opgaver
+
+E1)	Undersøg hvilken aggro modstanderen bruger (og lav beregningen ud fra den antagede aggro)
+E2)	Sammenlign optimal MP-Yahtzee med heuristic MP-Yahtzee (ala. Padsiewiez (Pawlewicz))
+E3)	Hvor mange steder i tilstandsrummet tager aggresiviteterne forskellige valg?
+
+
+
+
+Udregningsopgaver
+A) 	SinglePlayerAI -> For at se om cachen bliver ændret (pga. random ændringer fra første gang vi gjorde det). Test om boardValues[0] = 245,87 ?
+B) 	SinglePlayerAIFloat -> For at finde ud af om vi får en korrekt værdi med floats. Test om boardValues[0] = 245,87 ?
+C) 	MultiPlayerAI -> Først efter opgave 1 er løst -> Caches bliver anderledes med anden aggro update funktion!
+
+
+
+Rapport:
+	hvad vi har gjort
+	nødvendige optimeringer
+	matematik/stat der viser at det virker
