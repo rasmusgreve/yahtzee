@@ -11,6 +11,7 @@ public class Scoreboard implements Cloneable {
 	//Map layout
 	//      13       6
 	//xxxxxxxxxxxxxvvvvvv
+	//0011110000000111111
 	//x: scoretypes
 	//v: upper value
 	final static int upperMask = (1 << 6) - 1;
@@ -42,10 +43,34 @@ public class Scoreboard implements Cloneable {
 		return (scoreboard & upperMask) >= 63 ? 35 : 0;
 	}
 	
+	public static Scoreboard getOptimalPlayerScoreboard()
+	{
+		Scoreboard board = new Scoreboard();
+		board.insert(ScoreType.THREES, 9);
+		board.insert(ScoreType.FOURS, 12);
+		board.insert(ScoreType.FIVES, 15);
+		board.insert(ScoreType.SIXES, 30);
+		return board;
+	}
+	
 	public Scoreboard() {
 		scoreArray = new int[ScoreType.values().length];
 		for (ScoreType typ : ScoreType.values())
 			scoreArray[typ.ordinal()] = -1;
+	}
+	
+	public Scoreboard(int firstEmptyScore, int amountEmptyScore) {
+		scoreArray = new int[ScoreType.values().length];
+		for (ScoreType typ : ScoreType.values())
+			scoreArray[typ.ordinal()] = -1;
+		
+		for (ScoreType typ : ScoreType.values()){
+			if (typ.ordinal() < firstEmptyScore){
+				scoreArray[typ.ordinal()] = 0;
+			}else if (typ.ordinal() >= firstEmptyScore + amountEmptyScore){
+				scoreArray[typ.ordinal()] = 0;
+			}
+		}
 	}
 	
 	@Override

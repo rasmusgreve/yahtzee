@@ -35,6 +35,14 @@ public class OptimalMultiPlayerAI implements Player {
 	}
 	
 	
+	private static double[] newRollValuesCache()
+	{
+		double[] rollValues = new double[1020];
+		Arrays.fill(rollValues, -1);
+		return rollValues;
+	}
+	
+	
 	private ScoreType getBestScoreEntry(int[] roll, int board){
 		int rollC = YahtzeeMath.colex(roll);
 		
@@ -78,22 +86,160 @@ public class OptimalMultiPlayerAI implements Player {
 	
 	
 	private double rollFromScoreboard(int board) {
-//		double s = 0;
-//		double[] cache = newRollValuesCache();
-//		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
-//			double v = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, board, cache);
-//			s += v * YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
-//		}
-//		return s;
-		return 0;
+		double s = 0;
+		double[] cache = newRollValuesCache();
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
+			double v = valueOfRoll(YahtzeeMath.allRolls[i], 2, board, cache);
+			s += v * YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
+		}
+		return s;
 	}
 
+	private double valueOfRoll(int[] roll, int rollsLeft, int board, double[] rollValues)
+	{
+		
+		if (rollsLeft == 0)
+		{		
+			double max = Double.NEGATIVE_INFINITY;
+			for (int i = 0; i < ScoreType.count; i++) {
+				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
+				int rollVal = GameLogic.valueOfRoll(i, YahtzeeMath.colex(roll));
+				double boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
+				max = Math.max(max, boardVal + rollVal);
+			}
+			return max;
+		}
+		
+		
+		int idx = rollIdx(roll, rollsLeft);
+		if (rollValues[idx] == -1)
+		{
+			rollValues[idx] = Integer.MIN_VALUE;
+			for (boolean[] hold : getInterestingHolds(roll))
+			{
+				if (hold == null) continue;
+				
+				//int[] holdDice = getHoldDice(roll, hold);		
+				
+				double sum = 0;
+								
+				for (int[] new_roll : getPossibleRolls(roll, hold))
+				{
+					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, board, rollValues);
+					//sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, board, rollValues);
+				}
+				rollValues[idx] = Math.max(rollValues[idx], sum);
+			}
+		}
+		return rollValues[idx];
+	}
+	
+	
+	private static int[][] getPossibleRolls(int[] roll, boolean[] hold)
+	{
+        int newRollsNeeded = 5;
+		for (int i = 0; i < hold.length; i++) if (hold[i]) newRollsNeeded--;
+		int[][] rolls;
+		if (newRollsNeeded == 0){
+			 rolls = new int[1][];
+			 rolls[0] = roll;
+			 return rolls;
+		}else{
+			 rolls = new int[YahtzeeMath.rollNumber(newRollsNeeded)][];
+		}
+		
+		for (int j = 0; j < YahtzeeMath.rollNumber(newRollsNeeded); j++)
+		{
+			int[] r_p = YahtzeeMath.allRolls(newRollsNeeded)[j];
+			int[] r = new int[5];
+
+			int c = 0;
+			for (int i = 0; i < 5; i++) {
+				if (hold[i]){
+					r[i] = roll[i];
+					
+				}else{
+					r[i] = r_p[c];
+					c++;
+				}
+			}
+			
+			rolls[j] = r;
+		}
+		
+		
+		return rolls;
+	}
 	
 	
 	
+	private static boolean[][] getInterestingHolds(int[] roll)
+	{	
+		
+		boolean[][] holds = new boolean[32][];
+		for (int i = 0; i < (1 << 5); i++){
+			boolean[] hold = holdFromInt(i);
+			
+			//Filter out uninteresting holds
+			boolean add = true;
+			for (int j = 1; j < hold.length; j++) {
+				if (hold[j] && !hold[j-1] && roll[j-1] == roll[j]) add = false;
+			}
+			
+			if (add){
+				holds[i] = hold;
+			}
+		}
+		return holds;
+	}
+	
+	
+	protected static double getProb(boolean[] hold, int[] roll)
+	{
+		int c = 0;
+		for (boolean b : hold)
+			if (!b)
+				c++;
+		
+		int[] reducedRoll = new int[c];
+		c = 0;
+		for (int i=0; i<5; i++){
+			if (!hold[i]){
+				reducedRoll[c] = roll[i];
+				c++;
+			}
+			
+		}
+				
+		return (double)YahtzeeMath.prob(c, reducedRoll);
+	}
 	
 	
 	
+	private static boolean[] holdFromInt(int v)
+	{
+		boolean[] out = new boolean[5];
+		for (int i = 0; i < 5;i++)
+		{
+			out[i] = (v & (1 << i)) > 0;
+		}
+		return out;
+	}
+	
+	
+	protected int rollIdx(int[] roll, int rollsLeft)
+	{
+		int v = YahtzeeMath.colex(roll);
+		v |= rollsLeft << 8;
+		return v;
+	}
+	
+	protected int rollIdx(int rollC, int rollsLeft)
+	{
+		int v = rollC;
+		v |= rollsLeft << 8;
+		return v;
+	}
 
 	@Override
 	public String getName() {

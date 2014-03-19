@@ -10,19 +10,21 @@ import game.Scoreboard.ScoreType;
 import util.Persistence;
 import util.YahtzeeMath;
 
-public class SinglePlayerAI extends BaseAI {
+public class SinglePlayerAIFloat extends BaseAIFloat {
 
-	public double[] boardValues;
-	public static final String filename = "singlePlayerCache.bin";
+	public float[] boardValues;
+	public static final String filename = "singlePlayerCacheFloat.bin";
 	public boolean OUTPUT = false;
 	
-	public SinglePlayerAI() {
-		boardValues = Persistence.loadArray(filename,1000000);
+	public SinglePlayerAIFloat() {
+		boardValues = Persistence.loadFloatArray(filename,1000000);
+		getBoardValue(0);
+		System.out.println(boardValues[0]);
 	}
 	
-	private static double[] newRollValuesCache()
+	private static float[] newRollValuesCache()
 	{
-		double[] rollValues = new double[1020];
+		float[] rollValues = new float[1020];
 		Arrays.fill(rollValues, -1);
 		return rollValues;
 	}
@@ -30,15 +32,8 @@ public class SinglePlayerAI extends BaseAI {
 	@Override
 	public Answer PerformTurn(Question question) {
 		if (OUTPUT)
-			System.out.println("***SinglePlayerAI's turn - q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
+			System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 
-		if (OUTPUT){
-			System.out.print("Current scores. SinglePlayerAI: " + question.scoreboards[question.playerId].sum());
-			if (question.scoreboards.length > 1)
-				System.out.println(", opponent: " + question.scoreboards[question.playerId == 0 ? 1 : 0].sum());
-		}
-
-		
 		Answer ans = new Answer();
 		
 		if (question.rollsLeft == 0)
@@ -56,14 +51,14 @@ public class SinglePlayerAI extends BaseAI {
 		int rollC = YahtzeeMath.colex(roll);
 		
 		int best = -1;
-		double max = Double.NEGATIVE_INFINITY;
+		float max = Float.NEGATIVE_INFINITY;
 		if (OUTPUT)
-			System.out.println("Choosing scoreboard slot - possible choices:");
+			System.out.println("possible choices:");
 		for (int type = 0; type < ScoreType.count; type++) {
 			if (Scoreboard.isFilled(board, type)) continue; //Skip filled entries
 			int value_of_roll = GameLogic.valueOfRoll(type, rollC);
 			int new_board = Scoreboard.fill(board, type, value_of_roll);
-			double newVal = getBoardValue(new_board) + value_of_roll;
+			float newVal = getBoardValue(new_board) + value_of_roll;
 			
 			if (OUTPUT)
 				System.out.println("type: " + type + ", value: " + newVal);
@@ -84,14 +79,14 @@ public class SinglePlayerAI extends BaseAI {
 		
 		int rollC = YahtzeeMath.colex(roll);
 		
-		double max = Double.NEGATIVE_INFINITY;
+		float max = Float.NEGATIVE_INFINITY;
 		int[] bestHoldDice = new int[6];
 		for (boolean[] hold : getInterestingHolds(rollC))
 		{
 			if (hold == null) continue;
 			int[] holdDice = getHoldDice(rollC, hold);			
 			
-			double sum = 0;
+			float sum = 0;
 			for (int new_rollC : getPossibleRolls(rollC, hold))
 			{
 				sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, board, newRollValuesCache());
@@ -115,17 +110,17 @@ public class SinglePlayerAI extends BaseAI {
 		
 		return resortedBestHold;
 	}
-	private double rollFromScoreboard(int board) {
-		double s = 0;
-		double[] cache = newRollValuesCache();
+	private float rollFromScoreboard(int board) {
+		float s = 0;
+		float[] cache = newRollValuesCache();
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
-			double v = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, board, cache);
+			float v = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, board, cache);
 			s += v * YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
 		}
 		return s;
 	}
 	
-	public double getBoardValue(int board) {
+	public float getBoardValue(int board) {
 		if (boardValues[board] == -1) {
 			if (Scoreboard.isFull(board))
 			{
@@ -140,16 +135,16 @@ public class SinglePlayerAI extends BaseAI {
 		return boardValues[board];
 	}
 	
-	private double valueOfRoll(int rollC, int rollsLeft, int board, double[] rollValues)
+	private float valueOfRoll(int rollC, int rollsLeft, int board, float[] rollValues)
 	{
 		
 		if (rollsLeft == 0)
 		{		
-			double max = Double.NEGATIVE_INFINITY;
+			float max = Float.NEGATIVE_INFINITY;
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
 				int rollVal = GameLogic.valueOfRoll(i, rollC);
-				double boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
+				float boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
 				max = Math.max(max, boardVal + rollVal);
 			}
 			return max;
@@ -166,7 +161,7 @@ public class SinglePlayerAI extends BaseAI {
 				
 				int[] holdDice = getHoldDice(rollC, hold);		
 				
-				double sum = 0;
+				float sum = 0;
 								
 				for (int new_rollC : getPossibleRolls(rollC, hold))
 				{
