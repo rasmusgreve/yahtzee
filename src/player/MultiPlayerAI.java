@@ -55,20 +55,12 @@ public class MultiPlayerAI extends BaseAI {
 			boardValues[i] = Persistence.loadArray(filename + i + fileext, CACHE_SIZE);
 			System.out.println("Loaded boardValue-cache for aggro: " + i);
 		}
-		
-		
-		for (int i = 0; i < aggresivityLevels; i++)
-		{
-			System.out.println("BOARD VALUE 0, aggro: " + i + ", (mean: " + boardValues[i][0] + " , variance: " + boardValues[i][1] +  ") ");
-		}
-		
-		
 	}
 	
 	@Override
 	public Answer PerformTurn(Question question) {
 		if (OUTPUT)
-			System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
+			System.out.println("***MultiPlayerAI's turn - q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 
 		if (OUTPUT)
 			System.out.println("Current scores. MultiPlayerAI: " + question.scoreboards[question.playerId].sum() + ", opponent: " + question.scoreboards[question.playerId == 0 ? 1 : 0].sum());
@@ -99,7 +91,8 @@ public class MultiPlayerAI extends BaseAI {
 		
 		//Opponents expected value is estimated remaining scores + the scores in the board
 		//TODO: Compare using the variance too
-		double otherExpectedVal =  boardValues[aggresivityLevels/2][other.ConvertMapToInt()*2+MEAN] + other.sum();
+		double otherExpectedMean =  boardValues[aggresivityLevels/2][other.ConvertMapToInt()*2+MEAN] + other.sum();
+		double otherExpectedVariance =  boardValues[aggresivityLevels/2][other.ConvertMapToInt()*2+VARIANCE];
 		double bestWinningProb = Double.MIN_VALUE;
 		for (int i = 0; i < aggresivityLevels; i++) {
 			//Calculate the expected value of my board
@@ -109,9 +102,12 @@ public class MultiPlayerAI extends BaseAI {
 			myExpectedMean += mine.sum();
 			
 			//Calculate the probability that we win with aggresivity level i
-			NormalDistribution nd = new NormalDistribution(myExpectedMean, Math.sqrt(myExpectedVariance));
-		
-			double winningProb = 1-nd.cumulativeProbability(otherExpectedVal-1);
+//			NormalDistribution nd = new NormalDistribution(myExpectedMean, Math.sqrt(myExpectedVariance));
+//			double winningProb = 1-nd.cumulativeProbability(otherExpectedMean-1);
+			
+			NormalDistribution nd = new NormalDistribution(myExpectedMean-otherExpectedMean, Math.sqrt(myExpectedVariance + otherExpectedVariance));
+			double winningProb = 1-nd.cumulativeProbability(0);
+			
 			//-y + x?? eller omvendt. Do it.
 			//mean - mean
 			//vari + vari
@@ -130,13 +126,11 @@ public class MultiPlayerAI extends BaseAI {
 	private ScoreType getBestScoreEntry(int[] roll, int board)
 	{
 		int rollC = YahtzeeMath.colex(roll);
-		
-		if (OUTPUT)
-			System.out.println("Get best score entry");
+
 		int best = -1;
 		double max = Double.NEGATIVE_INFINITY;
 		if (OUTPUT)
-			System.out.println("possible choices:");
+			System.out.println("Choosing scoreboard slot - possible choices:");
 		for (int type = 0; type < ScoreType.count; type++) {
 			if (Scoreboard.isFilled(board, type)) continue; //Skip filled entries
 			

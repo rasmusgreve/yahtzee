@@ -6,8 +6,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import game.Controller;
 import game.Scoreboard;
+import game.Scoreboard.ScoreType;
 import player.MultiPlayerAI;
+import player.Player;
+import player.SinglePlayerAI;
 import util.Persistence;
 import yahtzee.MultiPlayerBinBuilder;
 
@@ -15,17 +19,22 @@ public class MultiPlayeAIReducedSBTests {
 
 	
 	public static int agg;
-	static int reducedBoardInt;
+	private static int reducedBoardInt;
+	
+	private static SinglePlayerAI spai;
+	private static MultiPlayerAI mpai;
+	
+	private static Scoreboard sb;
 	
 	@BeforeClass
 	public static void testScoreboardUpperZero() {		
+
+		sb = new Scoreboard(6, 7);
 		
-		Scoreboard sb = new Scoreboard(6, 5);
-		
-		MultiPlayerAI.filename = "multiPlayerReducedCache";
+		mpai.filename = "multiPlayerReducedCache";
 		
 		reducedBoardInt = sb.ConvertMapToInt();
-		
+				
 		for (int i = 0; i < MultiPlayerAI.aggresivityLevels; i++)
 		{
 			agg = i;			
@@ -40,15 +49,34 @@ public class MultiPlayeAIReducedSBTests {
 	}
 	
 	
+//	@Test
+//	public void testExpectedScores(){
+//		MultiPlayerAI ai = new MultiPlayerAI();
+//		for (int i = 0; i < MultiPlayerAI.aggresivityLevels; i++) {		
+//			assertEquals("testExpectedScores failed ", expectedScores[i], ai.boardValues[i][reducedBoardInt * 2 + 0], 0);
+//		}
+//		
+//	}
+	
+	
 	@Test
-	public void testExpectedScores(){
-		MultiPlayerAI ai = new MultiPlayerAI();
-		for (int i = 0; i < MultiPlayerAI.aggresivityLevels; i++) {
-			System.out.println("aggro " + i + ", expected val: " + ai.boardValues[i][reducedBoardInt * 2 + 0]);
+	public void testZeroSeedGame(){
+		int seed = 8;
 		
-			assertEquals("dis don work", expectedScores[i], ai.boardValues[i][reducedBoardInt * 2 + 0], 0);
-		}
+		mpai = new MultiPlayerAI();
+		mpai.OUTPUT = false;
+		spai = new SinglePlayerAI();
+		spai.OUTPUT = false;
 		
+		
+
+		Controller c = new Controller(new Player[]{mpai, spai}, seed);
+		c.logic.setScoreboardTo(0, sb.clone());
+		c.logic.setScoreboardTo(1, sb.clone());
+		c.startGame();
+		int result = c.getResults()[0].totalInclBonus();
+		
+		assertEquals("testZeroSeedGame failed ", 172, result);
 	}
 	
 	

@@ -30,8 +30,15 @@ public class SinglePlayerAI extends BaseAI {
 	@Override
 	public Answer PerformTurn(Question question) {
 		if (OUTPUT)
-			System.out.println("q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
+			System.out.println("***SinglePlayerAI's turn - q: " + Arrays.toString(question.roll) + ", " + question.rollsLeft);
 
+		if (OUTPUT){
+			System.out.print("Current scores. SinglePlayerAI: " + question.scoreboards[question.playerId].sum());
+			if (question.scoreboards.length > 1)
+				System.out.println(", opponent: " + question.scoreboards[question.playerId == 0 ? 1 : 0].sum());
+		}
+
+		
 		Answer ans = new Answer();
 		
 		if (question.rollsLeft == 0)
@@ -51,7 +58,7 @@ public class SinglePlayerAI extends BaseAI {
 		int best = -1;
 		double max = Double.NEGATIVE_INFINITY;
 		if (OUTPUT)
-			System.out.println("possible choices:");
+			System.out.println("Choosing scoreboard slot - possible choices:");
 		for (int type = 0; type < ScoreType.count; type++) {
 			if (Scoreboard.isFilled(board, type)) continue; //Skip filled entries
 			int value_of_roll = GameLogic.valueOfRoll(type, rollC);
