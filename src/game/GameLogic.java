@@ -212,4 +212,8 @@ public class GameLogic {
 		scoreboards[playerID].insert(type, val);	
 	}
 	
+	public void setScoreboardTo(int playerID, Scoreboard board){
+		scoreboards[playerID] = board;
+	}
+	
 }
