@@ -1,127 +1,65 @@
 package tests;
 
 import static org.junit.Assert.*;
-import java.util.Arrays;
 import game.GameLogic;
 import game.Scoreboard.ScoreType;
 import org.junit.Test;
-import util.YahtzeeMath;
 
 public class GameLogicTest {
 	
 	@Test
-	public void testValues() {
-		for (ScoreType typ : ScoreType.values())
-		{
-			for (int i = 0; i < YahtzeeMath.allRolls.length; i++)
-			{
-				int[] roll = YahtzeeMath.allRolls[i];
-				assertEquals("Unexpected value", valueOfRoll(typ, roll), GameLogic.valueOfRoll(typ, roll));
-			}
-		}
+	public void testOnes() {
+		assertEquals(5, GameLogic.valueOfRoll(ScoreType.ONES, new int[]{1,1,1,1,1}));
+		assertEquals(4, GameLogic.valueOfRoll(ScoreType.ONES, new int[]{1,1,1,1,2}));
+		assertEquals(4, GameLogic.valueOfRoll(ScoreType.ONES, new int[]{2,1,1,1,1}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.ONES, new int[]{2,6,4,3,2}));
 	}
-	
-	
-	/*
-	 * OLD CODE FOR VERIFICATION PURPOSES
-	 */
-	
-	public static int valueOfRoll(ScoreType type, int[] roll){
-		
-		switch (type)
-		{
-			case ONES:
-				return count(roll,1) * 1;
-			case TWOS:
-				return count(roll,2) * 2;
-			case THREES:
-				return count(roll,3) * 3;
-			case FOURS:
-				return count(roll,4) * 4;
-			case FIVES:
-				return count(roll,5) * 5;
-			case SIXES:
-				return count(roll,6) * 6;
-			case THREE_OF_A_KIND:
-				for (int v = 1; v <= 6; v++)
-					if (count(roll,v) >= 3)
-						return sum(roll);
-				return 0;
-			case FOUR_OF_A_KIND:
-				for (int v = 1; v <= 6; v++)
-					if (count(roll,v) >= 4)
-						return sum(roll);
-				return 0;
-			case FULL_HOUSE:
-				int v3 = -1;
-				for (int v = 1; v <= 6; v++)
-				{
-					if (count(roll,v) >= 3)
-					{
-						v3 = v;
-						break;
-					}
-				}
-				if (v3 == -1) return 0;
-				for (int v = 1; v <= 6; v++)
-				{
-					if (v == v3) continue;
-					if (count(roll,v) >= 2)
-					{
-						return GameLogic.FULL_HOUSE_SCORE;
-					}
-				}
-				return 0;
-			case SMALL_STRAIGHT:
-				if (countConsecutive(roll) >= 4)
-					return GameLogic.SMALL_STRAIGHT_SCORE;
-				return 0;
-			case BIG_STRAIGHT:
-				if (countConsecutive(roll) == 5)
-					return GameLogic.BIG_STRAIGHT_SCORE;	
-				return 0;
-			case YAHTZEE:
-				for (int v = 1; v <= 6; v++)
-					if (count(roll,v) == 5)
-						return GameLogic.YAHTZEE_SCORE;
-				return 0;
-			case CHANCE:
-				return sum(roll);
-				
-			default:
-				return 0;
-		}
+	@Test
+	public void testFull() {
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{2,2,3,3,3}));
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{3,2,3,2,3}));
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{3,3,3,2,2}));
 	}
+	@Test
+	public void testThreeOfAKind() {
+		assertEquals(8, GameLogic.valueOfRoll(ScoreType.THREE_OF_A_KIND, new int[]{1,1,2,2,2}));
+		assertEquals(19, GameLogic.valueOfRoll(ScoreType.THREE_OF_A_KIND, new int[]{5,5,2,5,2}));
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.THREE_OF_A_KIND, new int[]{5,5,5,5,5}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.THREE_OF_A_KIND, new int[]{2,5,6,5,2}));
+	}
+	@Test
+	public void testFourOfAKind() {
+		assertEquals(9, GameLogic.valueOfRoll(ScoreType.FOUR_OF_A_KIND, new int[]{1,2,2,2,2}));
+		assertEquals(13, GameLogic.valueOfRoll(ScoreType.FOUR_OF_A_KIND, new int[]{2,5,2,2,2}));
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FOUR_OF_A_KIND, new int[]{5,5,5,5,5}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.FOUR_OF_A_KIND, new int[]{2,5,5,5,2}));
+	}
+	@Test
+	public void testSmallStraight()	{
+		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{1,2,3,4,6}));
+		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{4,2,3,2,5}));
+		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{3,3,4,5,6}));
+		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{6,6,3,4,5}));
 
-	private static int countConsecutive(int[] roll)
-	{
-		Arrays.sort(roll);
-		int cons = 1;
-		for (int i = 1; i < roll.length; i++)
-		{
-			if (roll[i] == roll[i-1] + 1)
-				cons++;
-			else if (roll[i] != roll[i-1])
-				cons = 1;
-		}
-		return cons;
 	}
 	
-	private static int count(int[] roll, int val)
-	{
-		int c = 0;
-		for (int i = 0; i < roll.length; i++)
-			if (roll[i] == val)
-				c++;
-		return c;
+	@Test
+	public void testConsecutive(){
+		assertEquals(1, GameLogic.countConsecutive(new int[]{1,1,1,1,1}));
+		assertEquals(2, GameLogic.countConsecutive(new int[]{1,2,1,1,1}));
+		assertEquals(2, GameLogic.countConsecutive(new int[]{1,2,5,5,5}));
+		assertEquals(3, GameLogic.countConsecutive(new int[]{1,2,4,5,6}));
+		assertEquals(3, GameLogic.countConsecutive(new int[]{1,1,2,1,3}));
+		assertEquals(5, GameLogic.countConsecutive(new int[]{6,5,4,3,2}));
+		assertEquals(5, GameLogic.countConsecutive(new int[]{1,5,2,4,3}));
+		assertEquals(3, GameLogic.countConsecutive(new int[]{1,1,2,2,3}));
+		assertEquals(5, GameLogic.countConsecutive(new int[]{2,3,4,5,6}));
+		assertEquals(5, GameLogic.countConsecutive(new int[]{1,2,3,4,5,7,8,10,11,12}));
+		assertEquals(1, GameLogic.countConsecutive(new int[]{1}));
+		assertEquals(2, GameLogic.countConsecutive(new int[]{1,2}));
+		assertEquals(2, GameLogic.countConsecutive(new int[]{2,1}));
+		assertEquals(1, GameLogic.countConsecutive(new int[]{3,3,3,3,3}));
+		assertEquals(2, GameLogic.countConsecutive(new int[]{1,3,4,6,6}));
 	}
-	
-	private static int sum(int[] roll)
-	{
-		int c = 0;
-		for (int i = 0; i < roll.length; i++)
-			c+= roll[i];
-		return c;
-	}	
 
 }

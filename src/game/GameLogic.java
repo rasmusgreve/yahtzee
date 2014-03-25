@@ -109,7 +109,7 @@ public class GameLogic {
 		return rollValues[type][rollC];
 	}
 	
-	private static int calculateValueOfRoll(ScoreType type, int[] roll){
+	public static int calculateValueOfRoll(ScoreType type, int[] roll){
 		
 		switch (type)
 		{
@@ -176,18 +176,22 @@ public class GameLogic {
 		}
 	}
 	
-	private static int countConsecutive(int[] roll)
+	public static int countConsecutive(int[] roll)
 	{
 		Arrays.sort(roll);
+		int high = 0;
 		int cons = 1;
 		for (int i = 1; i < roll.length; i++)
 		{
 			if (roll[i] == roll[i-1] + 1)
 				cons++;
 			else if (roll[i] != roll[i-1])
+			{
+				if (cons > high) high = cons;
 				cons = 1;
+			}
 		}
-		return cons;
+		return Math.max(cons,high);
 	}
 	
 	private static int count(int[] roll, int val)
