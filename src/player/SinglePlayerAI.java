@@ -15,6 +15,7 @@ public class SinglePlayerAI extends BaseAI {
 	public double[] boardValues;
 	public static final String filename = "singlePlayerCache.bin";
 	public boolean OUTPUT = false;
+	public boolean optimize = false;
 	
 	public SinglePlayerAI() {
 		boardValues = Persistence.loadArray(filename,1000000);
@@ -38,21 +39,21 @@ public class SinglePlayerAI extends BaseAI {
 				System.out.println(", opponent: " + question.scoreboards[question.playerId == 0 ? 1 : 0].sum());
 		}
 
-		
 		Answer ans = new Answer();
 		
 		if (question.rollsLeft == 0)
-			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId].ConvertMapToInt());
+			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId]);
 		else
-			ans.diceToHold = getBestHold(question.roll, question.rollsLeft, question.scoreboards[question.playerId].ConvertMapToInt());
+			ans.diceToHold = getBestHold(question.roll, question.rollsLeft, question.scoreboards[question.playerId]);
 		if (OUTPUT)
 			System.out.println("a: " + Arrays.toString(ans.diceToHold) + ", " + ans.selectedScoreEntry);
 
 		return ans;
 	}
 	
-	private ScoreType getBestScoreEntry(int[] roll, int board)
+	private ScoreType getBestScoreEntry(int[] roll, Scoreboard scoreboard)
 	{
+		int board = scoreboard.ConvertMapToInt();
 		int rollC = YahtzeeMath.colex(roll);
 		
 		int best = -1;
@@ -60,10 +61,21 @@ public class SinglePlayerAI extends BaseAI {
 		if (OUTPUT)
 			System.out.println("Choosing scoreboard slot - possible choices:");
 		for (int type = 0; type < ScoreType.count; type++) {
-			if (Scoreboard.isFilled(board, type)) continue; //Skip filled entries
-			int value_of_roll = GameLogic.valueOfRoll(type, rollC);
-			int new_board = Scoreboard.fill(board, type, value_of_roll);
-			double newVal = getBoardValue(new_board) + value_of_roll;
+			int value_of_roll = 0;
+			double newVal = 0;
+			if (optimize){
+				int new_board = 0;
+				if (Scoreboard.isFilled(board, type)) continue; //Skip filled entries
+				value_of_roll = GameLogic.valueOfRoll(type, rollC);
+				new_board = Scoreboard.fill(board, type, value_of_roll);
+				newVal = getBoardValue(new_board) + value_of_roll;
+			}else{
+				if (scoreboard.get(ScoreType.values()[type]) >= 0) continue; //Skip filled entries
+				value_of_roll = GameLogic.valueOfRoll(type, roll);
+				Scoreboard newBoard = scoreboard.clone();
+				newBoard.insert(type, value_of_roll);
+				newVal = getBoardValue(newBoard) + value_of_roll;
+			}
 			
 			if (OUTPUT)
 				System.out.println("type: " + type + ", value: " + newVal);
@@ -77,69 +89,65 @@ public class SinglePlayerAI extends BaseAI {
 		return ScoreType.values()[best];
 	}
 	
-	private boolean[] getBestHold(int[] roll, int rollsLeft, int board) //Kickoff
+	private boolean[] getBestHold(int[] roll, int rollsLeft, Scoreboard scoreboard) //Kickoff
 	{
+		int board = scoreboard.ConvertMapToInt();
+		int rollC = YahtzeeMath.colex(roll);
+		
 		int[] rollSorted = roll.clone();
 		Arrays.sort(rollSorted);
 		
-		int rollC = YahtzeeMath.colex(roll);
-		
 		double max = Double.NEGATIVE_INFINITY;
 		int[] bestHoldDice = new int[6];
-		for (boolean[] hold : getInterestingHolds(rollC))
+		boolean[] bestHold = new boolean[5];
+		boolean[][] holds = null;
+		if (optimize) holds = getInterestingHolds(rollC);
+		else holds = getInterestingHoldsInit(roll);
+		for (boolean[] hold : holds)
 		{
 			if (hold == null) continue;
 			int[] holdDice = getHoldDice(rollC, hold);			
 			
 			double sum = 0;
-			for (int new_rollC : getPossibleRolls(rollC, hold))
-			{
-				sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, board, newRollValuesCache());
+			if (optimize){
+				for (int new_rollC : getPossibleRolls(rollC, hold))
+				{
+					sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, board, newRollValuesCache());
+				}
+			}else{
+				for (int[] new_roll : getPossibleRolls(roll, hold))
+				{
+					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, scoreboard, newRollValuesCache());
+				}
 			}
 			
 			if (sum > max)
 			{
 				max = sum;
-				bestHoldDice = getHoldDiceInit(rollSorted, hold);
+				if (optimize) bestHoldDice = getHoldDiceInit(rollSorted, hold);
+				else bestHold = hold;
 			}
 		}
 		
-		boolean[] resortedBestHold = new boolean[5];
-		for (int i = 0; i < 5; i++) {
-			if (bestHoldDice[roll[i]-1] > 0){
-				resortedBestHold[i] = true;
-				bestHoldDice[roll[i]-1]--;
+		if (optimize){
+			boolean[] resortedBestHold = new boolean[5];
+			for (int i = 0; i < 5; i++) {
+				if (bestHoldDice[roll[i]-1] > 0){
+					resortedBestHold[i] = true;
+					bestHoldDice[roll[i]-1]--;
+				}
 			}
+			
+			return resortedBestHold;
 		}
-		
-		
-		return resortedBestHold;
+		else return bestHold;
 	}
-	private double rollFromScoreboard(int board) {
-		double s = 0;
-		double[] cache = newRollValuesCache();
-		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
-			double v = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, board, cache);
-			s += v * YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
-		}
-		return s;
-	}
+
 	
-	public double getBoardValue(int board) {
-		if (boardValues[board] == -1) {
-			if (Scoreboard.isFull(board))
-			{
-				boardValues[board] = Scoreboard.bonus(board);
-			} 
-			else
-			{
-				boardValues[board] = rollFromScoreboard(board);
-			}
-		}
-					
-		return boardValues[board];
-	}
+
 	
+
+	//OPTIMIZED VERSIONs
 	private double valueOfRoll(int rollC, int rollsLeft, int board, double[] rollValues)
 	{
 		
@@ -178,8 +186,99 @@ public class SinglePlayerAI extends BaseAI {
 		return rollValues[idx];
 	}
 	
+	public double getBoardValue(int board) {
+		if (boardValues[board] == -1) {
+			if (Scoreboard.isFull(board))
+			{
+				boardValues[board] = Scoreboard.bonus(board);
+			} 
+			else
+			{
+				boardValues[board] = rollFromScoreboard(board);
+			}
+		}
+					
+		return boardValues[board];
+	}
+	private double rollFromScoreboard(int board) {
+		double s = 0;
+		double[] cache = newRollValuesCache();
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
+			double v = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, board, cache);
+			s += v * YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
+		}
+		return s;
+	}
+	
+	//NON-OPTIMIZED VERSION
+	private double valueOfRoll(int[] roll, int rollsLeft, Scoreboard scoreboard, double[] rollValues)
+	{
+		if (rollsLeft == 0)
+		{		
+			double max = Double.NEGATIVE_INFINITY;
+			for (int i = 0; i < ScoreType.count; i++) {
+				if (scoreboard.get(ScoreType.values()[i]) >= 0) continue; //Skip filled entries
+				int rollVal = GameLogic.valueOfRoll(i, roll);
+				Scoreboard newBoard = scoreboard.clone();
+				newBoard.insert(i, rollVal);
+				double boardVal = getBoardValue(newBoard);
+				max = Math.max(max, boardVal + rollVal);
+			}
+			return max;
+		}
+	
+		int idx = rollIdx(roll, rollsLeft);
+		if (rollValues[idx] == -1)
+		{
+			rollValues[idx] = Integer.MIN_VALUE;
+			for (boolean[] hold : getInterestingHolds(roll))
+			{
+				if (hold == null) continue;
+								
+				double sum = 0;
+								
+				for (int[] new_roll : getPossibleRolls(roll, hold))
+				{
+					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, scoreboard, rollValues);
+				}
+				rollValues[idx] = Math.max(rollValues[idx], sum);
+			}
+		}
+		return rollValues[idx];
+	}
 
+	
+	public double getBoardValue(Scoreboard scoreboard) {
+		int board = scoreboard.ConvertMapToInt();
+		
+		if (boardValues[board] == -1) {
+			if (scoreboard.isFull())
+			{
+				boardValues[board] = scoreboard.bonus();
+			} 
+			else
+			{
+				boardValues[board] = rollFromScoreboard(scoreboard);
+			}
+		}
+					
+		return boardValues[board];
+	}
+	
+	private double rollFromScoreboard(Scoreboard scoreboard) {
+		double s = 0;
+		double[] cache = newRollValuesCache();
+		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
+			double v = valueOfRoll(YahtzeeMath.allRolls[i], 2, scoreboard, cache);
+			s += v * YahtzeeMath.prob(5,YahtzeeMath.allRolls[i]);
+		}
+		return s;
+	}
+	
+	
+	
 
+	//Utility
 	@Override
 	public void cleanUp(){
 		Persistence.storeArray(boardValues, filename);

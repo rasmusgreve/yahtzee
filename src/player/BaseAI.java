@@ -7,6 +7,7 @@ import util.YahtzeeMath;
 public abstract class BaseAI implements Player {
 	protected int id;
 	
+	
 	static boolean[][][] interestingHoldsCache = new boolean[252][][];
 	static int[][][] possibleRollsCache = new int[252][][];
 	static double[][] probCache = new double[252][];
@@ -127,6 +128,11 @@ public abstract class BaseAI implements Player {
 		return possibleRollsCache[rollC][holdToInt(hold)];
 	}
 	
+	protected int[][] getPossibleRolls(int[] roll, boolean[] hold)
+	{
+		return getPossibleRollsInit(roll, hold);
+	}
+	
 	protected static int[][] getPossibleRollsInit(int[] roll, boolean[] hold)
 	{
         int newRollsNeeded = 5;
@@ -203,6 +209,10 @@ public abstract class BaseAI implements Player {
 		return interestingHoldsCache[rollC];
 	}
 	
+	protected boolean[][] getInterestingHolds(int[] roll)
+	{	
+		return getInterestingHoldsInit(roll);
+	}
 	
 	protected static boolean[][] getInterestingHoldsInit(int[] roll)
 	{	
