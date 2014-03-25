@@ -17,8 +17,15 @@ public class GameLogicTest {
 	@Test
 	public void testFull() {
 		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{2,2,3,3,3}));
-		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{3,2,3,2,3}));
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{2,2,2,3,3}));
 		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{3,3,3,2,2}));
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{3,3,2,2,2}));
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{3,2,3,2,3}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{3,3,1,2,2}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{1,3,1,2,2}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{1,1,1,1,1}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{1,1,1,1,2}));
+		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{2,2,3,3,2,3}));
 	}
 	@Test
 	public void testThreeOfAKind() {
@@ -40,6 +47,26 @@ public class GameLogicTest {
 		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{4,2,3,2,5}));
 		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{3,3,4,5,6}));
 		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{6,6,3,4,5}));
+	}
+	@Test
+	public void testBigStraight()	{
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.BIG_STRAIGHT, new int[]{1,2,3,4,6}));
+		assertEquals(40, GameLogic.valueOfRoll(ScoreType.BIG_STRAIGHT, new int[]{1,2,3,4,5}));
+		assertEquals(40, GameLogic.valueOfRoll(ScoreType.BIG_STRAIGHT, new int[]{5,4,3,2,1}));
+		assertEquals(40, GameLogic.valueOfRoll(ScoreType.BIG_STRAIGHT, new int[]{6,2,4,3,5}));
+		assertEquals(40, GameLogic.valueOfRoll(ScoreType.BIG_STRAIGHT, new int[]{5,2,4,3,1}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.BIG_STRAIGHT, new int[]{4,2,3,2,5}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.BIG_STRAIGHT, new int[]{3,3,4,5,6}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.BIG_STRAIGHT, new int[]{6,6,3,4,5}));
+	}
+	@Test
+	public void testYahtzee()	{
+		assertEquals(50, GameLogic.valueOfRoll(ScoreType.YAHTZEE, new int[]{1,1,1,1,1}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.YAHTZEE, new int[]{1,2,2,2,2}));
+		assertEquals(50, GameLogic.valueOfRoll(ScoreType.YAHTZEE, new int[]{2,2,2,2,2}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.YAHTZEE, new int[]{5,6,6,6,6}));
+		assertEquals(50, GameLogic.valueOfRoll(ScoreType.YAHTZEE, new int[]{6,6,6,6,6}));
+		assertEquals(0, GameLogic.valueOfRoll(ScoreType.YAHTZEE, new int[]{1,2,3,4,5}));
 	}
 	
 	@Test
