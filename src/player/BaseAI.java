@@ -107,10 +107,8 @@ public abstract class BaseAI implements Player {
 	protected static double getAggregatedMean(double[] probabilities, double[][] prob_dist)
 	{
 		double sum = 0;
-		double p = 0;
 		for (int i = 0; i < probabilities.length;i++)
 		{
-			p += probabilities[i];
 			sum += probabilities[i] * prob_dist[i][0];
 		}
 		return sum;
