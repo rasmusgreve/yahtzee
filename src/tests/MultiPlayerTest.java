@@ -2,9 +2,6 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
 import game.Controller;
 
 import org.junit.*;

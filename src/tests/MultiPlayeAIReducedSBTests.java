@@ -2,18 +2,15 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import game.Controller;
 import game.Scoreboard;
-import game.Scoreboard.ScoreType;
 import player.MultiPlayerAI;
 import player.Player;
 import player.SinglePlayerAI;
 import util.Persistence;
-import yahtzee.MultiPlayerBinBuilder;
 
 public class MultiPlayeAIReducedSBTests {
 
@@ -31,7 +28,7 @@ public class MultiPlayeAIReducedSBTests {
 
 		sb = new Scoreboard(6, 7);
 		
-		mpai.filename = "multiPlayerReducedCache";
+		MultiPlayerAI.filename = "multiPlayerReducedCache";
 		
 		reducedBoardInt = sb.ConvertMapToInt();
 				
