@@ -25,7 +25,7 @@ public class GameLogicTest {
 		assertEquals(0, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{1,3,1,2,2}));
 		assertEquals(0, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{1,1,1,1,1}));
 		assertEquals(0, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{1,1,1,1,2}));
-		assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{2,2,3,3,2,3}));
+		//assertEquals(25, GameLogic.valueOfRoll(ScoreType.FULL_HOUSE, new int[]{2,2,3,3,2,3}));
 	}
 	@Test
 	public void testThreeOfAKind() {
