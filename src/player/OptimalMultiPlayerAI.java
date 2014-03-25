@@ -13,7 +13,7 @@ import game.Scoreboard.ScoreType;
 public class OptimalMultiPlayerAI implements Player {
 	
 	protected int id;
-	
+		
 	public double[] boardValues;
 	public static final String filename = "optimalPlayerCache.bin";
 	
@@ -26,13 +26,16 @@ public class OptimalMultiPlayerAI implements Player {
 	public Answer PerformTurn(Question question) {
 		Answer ans = new Answer();
 		
+		int stateInt = convertScoreboardsToInt(question.scoreboards[question.playerId], question.scoreboards[question.playerId == 0 ? 1 : 0]);
+		
 		if (question.rollsLeft == 0)
-			ans.selectedScoreEntry = getBestScoreEntry(question.roll, question.scoreboards[question.playerId].ConvertMapToInt());
+			ans.selectedScoreEntry = getBestScoreEntry(question.roll, stateInt);
 		else
-			ans.diceToHold = getBestHold(question.roll, question.rollsLeft, question.scoreboards[question.playerId].ConvertMapToInt());
+			ans.diceToHold = getBestHold(question.roll, question.rollsLeft, stateInt);
 		
 		return ans;
 	}
+	
 	
 	
 	private static double[] newRollValuesCache()
@@ -79,9 +82,58 @@ public class OptimalMultiPlayerAI implements Player {
 	}
 	
 	
-	private boolean[] getBestHold(int[] roll, int rollsLeft, int board){
+	private boolean[] getBestHold(int[] roll, int rollsLeft, int state){
 		
-		return null;
+		
+		int rollC = YahtzeeMath.colex(roll);
+		
+		int[] rollSorted = roll.clone();
+		Arrays.sort(rollSorted);
+		
+		double max = Double.NEGATIVE_INFINITY;
+		int[] bestHoldDice = new int[6];
+		boolean[] bestHold = new boolean[5];
+		boolean[][] holds = null;
+		holds = getInterestingHolds(roll);
+		
+//		for (boolean[] hold : holds)
+//		{
+//			if (hold == null) continue;
+//			int[] holdDice = getHoldDice(rollC, hold);			
+//			
+//			double sum = 0;
+//			if (optimize){
+//				for (int new_rollC : getPossibleRolls(rollC, hold))
+//				{
+//					sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, board, newRollValuesCache());
+//				}
+//			}else{
+//				for (int[] new_roll : getPossibleRolls(roll, hold))
+//				{
+//					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, scoreboard, newRollValuesCache());
+//				}
+//			}
+//			
+//			if (sum > max)
+//			{
+//				max = sum;
+//				if (optimize) bestHoldDice = getHoldDiceInit(rollSorted, hold);
+//				else bestHold = hold;
+//			}
+//		}
+//		
+		
+		boolean[] resortedBestHold = new boolean[5];
+		for (int i = 0; i < 5; i++) {
+			if (bestHoldDice[roll[i]-1] > 0){
+				resortedBestHold[i] = true;
+				bestHoldDice[roll[i]-1]--;
+			}
+		}
+		
+		return resortedBestHold;
+		
+	
 	}
 	
 	
@@ -255,9 +307,47 @@ public class OptimalMultiPlayerAI implements Player {
 	public void cleanUp() {
 		Persistence.storeArray(boardValues, filename);
 	}
+
 	
 	
 	
-	
-	
+	private static int convertScoreboardsToInt(Scoreboard aiBoard, Scoreboard opponentBoard){
+		int aiScore = aiBoard.totalInclBonus();
+		int opponentScore = opponentBoard.totalInclBonus();
+		int diff = aiScore - opponentScore;
+		
+		boolean[] aiScores = new boolean[7];
+		boolean[] opponentScores = new boolean[7];
+		
+		int i = 0;
+		for (int type = 6; type < ScoreType.count; type++) {
+			if (aiBoard.scoreArray[type] > -1){
+				aiScores[i] = true;
+			}
+			if (opponentBoard.scoreArray[type] > -1){
+				opponentScores[i] = true;
+			}
+			i++;
+		}
+		
+		
+		//diff : -235 -- +235
+		int uDiff = diff + 235;	//:0 - 470
+		int result = uDiff; 
+		for (int j = 0; j < aiScores.length; j++) {
+			result |= (aiScores[j] ? 1 : 0) << (9+j);
+		}		
+		for (int j = 0; j < opponentScores.length; j++) {
+			result |= (opponentScores[j] ? 1 : 0) << ((9+7)+j);
+		}		
+		
+		return result;
+		
+	}
+	//convertScoreboardsToInt bits:
+	//X: diff between players = 0 - 470
+	//A: ai current score
+	//B: opponent current score
+	//BBBBBBBAAAAAAAXXXXXXXXX
+	//|	 7  ||  7  ||   9   |
 }
