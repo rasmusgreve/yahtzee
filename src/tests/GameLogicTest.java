@@ -40,7 +40,6 @@ public class GameLogicTest {
 		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{4,2,3,2,5}));
 		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{3,3,4,5,6}));
 		assertEquals(30, GameLogic.valueOfRoll(ScoreType.SMALL_STRAIGHT, new int[]{6,6,3,4,5}));
-
 	}
 	
 	@Test
@@ -60,6 +59,7 @@ public class GameLogicTest {
 		assertEquals(2, GameLogic.countConsecutive(new int[]{2,1}));
 		assertEquals(1, GameLogic.countConsecutive(new int[]{3,3,3,3,3}));
 		assertEquals(2, GameLogic.countConsecutive(new int[]{1,3,4,6,6}));
+		assertEquals(3, GameLogic.countConsecutive(new int[]{1,2,3,5,6}));
 	}
 
 }
