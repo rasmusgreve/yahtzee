@@ -201,6 +201,8 @@ public class SinglePlayerAI extends BaseAI {
 		return boardValues[board];
 	}
 	private double rollFromScoreboard(int board) {
+		cacheBuildingPrint(board);
+		
 		double s = 0;
 		double[] cache = newRollValuesCache();
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
@@ -266,6 +268,8 @@ public class SinglePlayerAI extends BaseAI {
 	}
 	
 	private double rollFromScoreboard(Scoreboard scoreboard) {
+		cacheBuildingPrint(scoreboard.ConvertMapToInt());
+
 		double s = 0;
 		double[] cache = newRollValuesCache();
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {

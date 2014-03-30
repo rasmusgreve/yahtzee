@@ -389,4 +389,18 @@ public abstract class BaseAI implements Player {
 	}
 	
 	
+	int c = 0;
+	long t = System.currentTimeMillis();
+	protected void cacheBuildingPrint(int board){
+		if (c%100 == 0){
+			float runTime = (System.currentTimeMillis() - t)/1000f/60f;
+			float averageSpeed = c / runTime;
+			float expectedTimeLeft = (357500 / averageSpeed) - runTime;
+			System.out.println("rollFromScoreboard called, board: " + board + ", count: " + c + ", runTime: " + runTime + " min");
+			System.out.println("average speed: "+ averageSpeed + " board/min");
+			System.out.println("expected time left: "+ expectedTimeLeft + " min");
+		}
+		c++;
+	}
+	
 }

@@ -214,6 +214,8 @@ public class MultiPlayerAI extends BaseAI {
 	}
 	
 	private double[] rollFromScoreboard(int board) {
+		if (staticAggresivity) cacheBuildingPrint(board);
+		
 		if (OUTPUT)
 			System.out.println("Roll from scoreboard: " + board);
 		
