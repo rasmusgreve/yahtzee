@@ -29,6 +29,11 @@ public class Persistence {
 	 */
 	public static double[] loadArray(String filename, int size)
 	{
+		return loadArray(filename, size, -1);
+	}
+	
+	public static double[] loadArray(String filename, int size, double defaultValue)
+	{
 		double[] data = new double[size];
 		ObjectInputStream inputStream = null;
 		try {
@@ -36,7 +41,7 @@ public class Persistence {
 			System.arraycopy(inputStream.readObject(), 0, data, 0, size);
 			inputStream.close();
 		} catch (Exception e) {
-			Arrays.fill(data, -1);
+			Arrays.fill(data, defaultValue);
 		}
 		return data;
 	}

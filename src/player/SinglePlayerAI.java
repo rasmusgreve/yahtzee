@@ -12,13 +12,14 @@ import util.YahtzeeMath;
 
 public class SinglePlayerAI extends BaseAI {
 
+	public static final int CACHE_SIZE = (int)Math.pow(2,19);
 	public double[] boardValues;
 	public static final String filename = "singlePlayerCache.bin";
 	public boolean OUTPUT = false;
 	public boolean optimize = false;
 	
 	public SinglePlayerAI() {
-		boardValues = Persistence.loadArray(filename,1000000);
+		boardValues = Persistence.loadArray(filename,CACHE_SIZE);
 	}
 	
 	private static double[] newRollValuesCache()
