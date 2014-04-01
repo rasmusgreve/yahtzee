@@ -8,24 +8,29 @@ import game.Answer;
 import game.GameLogic;
 import game.Question;
 import game.Scoreboard;
+import game.State;
 import game.Scoreboard.ScoreType;
 
 public class OptimalMultiPlayerAI implements Player {
 	
+	public static final int CACHE_SIZE = (int)Math.pow(2,23);
 	protected int id;
 		
 	public double[] stateValues;
 	public static final String filename = "optimalPlayerCache.bin";
 	
 	public OptimalMultiPlayerAI(){
-		stateValues = Persistence.loadArray(filename,1000000, Double.NaN);
+		stateValues = Persistence.loadArray(filename,CACHE_SIZE, Double.NaN);
 	}
 
 	
 	public double getStateValue(int state, boolean myTurn){
 		
 		if (stateValues[state] == Double.NaN){
-			
+			if (State.isGameOver(state)){
+				
+				stateValues[state] = State.getWinner(state);
+			}
 			
 			
 			
@@ -53,7 +58,7 @@ public class OptimalMultiPlayerAI implements Player {
 	public Answer PerformTurn(Question question) {
 		Answer ans = new Answer();
 		
-		int stateInt = convertScoreboardsToInt(question.scoreboards[question.playerId], question.scoreboards[question.playerId == 0 ? 1 : 0]);
+		int stateInt = State.convertScoreboardsToState(question.scoreboards[question.playerId], question.scoreboards[question.playerId == 0 ? 1 : 0]);
 		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, stateInt);
@@ -338,43 +343,11 @@ public class OptimalMultiPlayerAI implements Player {
 	
 	
 	
-	private static int convertScoreboardsToInt(Scoreboard aiBoard, Scoreboard opponentBoard){
-		int aiScore = aiBoard.totalInclBonus();
-		int opponentScore = opponentBoard.totalInclBonus();
-		int diff = aiScore - opponentScore;
-		
-		boolean[] aiScores = new boolean[7];
-		boolean[] opponentScores = new boolean[7];
-		
-		int i = 0;
-		for (int type = 6; type < ScoreType.count; type++) {
-			if (aiBoard.scoreArray[type] > -1){
-				aiScores[i] = true;
-			}
-			if (opponentBoard.scoreArray[type] > -1){
-				opponentScores[i] = true;
-			}
-			i++;
-		}
-		
-		
-		//diff : -235 -- +235
-		int uDiff = diff + 235;	//:0 - 470
-		int result = uDiff; 
-		for (int j = 0; j < aiScores.length; j++) {
-			result |= (aiScores[j] ? 1 : 0) << (9+j);
-		}		
-		for (int j = 0; j < opponentScores.length; j++) {
-			result |= (opponentScores[j] ? 1 : 0) << ((9+7)+j);
-		}		
-		
-		return result;
-		
-	}
+	
 	//convertScoreboardsToInt bits:
 	//X: diff between players = 0 - 470
-	//A: ai current score
-	//B: opponent current score
+	//A: ai current board
+	//B: opponent current board
 	//BBBBBBBAAAAAAAXXXXXXXXX
 	//|	 7  ||  7  ||   9   |
 }
