@@ -8,7 +8,7 @@ public class MultiPlayerBinBuilder implements Runnable {
 	public static void main(String[] args) throws InterruptedException {
 		MultiPlayerAI ai = new MultiPlayerAI();
 		Thread[] ts = new Thread[ai.aggresivityLevels];
-		for (int i = 0; i < ai.aggresivityLevels; i++)
+		for (int i = 6; i < ai.aggresivityLevels; i++)
 		{
 			MultiPlayerBinBuilder r = new MultiPlayerBinBuilder();
 			r.agg = i;
