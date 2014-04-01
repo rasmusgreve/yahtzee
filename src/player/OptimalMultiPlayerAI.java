@@ -14,14 +14,40 @@ public class OptimalMultiPlayerAI implements Player {
 	
 	protected int id;
 		
-	public double[] boardValues;
+	public double[] stateValues;
 	public static final String filename = "optimalPlayerCache.bin";
 	
 	public OptimalMultiPlayerAI(){
-		
+		stateValues = Persistence.loadArray(filename,1000000);
 	
 	}
 
+	
+	public double getStateValue(int state, boolean myTurn){
+		
+		if (stateValues[state] == Double.NaN){
+			
+		}
+		
+		
+		
+//		if (boardValues[board] == -1) {
+//			if (Scoreboard.isFull(board))
+//			{
+//				boardValues[board] = Scoreboard.bonus(board);
+//			} 
+//			else
+//			{
+//				boardValues[board] = rollFromScoreboard(board);
+//			}
+//		}
+//					
+//		return boardValues[board];
+		
+		return 0;
+	}
+	
+	
 	@Override
 	public Answer PerformTurn(Question question) {
 		Answer ans = new Answer();
@@ -67,18 +93,18 @@ public class OptimalMultiPlayerAI implements Player {
 	}
 	
 	public double getBoardValue(int board) {
-		if (boardValues[board] == -1) {
+		if (stateValues[board] == -1) {
 			if (Scoreboard.isFull(board))
 			{
-				boardValues[board] = Scoreboard.bonus(board);
+				stateValues[board] = Scoreboard.bonus(board);
 			} 
 			else
 			{
-				boardValues[board] = rollFromScoreboard(board);
+				stateValues[board] = rollFromScoreboard(board);
 			}
 		}
 					
-		return boardValues[board];
+		return stateValues[board];
 	}
 	
 	
@@ -305,7 +331,7 @@ public class OptimalMultiPlayerAI implements Player {
 
 	@Override
 	public void cleanUp() {
-		Persistence.storeArray(boardValues, filename);
+		Persistence.storeArray(stateValues, filename);
 	}
 
 	
