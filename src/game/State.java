@@ -15,6 +15,7 @@ public class State {
 	final static int opponentBoardMask = ((1 << 7) - 1) << (9+7);
 	final static int diffMask = (1 << 9) - 1;
 	
+	
 	final static int stateDiffZeroValue = 235;
 	
 	
@@ -44,6 +45,29 @@ public class State {
 	private static int getScoreDiff(int state){
 		return (state & diffMask);
 	}
+	
+	public static boolean isFilled(int state, int scoretype, boolean myTurn){
+		if (scoretype < 6) return true;
+		scoretype = 1 << ((scoretype - 6) + (myTurn ? 9 : (9+7)));
+		return (state & scoretype) != 0;
+	}
+	
+	
+	public static int fill(int state, int scoretype, int rollVal, boolean myTurn) {
+		if (scoretype < 6) throw new RuntimeException();
+		
+		//fill on off position
+		scoretype = 1 << ((scoretype - 6) + (myTurn ? 9 : (9+7)));
+
+		//change available scores
+		state |= scoretype;
+
+		//change score diff for state
+		state += myTurn ? rollVal : -rollVal;
+		
+		return state;
+	}
+	
 	
 	public static int convertScoreboardsToState(Scoreboard aiBoard, Scoreboard opponentBoard){
 		int myScore = aiBoard.totalInclBonus();
@@ -77,9 +101,16 @@ public class State {
 		
 		return result;
 	}
+
+
 	
 }
 
-
+//convertScoreboardsToInt bits:
+//X: diff between players = 0 - 470
+//A: my current board
+//B: opponent current board
+//BBBBBBBAAAAAAAXXXXXXXXX
+//|	 7  ||  7  ||   9   |
 
 
