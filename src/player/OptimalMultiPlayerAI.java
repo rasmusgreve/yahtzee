@@ -18,8 +18,7 @@ public class OptimalMultiPlayerAI implements Player {
 	public static final String filename = "optimalPlayerCache.bin";
 	
 	public OptimalMultiPlayerAI(){
-		stateValues = Persistence.loadArray(filename,1000000);
-	
+		stateValues = Persistence.loadArray(filename,1000000, Double.NaN);
 	}
 
 	
@@ -27,8 +26,12 @@ public class OptimalMultiPlayerAI implements Player {
 		
 		if (stateValues[state] == Double.NaN){
 			
+			
+			
+			
 		}
 		
+		return stateValues[state];
 		
 		
 //		if (boardValues[board] == -1) {
@@ -43,8 +46,6 @@ public class OptimalMultiPlayerAI implements Player {
 //		}
 //					
 //		return boardValues[board];
-		
-		return 0;
 	}
 	
 	
