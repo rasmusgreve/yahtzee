@@ -164,24 +164,22 @@ public class SinglePlayerAI extends BaseAI {
 		}
 		
 		
+		
 		int idx = rollIdx(rollC, rollsLeft);
 		if (rollValues[idx] == -1)
 		{
-			rollValues[idx] = Integer.MIN_VALUE;
+			double max = Double.NEGATIVE_INFINITY;
 			for (boolean[] hold : getInterestingHolds(rollC))
 			{
 				if (hold == null) continue;
-				
 				int[] holdDice = getHoldDice(rollC, hold);		
-				
 				double sum = 0;
-								
-				for (int new_rollC : getPossibleRolls(rollC, hold))
-				{
+				for (int new_rollC : getPossibleRolls(rollC, hold)){
 					sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, board, rollValues);
 				}
-				rollValues[idx] = Math.max(rollValues[idx], sum);
+				max = Math.max(max, sum);
 			}
+			rollValues[idx] = max;
 		}
 		return rollValues[idx];
 	}
