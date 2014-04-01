@@ -9,8 +9,8 @@ public class SinglePlayerBinBuilder {
 
 		System.out.println("Starting singleplayer ai bin build");
 		SinglePlayerAI spai1 = new SinglePlayerAI();
-		//spai1.getBoardValue(0);
-		spai1.getBoardValue(new Scoreboard());
+		spai1.getBoardValue(0);
+		//spai1.getBoardValue(new Scoreboard());
 		spai1.cleanUp();
 
 		System.out.println("All done");
