@@ -9,8 +9,8 @@ public class OptimalBinBuilder {
 	public static void main(String[] args) {
 		OptimalMultiPlayerAI ai = new OptimalMultiPlayerAI();
 		
-		Scoreboard mysb = new Scoreboard(12, 1);
-		Scoreboard opponentsb = new Scoreboard(12, 1);
+		Scoreboard mysb = new Scoreboard(10, 3);
+		Scoreboard opponentsb = new Scoreboard(10, 3);
 		
 		int state = State.convertScoreboardsToState(mysb, opponentsb);
 		

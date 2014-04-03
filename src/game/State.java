@@ -35,14 +35,14 @@ public class State {
 		}
 	}
 	
-	private static boolean myBoardFull(int state){
+	public static boolean myBoardFull(int state){
 		return (state & myBoardMask) == myBoardMask;	
 	}
-	private static boolean opponentBoardFull(int state){
+	public static boolean opponentBoardFull(int state){
 		return (state & opponentBoardMask) == opponentBoardMask;	
 	}
 	
-	private static int getScoreDiff(int state){
+	public static int getScoreDiff(int state){
 		return (state & diffMask);
 	}
 	
