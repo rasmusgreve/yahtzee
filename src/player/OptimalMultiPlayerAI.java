@@ -38,6 +38,8 @@ public class OptimalMultiPlayerAI extends BaseAI {
 	
 	
 	private double rollFromState(int state, boolean myTurn){
+		optimalCacheBuildingPrint(state);
+		
 		double expected = 0;
 		double[] cache = newRollValuesCache();
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
@@ -137,5 +139,21 @@ public class OptimalMultiPlayerAI extends BaseAI {
 	@Override
 	public void cleanUp() {
 		Persistence.storeArray(stateValues, filename);
+	}
+	
+	int c = 0;
+	long t = System.currentTimeMillis();
+	private void optimalCacheBuildingPrint(int state){
+		if (c%10000 == 0){
+			float runTime = (System.currentTimeMillis() - t)/1000f/60f;
+			float averageSpeed = c / runTime;
+			float expectedTimeLeft = (6000000 / averageSpeed) - runTime;
+			System.out.println("rollFromScoreboard called, state: " + state + ", count: " + c + ", runTime: " + runTime + " min");
+			System.out.println("average speed: "+ averageSpeed + " board/min");
+			System.out.println("expected time left: "+ expectedTimeLeft + " min");
+			
+			cleanUp();
+		}
+		c++;
 	}
 }
