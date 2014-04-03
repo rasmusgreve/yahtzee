@@ -103,6 +103,71 @@ public class OptimalMultiPlayerAI extends BaseAI {
 	}
 	
 	
+	private ScoreType getBestScoreEntry(int[] roll, int state){
+		int rollC = YahtzeeMath.colex(roll);
+		
+		int best = -1;
+		double max = Double.NEGATIVE_INFINITY;
+		
+		for (int type = 0; type < ScoreType.count; type++) {
+			int value_of_roll = 0;
+			double newVal = 0;
+			int new_state = 0;
+			
+			if (State.isFilled(state, type, true)) continue;  //Skip filled entries
+			value_of_roll = GameLogic.valueOfRoll(type, rollC);
+			new_state = State.fill(state, type, value_of_roll, true);
+			
+			newVal = getStateValue(new_state, false);
+				
+			if (newVal > max){
+				max = newVal;
+				best = type;
+			}
+		}
+		return ScoreType.values()[best];
+	}
+	
+	
+	private boolean[] getBestHold(int[] roll, int rollsLeft, int state){
+		int rollC = YahtzeeMath.colex(roll);
+		
+		int[] rollSorted = roll.clone();
+		Arrays.sort(rollSorted);
+		
+		double max = Double.NEGATIVE_INFINITY;
+		int[] bestHoldDice = new int[6];
+		boolean[][] holds = null;
+		holds = getInterestingHolds(rollC);
+		for (boolean[] hold : holds)
+		{
+			if (hold == null) continue;
+			int[] holdDice = getHoldDice(rollC, hold);			
+			
+			double sum = 0;
+			for (int new_rollC : getPossibleRolls(rollC, hold))
+			{
+				sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, state, true, newRollValuesCache());
+			}
+			
+			if (sum > max)
+			{
+				max = sum;
+				bestHoldDice = getHoldDiceInit(rollSorted, hold);
+			}
+		}
+		
+		boolean[] resortedBestHold = new boolean[5];
+		for (int i = 0; i < 5; i++) {
+			if (bestHoldDice[roll[i]-1] > 0){
+				resortedBestHold[i] = true;
+				bestHoldDice[roll[i]-1]--;
+			}
+		}
+		return resortedBestHold;
+	}
+	
+	
 	
 	private static double[] newRollValuesCache()
 	{
@@ -112,18 +177,7 @@ public class OptimalMultiPlayerAI extends BaseAI {
 	}
 	
 	
-	private ScoreType getBestScoreEntry(int[] roll, int board){
-		int rollC = YahtzeeMath.colex(roll);
-		int best = -1;
-		double max = Double.NEGATIVE_INFINITY;
-		return ScoreType.values()[best];
-	}
-	
-	
-	private boolean[] getBestHold(int[] roll, int rollsLeft, int state){
-		boolean[] resortedBestHold = new boolean[5];
-		return resortedBestHold;
-	}
+
 	
 
 	@Override
