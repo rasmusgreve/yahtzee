@@ -12,11 +12,12 @@ public class OptimalBinBuilder {
 		Scoreboard mysb = new Scoreboard(11, 2);
 		Scoreboard opponentsb = new Scoreboard(11, 2);
 		
-		int state = State.convertScoreboardsToState(mysb, opponentsb);
+		int state = State.convertScoreboardsToState(mysb, opponentsb, true);
+		System.out.println("ai.getStateValue(state, true): " + ai.getStateValue(state));
 		
-		mysb.PrintScoreBoard();
+		state = State.setTurn(state, false);
 		
-		System.out.println("ai.getStateValue(state, true): " + ai.getStateValue(state, true));
+		System.out.println("ai.getStateValue(state, false): " + ai.getStateValue(state));
 		ai.cleanUp();
 	}
 }

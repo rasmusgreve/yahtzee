@@ -13,7 +13,7 @@ import game.Scoreboard.ScoreType;
 
 public class OptimalMultiPlayerAI extends BaseAI {
 	
-	public static final int CACHE_SIZE = (int)Math.pow(2,23);
+	public static final int CACHE_SIZE = (int)Math.pow(2,22);
 	protected int id;
 		
 	public double[] stateValues;
@@ -24,38 +24,42 @@ public class OptimalMultiPlayerAI extends BaseAI {
 	}
 
 	
-	public double getStateValue(int state, boolean myTurn){
+	public double getStateValue(int state){
 		
 		if (Double.isNaN(stateValues[state])){
 			if (State.isGameOver(state)){
 				stateValues[state] = State.getWinner(state);
 			}else{
-				stateValues[state] = rollFromState(state, myTurn);
+				stateValues[state] = rollFromState(state);
 			}
 		}	
 		return stateValues[state];
 	}
 	
 	
-	private double rollFromState(int state, boolean myTurn){
+	private double rollFromState(int state){
 		optimalCacheBuildingPrint(state);
 		
 		double expected = 0;
 		double[] cache = newRollValuesCache();
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
-			double v = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, state, myTurn, cache);
+			double v = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, state, cache);
 			expected += v * YahtzeeMath.prob(5, YahtzeeMath.allRolls[i]);
 		}
 		return expected;
 	}
 	
-	private double valueOfRoll(int rollC, int rollsLeft, int state, boolean myTurn, double[] rollValues){
+	private double valueOfRoll(int rollC, int rollsLeft, int state, double[] rollValues){
+		boolean myTurn = State.getTurn(state);
 		if (rollsLeft == 0){
+			
 			double ex = myTurn ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (State.isFilled(state, i, myTurn)) continue;
 				int rollVal = GameLogic.valueOfRoll(i, rollC);
-				double stateVal = getStateValue(State.fill(state, i, rollVal, myTurn), !myTurn);
+				int temp_state = State.fill(state, i, rollVal, myTurn);
+				temp_state = State.setTurn(temp_state, !myTurn);
+				double stateVal = getStateValue(temp_state);
 				ex = myTurn ? Math.max(ex, stateVal) : Math.min(ex, stateVal);
 			}
 			return ex;
@@ -76,7 +80,7 @@ public class OptimalMultiPlayerAI extends BaseAI {
 				
 				for (int new_rollC : getPossibleRolls(rollC, hold))
 				{
-					sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, state, myTurn, rollValues);
+					sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, state, rollValues);
 				}
 				
 				ex = myTurn ? Math.max(ex, sum) : Math.min(ex, sum);
@@ -92,7 +96,7 @@ public class OptimalMultiPlayerAI extends BaseAI {
 	public Answer PerformTurn(Question question) {
 		Answer ans = new Answer();
 		
-		int stateInt = State.convertScoreboardsToState(question.scoreboards[question.playerId], question.scoreboards[question.playerId == 0 ? 1 : 0]);
+		int stateInt = State.convertScoreboardsToState(question.scoreboards[question.playerId], question.scoreboards[question.playerId == 0 ? 1 : 0],true);
 		
 		if (question.rollsLeft == 0)
 			ans.selectedScoreEntry = getBestScoreEntry(question.roll, stateInt);
@@ -117,8 +121,8 @@ public class OptimalMultiPlayerAI extends BaseAI {
 			if (State.isFilled(state, type, true)) continue;  //Skip filled entries
 			value_of_roll = GameLogic.valueOfRoll(type, rollC);
 			new_state = State.fill(state, type, value_of_roll, true);
-			
-			newVal = getStateValue(new_state, false);
+			new_state = State.setTurn(new_state, false);
+			newVal = getStateValue(new_state);
 				
 			if (newVal > max){
 				max = newVal;
@@ -147,7 +151,7 @@ public class OptimalMultiPlayerAI extends BaseAI {
 			double sum = 0;
 			for (int new_rollC : getPossibleRolls(rollC, hold))
 			{
-				sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, state, true, newRollValuesCache());
+				sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, state, newRollValuesCache());
 			}
 			
 			if (sum > max)

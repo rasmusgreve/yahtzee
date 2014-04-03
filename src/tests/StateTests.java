@@ -16,7 +16,7 @@ public class StateTests {
 	{
 		sb1 = new Scoreboard(6,7);
 		sb2 = new Scoreboard(6,7);
-		state = State.convertScoreboardsToState(sb1, sb2);
+		state = State.convertScoreboardsToState(sb1, sb2, true);
 	}
 	
 	@Test
@@ -28,18 +28,29 @@ public class StateTests {
 	@Test 
 	public void testStateFill()
 	{
-		state = State.fill(state, 6, 25, true);
+		state = State.fill(state, 7, 25, true);
 		assertEquals(235+25, State.getScoreDiff(state));
-		assertTrue(State.isFilled(state, 6, true));
-		assertFalse(State.isFilled(state, 6, false));
+		assertTrue(State.isFilled(state, 7, true));
+		assertFalse(State.isFilled(state, 7, false));
 	}
 	
 	@Test 
 	public void testStateFill2()
 	{
-		state = State.fill(state, 6, 25, false);
+		state = State.fill(state, 7, 25, false);
 		assertEquals(235-25, State.getScoreDiff(state));
-		assertTrue(State.isFilled(state, 6, false));
-		assertFalse(State.isFilled(state, 6, true));
+		assertTrue(State.isFilled(state, 7, false));
+		assertFalse(State.isFilled(state, 7, true));
+	}
+	
+	@Test
+	public void testTurn()
+	{
+		assertFalse(State.getTurn(state)); //starts out false
+		state = State.setTurn(state, true);
+		assertTrue(State.getTurn(state)); //Should be true
+		state = State.setTurn(state, false);
+		assertFalse(State.getTurn(state)); //and false again
+		assertEquals(235, State.getScoreDiff(state)); //w/o change to score diff
 	}
 }
