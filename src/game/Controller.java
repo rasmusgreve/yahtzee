@@ -13,6 +13,11 @@ public class Controller {
 		logic = new GameLogic(players.length, seed);
 	}
 	
+	public Controller(Player[] players, int seed, Scoreboard[] boards){
+		this.players = players;
+		logic = new GameLogic(players.length, seed, boards);
+	}
+	
 	public void startGame()
 	{
 		gameRunning = true;

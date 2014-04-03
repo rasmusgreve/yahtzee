@@ -1,6 +1,7 @@
 package yahtzee;
 
 import game.Controller;
+import game.Scoreboard;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,8 +18,9 @@ public class Stats {
 	private static final int ROUNDS = 500;
 	/**
 	 * Args:
-	 * 	[0]   int seed
-	 *  [1-?] class name for players to load
+	 * 	[0]   int seed (x for random)
+	 *  [1] (optional) amount of prefilled scoreentries
+	 *  [1/2-?] class name for players to load
 	 * @param args
 	 * @throws FileNotFoundException 
 	 */
@@ -26,15 +28,23 @@ public class Stats {
 		ArrayList<Player> players = new ArrayList<Player>();
 		
 		int seed = new java.util.Random().nextInt();
+		int filledSpaces = 0;
+		int playerNameStartId = 1;
 		try
 		{
 			seed = Integer.parseInt(args[0]);
 		}
 		catch (Exception e) {}
+		try {
+			//If the parse fails, id is not increased.
+			filledSpaces = Integer.parseInt(args[1]);
+			playerNameStartId++;
+		}
+		catch (Exception e) {}
 		
 		System.out.println("Starting stats with " + String.format("%,d",ROUNDS) + " rounds from seed " + seed);
 		System.out.println("Loading players...");
-		for (int i = 1; i < args.length; i++)
+		for (int i = playerNameStartId; i < args.length; i++)
 		{
 			Player p = loadPlayer(args[i]);
 			System.out.println("\t" + args[i] + " -> ["+(i-1)+"] = " + p.getName());
@@ -56,8 +66,17 @@ public class Stats {
 		for (int i = 0; i < ROUNDS; i++)
 		{
 			long inner_start = System.currentTimeMillis();
-			Controller c = new Controller(players.toArray(new Player[players.size()]), seed);
+			
+			//Build boards
+			Scoreboard[] boards = new Scoreboard[players.size()];
+			for (int v = 0; v < players.size(); v++)
+			{
+				boards[v] = new Scoreboard(filledSpaces,13-filledSpaces);
+			}
+			
+			Controller c = new Controller(players.toArray(new Player[players.size()]), seed, boards);
 			c.OUTPUT = false;
+			
 			c.startGame();
 			System.out.print(String.format("Seed %11d -> | ",seed));
 			double winning_score = -1;
