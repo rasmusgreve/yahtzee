@@ -190,3 +190,19 @@ Stats with 500 rounds from seed -612525653
               Wins: |     500 | 
 
 Total time: 34m 23s
+------------------------------------------------------------------------------------------
+04/04/2014  - 08:47:37
+Stats with 20.000 rounds from seed 388024954
+
+[0] : Optimal multi player AI
+[1] : Single player AI
+
+             Player |   [0]   |   [1]   | 
+              Mean: |  43,197 |  47,264 | 
+            Median: |  28     |  61     | 
+               Min: |   7     |  13     | 
+               Max: | 119     | 120     | 
+         Std. dev.: |  21,645 |  23,131 | 
+              Wins: |   10569 |    8688 | 
+
+Total time: 18h 37m
