@@ -206,3 +206,4 @@ Stats with 20.000 rounds from seed 388024954
               Wins: |   10569 |    8688 | 
 
 Total time: 18h 37m
+	
