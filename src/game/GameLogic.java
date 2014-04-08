@@ -48,8 +48,9 @@ public class GameLogic {
 		}
 	}
 	
-	public GameLogic(int numPlayers, int randomSeed, Scoreboard[] scoreboards){
+	public GameLogic(int numPlayers, int randomSeed, Scoreboard[] scoreboards, int startingPlayerId){
 		this.numPlayers = numPlayers;
+		currentPlayer = startingPlayerId;
 		random = new Random(randomSeed);
 		rollsLeft = 2;
 		roll = roll();

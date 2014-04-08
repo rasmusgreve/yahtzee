@@ -32,7 +32,7 @@ public class Stats {
 		
 		stats_file.println("------------------------------------------------------------------------------------------");
 		stats_file.println(new SimpleDateFormat("dd/MM/YYYY  - HH:mm:ss").format(Calendar.getInstance().getTime()));
-		
+		boolean switchStartingPlayerEachRound = true;
 		int seed = new java.util.Random().nextInt();
 		int rounds = 20000;
 		int filledSpaces = 0;
@@ -84,6 +84,7 @@ public class Stats {
 		long start = System.currentTimeMillis();
 		
 		//Play games
+		int startingPlayer = 0;
 		for (int i = 0; i < rounds; i++)
 		{
 			long inner_start = System.currentTimeMillis();
@@ -95,7 +96,7 @@ public class Stats {
 				boards[v] = new Scoreboard(filledSpaces,13-filledSpaces);
 			}
 			
-			Controller c = new Controller(players.toArray(new Player[players.size()]), seed, boards);
+			Controller c = new Controller(players.toArray(new Player[players.size()]), seed, boards, startingPlayer);
 			c.OUTPUT = false;
 			
 			c.startGame();
@@ -124,10 +125,12 @@ public class Stats {
 			}
 			long duration = System.currentTimeMillis() - start;
 			long inner_duration = System.currentTimeMillis() - inner_start;
-			System.out.println(String.format("%4d / %d - %8s, %8s", i+1, rounds, msToString(inner_duration),  msToString(duration)));
-			stats_file.println(String.format("%4d / %d - %8s, %8s", i+1, rounds, msToString(inner_duration),  msToString(duration)));
+			System.out.println(String.format("%4d / %d - %8s, %8s - %s started", i+1, rounds, msToString(inner_duration),  msToString(duration), players.get(startingPlayer).getName()));
+			stats_file.println(String.format("%4d / %d - %8s, %8s - %s started", i+1, rounds, msToString(inner_duration),  msToString(duration), players.get(startingPlayer).getName()));
 			stats_file.flush();
 			seed++;
+			if (switchStartingPlayerEachRound)
+				startingPlayer = (startingPlayer == 0) ? 1 : 0;
 		}
 		long duration = System.currentTimeMillis() - start;
 		

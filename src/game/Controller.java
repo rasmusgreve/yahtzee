@@ -13,9 +13,9 @@ public class Controller {
 		logic = new GameLogic(players.length, seed);
 	}
 	
-	public Controller(Player[] players, int seed, Scoreboard[] boards){
+	public Controller(Player[] players, int seed, Scoreboard[] boards, int startingPlayerId){
 		this.players = players;
-		logic = new GameLogic(players.length, seed, boards);
+		logic = new GameLogic(players.length, seed, boards, startingPlayerId);
 	}
 	
 	public void startGame()
