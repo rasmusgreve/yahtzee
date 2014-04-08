@@ -13,7 +13,7 @@ import game.Scoreboard.ScoreType;
 
 public class OptimalMultiPlayerAI extends BaseAI {
 	
-	public static final int CACHE_SIZE = (int)Math.pow(2,22);
+	public static final int CACHE_SIZE = (int)Math.pow(2,24);
 	protected int id;
 		
 	public double[] stateValues;

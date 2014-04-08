@@ -4,6 +4,9 @@ import game.Scoreboard.ScoreType;
 
 public class State {
 
+	public static int NUM_FILLED = 6;
+	public static int NUM_EMPTY = 13-NUM_FILLED;
+	
 	//convertScoreboardsToInt bits:
 	//X: diff between players = 0 - 470
 	//A: my current board
@@ -11,10 +14,10 @@ public class State {
 	//TBBBBBBAAAAAAXXXXXXXXX
 	//1|  6 ||  6 ||   9   |
 	
-	final static int myBoardMask = ((1 << 6) - 1) << 9;
-	final static int opponentBoardMask = ((1 << 6) - 1) << (9+6);
+	final static int myBoardMask = ((1 << NUM_EMPTY) - 1) << 9;
+	final static int opponentBoardMask = ((1 << NUM_EMPTY) - 1) << (9+NUM_EMPTY);
 	final static int diffMask = (1 << 9) - 1;
-	final static int turnMask = 1 << (6+6+9);
+	final static int turnMask = 1 << (NUM_EMPTY+NUM_EMPTY+9);
 	
 	
 	final static int stateDiffZeroValue = 235;
@@ -33,7 +36,7 @@ public class State {
 	
 	public static boolean getTurn(int state)
 	{
-		return (state & (1 << (9+6+6))) != 0;
+		return (state & (1 << (9+NUM_EMPTY+NUM_EMPTY))) != 0;
 	}
 	
 	public static boolean isGameOver(int state){
@@ -64,17 +67,17 @@ public class State {
 	}
 	
 	public static boolean isFilled(int state, int scoretype, boolean myTurn){
-		if (scoretype < 7) return true;
-		scoretype = 1 << ((scoretype - 7) + (myTurn ? 9 : (9+6)));
+		if (scoretype < NUM_FILLED) return true;
+		scoretype = 1 << ((scoretype - NUM_FILLED) + (myTurn ? 9 : (9+NUM_EMPTY)));
 		return (state & scoretype) != 0;
 	}
 	
 	
 	public static int fill(int state, int scoretype, int rollVal, boolean myTurn) {
-		if (scoretype < 7) throw new RuntimeException();
+		if (scoretype < NUM_FILLED) throw new RuntimeException();
 		
 		//fill on off position
-		scoretype = 1 << ((scoretype - 7) + (myTurn ? 9 : (9+6)));
+		scoretype = 1 << ((scoretype - NUM_FILLED) + (myTurn ? 9 : (9+NUM_EMPTY)));
 
 		//change available scores
 		state |= scoretype;
@@ -91,11 +94,11 @@ public class State {
 		int opponentScore = opponentBoard.totalInclBonus();
 		int diff = myScore - opponentScore;
 		
-		boolean[] aiScores = new boolean[7];
-		boolean[] opponentScores = new boolean[7];
+		boolean[] aiScores = new boolean[NUM_EMPTY];
+		boolean[] opponentScores = new boolean[NUM_EMPTY];
 		
 		int i = 0;
-		for (int type = 7; type < ScoreType.count; type++) {
+		for (int type = NUM_FILLED; type < ScoreType.count; type++) {
 			if (aiBoard.scoreArray[type] > -1){
 				aiScores[i] = true;
 			}
@@ -113,7 +116,7 @@ public class State {
 			result |= (aiScores[j] ? 1 : 0) << (9+j);
 		}		
 		for (int j = 0; j < opponentScores.length; j++) {
-			result |= (opponentScores[j] ? 1 : 0) << ((9+6)+j);
+			result |= (opponentScores[j] ? 1 : 0) << ((9+NUM_EMPTY)+j);
 		}		
 		
 		return State.setTurn(result, myTurn);

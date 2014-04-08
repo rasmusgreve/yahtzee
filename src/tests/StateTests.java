@@ -14,9 +14,9 @@ public class StateTests {
 	@Before
 	public void setup()
 	{
-		sb1 = new Scoreboard(6,7);
-		sb2 = new Scoreboard(6,7);
-		state = State.convertScoreboardsToState(sb1, sb2, true);
+		sb1 = new Scoreboard(State.NUM_FILLED,State.NUM_EMPTY);
+		sb2 = new Scoreboard(State.NUM_FILLED,State.NUM_EMPTY);
+		state = State.convertScoreboardsToState(sb1, sb2, false);
 	}
 	
 	@Test
