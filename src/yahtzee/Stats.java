@@ -28,7 +28,7 @@ public class Stats {
 	public static void main(String[] args) throws FileNotFoundException {
 		ArrayList<Player> players = new ArrayList<Player>();
 		
-		PrintStream stats_file = new PrintStream(new FileOutputStream("stats.txt", true));
+		PrintStream stats_file = new PrintStream(new FileOutputStream("stats"+new SimpleDateFormat("dd_MM_YYYY_HH_mm_ss").format(Calendar.getInstance().getTime())+".txt", true));
 		
 		stats_file.println("------------------------------------------------------------------------------------------");
 		stats_file.println(new SimpleDateFormat("dd/MM/YYYY  - HH:mm:ss").format(Calendar.getInstance().getTime()));
