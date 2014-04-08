@@ -2,6 +2,7 @@ package yahtzee;
 
 import game.Controller;
 import game.Scoreboard;
+import game.State;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -15,7 +16,6 @@ import player.Player;
 
 public class Stats {
 
-	private static final int ROUNDS = 20000;
 	/**
 	 * Args:
 	 * 	[0]   int seed (x for random)
@@ -28,21 +28,25 @@ public class Stats {
 		ArrayList<Player> players = new ArrayList<Player>();
 		
 		int seed = new java.util.Random().nextInt();
+		int rounds = 20000;
 		int filledSpaces = 0;
-		int playerNameStartId = 1;
+		int playerNameStartId = 2;
 		try
 		{
 			seed = Integer.parseInt(args[0]);
+			rounds = Integer.parseInt(args[1]);
 		}
 		catch (Exception e) {}
 		try {
 			//If the parse fails, id is not increased.
-			filledSpaces = Integer.parseInt(args[1]);
+			filledSpaces = Integer.parseInt(args[playerNameStartId]);
+			State.NUM_FILLED = filledSpaces;
+			State.NUM_EMPTY = 13-filledSpaces;
 			playerNameStartId++;
 		}
 		catch (Exception e) {}
 		
-		System.out.println("Starting stats with " + String.format("%,d",ROUNDS) + " rounds from seed " + seed);
+		System.out.println("Starting stats with " + String.format("%,d",rounds) + " rounds from seed " + seed);
 		System.out.println("Loading players...");
 		for (int i = playerNameStartId; i < args.length; i++)
 		{
@@ -52,7 +56,7 @@ public class Stats {
 			p.reset(i - 1);
 		}
 		
-		int[][] results = new int[players.size()][ROUNDS];
+		int[][] results = new int[players.size()][rounds];
 		int[] wins = new int[players.size()];
 		
 		System.out.println("Results:");
@@ -63,7 +67,7 @@ public class Stats {
 		long start = System.currentTimeMillis();
 		
 		//Play games
-		for (int i = 0; i < ROUNDS; i++)
+		for (int i = 0; i < rounds; i++)
 		{
 			long inner_start = System.currentTimeMillis();
 			
@@ -101,7 +105,7 @@ public class Stats {
 			}
 			long duration = System.currentTimeMillis() - start;
 			long inner_duration = System.currentTimeMillis() - inner_start;
-			System.out.println(String.format("%4d / %d - %8s, %8s", i+1, ROUNDS, msToString(inner_duration),  msToString(duration)));
+			System.out.println(String.format("%4d / %d - %8s, %8s", i+1, rounds, msToString(inner_duration),  msToString(duration)));
 
 			seed++;
 		}
@@ -124,7 +128,7 @@ public class Stats {
 				System.out.println(new SimpleDateFormat("dd/MM/YYYY  - HH:mm:ss").format(Calendar.getInstance().getTime()));
 			}
 			
-			System.out.println("Stats with " + String.format("%,d",ROUNDS) + " rounds from seed " + (seed-ROUNDS));
+			System.out.println("Stats with " + String.format("%,d",rounds) + " rounds from seed " + (seed-rounds));
 			//Print the stats
 			System.out.println();
 			for (int p = 0; p < players.size(); p++)

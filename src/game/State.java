@@ -4,7 +4,7 @@ import game.Scoreboard.ScoreType;
 
 public class State {
 
-	public static int NUM_FILLED = 6;
+	public static int NUM_FILLED = 11;
 	public static int NUM_EMPTY = 13-NUM_FILLED;
 	
 	//convertScoreboardsToInt bits:
