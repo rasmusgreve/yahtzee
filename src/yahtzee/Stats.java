@@ -19,8 +19,9 @@ public class Stats {
 	/**
 	 * Args:
 	 * 	[0]   int seed (x for random)
-	 *  [1] (optional) amount of prefilled scoreentries
-	 *  [1/2-?] class name for players to load
+	 *  [1]	  rounds
+	 *  [2] (optional) amount of prefilled scoreentries
+	 *  [2/3-?] class name for players to load
 	 * @param args
 	 * @throws FileNotFoundException 
 	 */
@@ -34,6 +35,10 @@ public class Stats {
 		try
 		{
 			seed = Integer.parseInt(args[0]);
+		}
+		catch (Exception e) {}
+		try
+		{
 			rounds = Integer.parseInt(args[1]);
 		}
 		catch (Exception e) {}
