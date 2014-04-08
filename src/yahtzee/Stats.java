@@ -28,6 +28,11 @@ public class Stats {
 	public static void main(String[] args) throws FileNotFoundException {
 		ArrayList<Player> players = new ArrayList<Player>();
 		
+		PrintStream stats_file = new PrintStream(new FileOutputStream("stats.txt", true));
+		
+		stats_file.println("------------------------------------------------------------------------------------------");
+		stats_file.println(new SimpleDateFormat("dd/MM/YYYY  - HH:mm:ss").format(Calendar.getInstance().getTime()));
+		
 		int seed = new java.util.Random().nextInt();
 		int rounds = 20000;
 		int filledSpaces = 0;
@@ -56,19 +61,26 @@ public class Stats {
 		for (int i = playerNameStartId; i < args.length; i++)
 		{
 			Player p = loadPlayer(args[i]);
-			System.out.println("\t" + args[i] + " -> ["+(i-1)+"] = " + p.getName());
+			System.out.println("\t" + args[i] + " -> ["+(i-playerNameStartId)+"] = " + p.getName());
+			stats_file.println("\t" + args[i] + " -> ["+(i-playerNameStartId)+"] = " + p.getName());
 			players.add(p);
-			p.reset(i - 1);
+			p.reset(i - playerNameStartId);
 		}
 		
 		int[][] results = new int[players.size()][rounds];
 		int[] wins = new int[players.size()];
 		
 		System.out.println("Results:");
+		
 		System.out.print("             Player | ");
+		stats_file.print("             Player | ");
 		for (int p = 0; p < players.size(); p++)
+		{
 			System.out.print("  ["+p+"]   | ");
+			stats_file.print("  ["+p+"]   | ");
+		}
 		System.out.println();
+		stats_file.println();
 		long start = System.currentTimeMillis();
 		
 		//Play games
@@ -88,6 +100,7 @@ public class Stats {
 			
 			c.startGame();
 			System.out.print(String.format("Seed %11d -> | ",seed));
+			stats_file.print(String.format("Seed %11d -> | ",seed));
 			double winning_score = -1;
 			boolean no_winner = false;
 			//Store scores
@@ -97,6 +110,7 @@ public class Stats {
 				if (results[p][i] == winning_score) no_winner = true;
 				winning_score = Math.max(winning_score, results[p][i]);
 				System.out.print(String.format("%3d     | ",results[p][i]));
+				stats_file.print(String.format("%3d     | ",results[p][i]));
 				players.get(p).reset(p);
 			}
 			//Store wins
@@ -111,7 +125,8 @@ public class Stats {
 			long duration = System.currentTimeMillis() - start;
 			long inner_duration = System.currentTimeMillis() - inner_start;
 			System.out.println(String.format("%4d / %d - %8s, %8s", i+1, rounds, msToString(inner_duration),  msToString(duration)));
-
+			stats_file.println(String.format("%4d / %d - %8s, %8s", i+1, rounds, msToString(inner_duration),  msToString(duration)));
+			stats_file.flush();
 			seed++;
 		}
 		long duration = System.currentTimeMillis() - start;

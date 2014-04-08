@@ -16,7 +16,7 @@ public class SinglePlayerAI extends BaseAI {
 	public double[] boardValues;
 	public static final String filename = "singlePlayerCache.bin";
 	public boolean OUTPUT = false;
-	public boolean optimize = false;
+	public boolean optimize = true;
 	
 	public SinglePlayerAI() {
 		boardValues = Persistence.loadArray(filename,CACHE_SIZE);
