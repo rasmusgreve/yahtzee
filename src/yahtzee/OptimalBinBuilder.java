@@ -11,7 +11,7 @@ public class OptimalBinBuilder {
 		
 		Scoreboard mysb = new Scoreboard(State.NUM_FILLED,State.NUM_EMPTY);
 		Scoreboard opponentsb = new Scoreboard(State.NUM_FILLED,State.NUM_EMPTY);
-		
+		System.out.println("Building optimal with filled: " + State.NUM_FILLED);
 		int state = State.convertScoreboardsToState(mysb, opponentsb, true);
 		System.out.println("State: " + state);
 		System.out.println("State: " + Integer.toBinaryString(state));
