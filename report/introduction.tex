@@ -28,8 +28,10 @@ Claims have been made, that such an algorithm already exists, but it has not bee
 The work by Jakub Pawlewicz is, to our knowledge, the publication with the strongest documentation of how to make a well performing multi player \emph{Yahtzee} AI.
 While the paper of Jakub Pawlewicz\citep{pawlewicz2011nearly} presents impressive results it doesn't actually test the single player AI against a multi player AI, and thus doesn't show that it plays better than the well known optimal Solitaire solution.
 
-We seek to  prove that their exists a better sub-optimal strategy for \emph{Yahtzee} by proving that our implementation defeats the single player \emph{Yahtzee} AI more than $51"\%" $ of the time with at least $95\% $ confidence. The AI described in this article will only be viable for two player \emph{Yahtzee}.
+We seek to show an algorithm for multi player \emph{Yahtzee} that defeats the single player \emph{Yahtzee} AI more than $51\%$ of the time with at least $95\%$ confidence.
+The AI described in this article will only be viable for two player \emph{Yahtzee}.
 
+The idea is to %TODO
 We have implemented a \emph{Yahtzee} AI following a strategy somewhat similar to the single player AI except that it switch between aggression based strategies depending on it's chance to beat the other players expected final score for a given state. 
 We will represent the theory behind the single player ai, how we have extended it into our competing multiplayer AI and show test results of how the two implementations performs when playing each other. 
 Finally we will test each AI against a restricted optimal \emph{Yahtzee} AI and calculate the average amount of mistake made by each of them.
