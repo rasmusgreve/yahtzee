@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{natbib}
+\usepackage{xcolor,colortbl}
 \usepackage{geometry} % to change the page dimensions
 \geometry{a4paper} 
 % \geometry{margin=2in} % for example, change the margins to 2 inches all round
@@ -42,6 +43,9 @@
 
 %%% END Article customizations
 
+\definecolor{Gray}{gray}{0.8}
+
+
 %%% The "real" document content comes below...
 
 \title{Beating an optimal Single player Yahtzee AI}
@@ -66,9 +70,11 @@
 
 \section{Optimal Single player AI}
 \input{singleplayer}
+\label{sec:optimalSingleAI}
 
 \section{Multi player AI}
 \input{multiplayer}
+\label{sec:subOptimalMPAI}
 
 Standard deviation: $s = \sqrt{p_i * \sum_{i=1}^{k} \left[s_i^2 + (m_i^2 * (1 - p_i)) - \sum_{j=i}^{k} \left[p_i * p_j * m_i * m_j\right]\right]}$
 
@@ -76,6 +82,8 @@ Cummulative normal distribution: $y = 1 /(\sigma * \sqrt{2 * \pi} * e^{-(x - \up
 
 \section{Tests and results}
 \input{results}
+\label{sec:testsAndResults}
+
 
 \section{Discussion}
 \input{discussion}

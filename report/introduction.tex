@@ -1,32 +1,32 @@
-Within the field of game theory there exists games with state spaces so small, that the optimal strategy can be computed within seconds. 
-In the other end we have games with state spaces so large that calculating the optimal strategy by exploring the state space is impossible to do within a reasonable amount of time. 
-The focus of this project lies on the game \emph{Yahtzee} that in its Solitaire version has a state space belonging to the first category, but in its multi player version belongs to the second.
+Within the field of game theory there exists games with state spaces so small, that the optimal strategy can be computed within hours - such as simple games like Tic-Tac-Toe or more complex games like Checkers. 
+In the other end we have games with state spaces so large that exploring the entire state space is impossible to do within a reasonable amount of time - like Chess or Go.
+The focus of this project lies on the game \emph{Yahtzee} that in its solitaire (single player) version has a state space belonging to the first category, but in multi player version belongs to the second.
 
 \begin{table}[h] %Den står et lidt underligt sted?
 \centering
-\begin{tabular}{|r|r|r|}
+\begin{tabular}{|>{\columncolor{Gray}}r|r|r|}
 \hline
-&\textbf{Solitaire} & \textbf{Multi player} 		\\ \hline
+\rowcolor{Gray}
+ & \textbf{Solitaire} & \textbf{Multi player (2 players)} 		\\ \hline
 \textbf{Bits} 	& 22		&  49 					\\ \hline
 \textbf{States} & 4,194,304	&  562,949,953,421,312	\\ \hline	
 
-\end{tabular}
-\caption{The required number of bits to represent a state and resulting state space size in \emph{Yahtzee}.}
+\end{tabular} 
+\caption{The number of bits required to represent a state and the resulting upper bound of the state space size in \emph{Yahtzee}.}
 \end{table}
 
-
-An optimal solution for the game of Solitaire \emph{Yahtzee} has been discussed and calculated by Tom Verhoef\cite{verhoeff2004optimal}, and an AI based on this work has been implemented by James Glenn\cite{glenn2006optimal}.
-The strategy is to consider \emph{Yahtzee} a single player game where the goal is to maximize your score. 
+An optimal solution for the game of solitaire \emph{Yahtzee} has been discussed and calculated by Tom Verhoeff\cite{verhoeff2004optimal}, and an AI based on this work has been implemented by James Glenn\cite{glenn2006optimal}.
+The strategy is to consider \emph{Yahtzee} a single player game where the goal is to maximize your score.  %Lidt mærkelig sætning
 The state space for calculating this strategy is small enough that any modern computer will be able to perform the computations within a few hours.
-We have described and implemented the single player AI algorithm using the work of James Glenn, which gives a in depth explanation of the implementation, theory, and testing of the single player AI algorithm.
+We have described and implemented the single player AI algorithm using the work of James Glenn, which gives a in depth explanation of the implementation, theory, and testing of the single player AI algorithm (section \ref{sec:optimalSingleAI}).
 
 James Glenn proposes an optimal solution for the multi player game and mentions that the state space is of a size that makes it impossible to do - both in terms of space and time.
-The aim of our project is not to calculate the optimal solution but instead to improve on the current state of the art sub-optimal multi player \emph{Yahtzee} AI. 
-Our main goal of the project is to show how it is possible with current technology to implement a multi player \emph{Yahtzee} AI that has a better performance in a multi player game than the single player AI, that can be computed and run in a reasonable amount of time.\footnote{i.e. at most \emph{days} of computation for preparation and \emph{seconds} of computation when playing.}
+The aim of our project is not to calculate the optimal solution but instead to improve on the current state of the sub-optimal multi player \emph{Yahtzee} AI  (section \ref{sec:subOptimalMPAI}). 
+Our main goal is to show how it is possible with current technology, to implement a multi player \emph{Yahtzee} AI that has a consistently better performance in a multi player setting than the optimal solitaire strategy, and can be computed and run in a reasonable amount of time (section \ref{sec:testsAndResults})).\footnote{i.e. at most \emph{days} of computation for preparation and \emph{seconds} of computation when playing.}
 
-Claims have been made, that such an algorithm already exists, but it has not been properly documented.
+Claims have been made, pointing towards that such an algorithm already exists, but it has not been properly documented.
 The work by Jakub Pawlewicz is, to our knowledge, the publication with the strongest documentation of how to make a well performing multi player \emph{Yahtzee} AI.
-While the paper of Jakub Pawlewicz\citep{pawlewicz2011nearly} presents impressive results it doesn't actually test the single player AI against a multi player AI, and thus doesn't show that it plays better than the well known optimal Solitaire solution.
+While the paper of Jakub Pawlewicz\citep{pawlewicz2011nearly} presents impressive results it does not test the solitaire AI against a multi player AI, and thus does not show that it plays better than the well known optimal Solitaire solution.
 
 We seek to show an algorithm for multi player \emph{Yahtzee} that defeats the single player \emph{Yahtzee} AI more than $51\%$ of the time with at least $95\%$ confidence.
 The AI described in this article will only be viable for two player \emph{Yahtzee}.
