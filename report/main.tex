@@ -1,8 +1,8 @@
-\documentclass[11pt]{article}
+\documentclass[twocolumn]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{natbib}
 \usepackage{xcolor,colortbl}
-\usepackage{geometry} % to change the page dimensions
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
 \geometry{a4paper} 
 % \geometry{margin=2in} % for example, change the margins to 2 inches all round
 % \geometry{landscape} % set up the page for landscape
@@ -60,7 +60,6 @@
 \input{abstract}
 \end{abstract}
 
-\pagebreak
 
 \section{Introduction}
 \input{introduction}
@@ -68,11 +67,11 @@
 \section{Yahtzee}
 \input{yahtzee}
 
-\section{Optimal Single player AI}
+\section{Optimal solitaire strategy}
 \input{singleplayer}
 \label{sec:optimalSingleAI}
 
-\section{Multi player AI}
+\section{Multi player strategy}
 \input{multiplayer}
 \label{sec:subOptimalMPAI}
 
