@@ -31,8 +31,8 @@ While the paper of Jakub Pawlewicz\citep{pawlewicz2011nearly} presents impressiv
 We seek to show an algorithm for multi player \emph{Yahtzee} that defeats the single player \emph{Yahtzee} AI more than $51\%$ of the time with at least $95\%$ confidence.
 The AI described in this article will only be viable for two player \emph{Yahtzee}.
 
-The idea is to %TODO
-We have implemented a \emph{Yahtzee} AI following a strategy somewhat similar to the single player AI except that it switch between aggression based strategies depending on it's chance to beat the other players expected final score for a given state. 
+We have implemented a \emph{Yahtzee} AI following a strategy somewhat similar to the single player AI except that it switch between aggression based strategies depending on it's chance to beat the other players expected final score for a given state. The idea is to base your choice of strategy from the \emph{standard deviation} in score which is known for each strategy that can be chosen in a current state. The best strategy can then be chosen as the strategy with the highest \emph{cumulative normal distribution}, which describes the probability of beating score \emph{a} when having score \emph{b} and standard deviation $\sigma$.
+
 We will represent the theory behind the single player ai, how we have extended it into our competing multiplayer AI and show test results of how the two implementations performs when playing each other. 
 Finally we will test each AI against a restricted optimal \emph{Yahtzee} AI and calculate the average amount of mistake made by each of them.
 
