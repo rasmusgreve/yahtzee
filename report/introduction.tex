@@ -1,5 +1,5 @@
 Within the field of game theory there exists games with state spaces so small, that the optimal strategy can be computed within seconds. 
-In the other end we have games with state spaces so large that calculating the optimal strategy by exploring the state space is impossible to do within a reasonable amount of time. 
+In the other end we have games with state spaces so large that calculating the optimal strategy by exploring the state space is impossible to do within a reasonable amount of time.
 The focus of this project lies on the game \emph{Yahtzee} that in its Solitaire version has a state space belonging to the first category, but in its multi player version belongs to the second.
 
 \begin{table}[h] %Den står et lidt underligt sted?
@@ -26,13 +26,13 @@ Our main goal of the project is to show how it is possible with current technolo
 
 Claims have been made, that such an algorithm already exists, but it has not been properly documented.
 The work by Jakub Pawlewicz is, to our knowledge, the publication with the strongest documentation of how to make a well performing multi player \emph{Yahtzee} AI.
-While the paper of Jakub Pawlewicz\citep{pawlewicz2011nearly} presents impressive results it doesn't actually test the single player AI against a multi player AI, and thus doesn't show that it plays better than the well known optimal Solitaire solution.
+While the paper of Jakub Pawlewicz\cite{pawlewicz2011nearly} presents impressive results it doesn't actually test the single player AI against a multi player AI, and thus doesn't show that it plays better than the well known optimal Solitaire solution.
 
 We seek to show an algorithm for multi player \emph{Yahtzee} that defeats the single player \emph{Yahtzee} AI more than $51\%$ of the time with at least $95\%$ confidence.
 The AI described in this article will only be viable for two player \emph{Yahtzee}.
 
-The idea is to %TODO
-We have implemented a \emph{Yahtzee} AI following a strategy somewhat similar to the single player AI except that it switch between aggression based strategies depending on it's chance to beat the other players expected final score for a given state. 
+We have implemented a \emph{Yahtzee} AI following a strategy somewhat similar to the single player AI except that it switch between aggression based strategies depending on it's chance to beat the other players expected final score for a given state. The idea is to base your choice of strategy from the \emph{standard deviation} in score which is known for each strategy that can be chosen in a current state. The best strategy can then be chosen as the strategy with the highest \emph{cumulative normal distribution}, which describes the probability of beating score \emph{a} when having score \emph{b} and standard deviation $\sigma$.
+
 We will represent the theory behind the single player ai, how we have extended it into our competing multiplayer AI and show test results of how the two implementations performs when playing each other. 
 Finally we will test each AI against a restricted optimal \emph{Yahtzee} AI and calculate the average amount of mistake made by each of them.
 
