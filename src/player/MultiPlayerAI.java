@@ -157,6 +157,11 @@ public class MultiPlayerAI extends BaseAI {
 		double agg = ((aggresivityLevel)/((double)(aggresivityLevels-1))); //0 to 1
 		agg = agg * 2;//0 to 2;
 		agg = agg - 1;//-1 to 1;
+		//agg = agg 												//maskine 1 
+		//agg = Math.pow(Math.abs(agg), 1.5f) * Math.signum(agg);	//maskine 2
+		//agg = agg * 0.5f;											//maskine 3
+		//agg = agg 												//maskine 4 
+		//agg = agg * 2f;											//maskine 5
 		return mean + stdDev * agg;
 
 	}
