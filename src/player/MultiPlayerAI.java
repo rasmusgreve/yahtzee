@@ -266,7 +266,7 @@ public class MultiPlayerAI extends BaseAI {
 		//return boardValues[aggresivityLevel][board].clone();
 	}
 	
-	private double[] valueOfRoll(int rollC, int rollsLeft, int board, double[][] rollValues)
+	public double[] valueOfRoll(int rollC, int rollsLeft, int board, double[][] rollValues)
 	{
 		if (rollsLeft == 0)
 		{
@@ -274,12 +274,13 @@ public class MultiPlayerAI extends BaseAI {
 			double bestAdjustedMean = Double.NEGATIVE_INFINITY;
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
+				System.out.println("Scoretype: " + ScoreType.values()[i]);
 				
 				int rollVal = GameLogic.valueOfRoll(i, rollC);
 				double[] boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
 				
 				double adjustedMean = getAdjustedMean(boardVal) + rollVal;
-				
+				System.out.println("Boardval: " + adjustedMean + " sd: " + Math.sqrt(boardVal[1]));
 				
 				if (bestAdjustedMean < adjustedMean){
 					bestAdjustedMean = adjustedMean;
