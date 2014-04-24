@@ -18,7 +18,7 @@ public class MultiPlayerAI extends BaseAI {
 	public static final int MEAN = 0, VARIANCE = 1;
 	public static final int aggresivityLevels = 11;	//These are tied to the .bin cache files
 	private int[] aggresivityLevelUsage = new int[aggresivityLevels];
-	public int aggresivityLevel = 5;
+	public int aggresivityLevel = -1;
 	public boolean staticAggresivity = false;
 	public double[][] boardValues; //boardValues[aggresivity_level][boardhash * 2 + (0=mean, 1=variance)]
 	public static String filename = "multiPlayerCache";
@@ -157,6 +157,11 @@ public class MultiPlayerAI extends BaseAI {
 		double agg = ((aggresivityLevel)/((double)(aggresivityLevels-1))); //0 to 1
 		agg = agg * 2;//0 to 2;
 		agg = agg - 1;//-1 to 1;
+		//agg = agg 												//maskine 1 
+		//agg = Math.pow(Math.abs(agg), 1.5f) * Math.signum(agg);	//maskine 2
+		//agg = agg * 0.5f;											//maskine 3
+		//agg = agg 												//maskine 4 
+		//agg = agg * 2f;											//maskine 5
 		return mean + stdDev * agg;
 
 	}
