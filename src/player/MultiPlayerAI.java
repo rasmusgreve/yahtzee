@@ -93,7 +93,7 @@ public class MultiPlayerAI extends BaseAI {
 		//TODO: Compare using the variance too
 		double otherExpectedMean =  boardValues[aggresivityLevels/2][other.ConvertMapToInt()*2+MEAN] + other.sum();
 		double otherExpectedVariance =  boardValues[aggresivityLevels/2][other.ConvertMapToInt()*2+VARIANCE];
-		double bestWinningProb = Double.MIN_VALUE;
+		double bestWinningProb = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < aggresivityLevels; i++) {
 			//Calculate the expected value of my board
 			double myExpectedMean = boardValues[i][mine.ConvertMapToInt() * 2 + MEAN];
@@ -104,7 +104,7 @@ public class MultiPlayerAI extends BaseAI {
 			//Calculate the probability that we win with aggresivity level i
 //			NormalDistribution nd = new NormalDistribution(myExpectedMean, Math.sqrt(myExpectedVariance));
 //			double winningProb = 1-nd.cumulativeProbability(otherExpectedMean-1);
-			
+			//TODO: Sanity check
 			NormalDistribution nd = new NormalDistribution(myExpectedMean-otherExpectedMean, Math.sqrt(myExpectedVariance + otherExpectedVariance));
 			double winningProb = 1-nd.cumulativeProbability(0);
 			

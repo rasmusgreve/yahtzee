@@ -20,10 +20,10 @@ public class AggregatePlayer implements Player {
 	public Answer PerformTurn(Question question) {
 		int turn = 13-question.scoreboards[question.playerId].emptySpaces(); //0 based
 		
-		if (turn < 5) //4 = 3 first turns
+		if (turn < 9) //9 first turns
 			return single.PerformTurn(question);
 		
-		if (turn <= 12)//4 to 12 = 8 turns
+		if (turn <= 12)//9 to 12 = 4 turns
 			return multi.PerformTurn(question);
 		
 		//1 turn
