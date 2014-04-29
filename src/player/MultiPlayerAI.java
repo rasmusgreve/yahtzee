@@ -274,13 +274,13 @@ public class MultiPlayerAI extends BaseAI {
 			double bestAdjustedMean = Double.NEGATIVE_INFINITY;
 			for (int i = 0; i < ScoreType.count; i++) {
 				if (Scoreboard.isFilled(board, i)) continue; //Skip filled entries
-				System.out.println("Scoretype: " + ScoreType.values()[i]);
+				//System.out.println("Scoretype: " + ScoreType.values()[i]);
 				
 				int rollVal = GameLogic.valueOfRoll(i, rollC);
 				double[] boardVal = getBoardValue(Scoreboard.fill(board, i, rollVal));
 				
 				double adjustedMean = getAdjustedMean(boardVal) + rollVal;
-				System.out.println("Boardval: " + adjustedMean + " sd: " + Math.sqrt(boardVal[1]));
+				//System.out.println("Boardval: " + adjustedMean + " sd: " + Math.sqrt(boardVal[1]));
 				
 				if (bestAdjustedMean < adjustedMean){
 					bestAdjustedMean = adjustedMean;

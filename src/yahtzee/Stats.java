@@ -212,7 +212,7 @@ public class Stats {
 			return String.format("%dh %2dm",ms/(1000*60*60),(ms/(1000*60))%60);
 	}
 	
-	private static class Statsmath
+	static class Statsmath
 	{
 		public int min = Integer.MAX_VALUE;
 		public int max = Integer.MIN_VALUE;
