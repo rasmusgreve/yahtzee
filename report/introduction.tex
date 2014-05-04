@@ -16,15 +16,15 @@ The focus of this project lies on the game \emph{Yahtzee} that in its solitaire 
 \end{table}
 
 An optimal solution for the game of solitaire \emph{Yahtzee} has been discussed and calculated by Tom Verhoeff\cite{verhoeff2004optimal}, and an AI based on this work has been implemented by James Glenn\cite{glenn2006optimal}.
-The strategy is to consider \emph{Yahtzee} a single player game where the goal is to maximize your score.  %Lidt mærkelig sætning
-The state space for calculating this strategy is small enough that any modern computer will be able to perform the computations within a few hours.
+The strategy is to consider \emph{Yahtzee} a single player game where the goal is to maximize your score.  %Lidt mærkelig sætning(Prøvede at rette den til men sætningen virker mere unødvendig og indskudt uden fra sammenhæng end den er snørklet, kunne måske ligeså godt bare fjerne den?, Asger) 
+The state space for calculating this strategy is small enough that any modern computer will be able to perform the computations within a few hours. Currently solitaire \emph{Yahtzee} is the state of the art documented AI for both a solitaire and multiplayer \emph{Yahtzee} game.
 We have described and implemented the single player AI algorithm using the work of James Glenn, which gives a in depth explanation of the implementation, theory, and testing of the solitaire \emph{Yahtzee} strategy (section \ref{sec:optimalSingleAI}).
 
-James Glenn proposes an optimal solution for the multi-player game and mentions that the state space is of a size that makes it impossible to do - both in terms of space and time.
+James Glenn proposes an optimal solution for the multi-player game and mentions that the state space is of a size that makes it impossible to calculate - both in terms of space and time.
 The aim of our project is not to calculate the optimal solution but instead to improve on the current state of the sub-optimal multi-player strategy  (section \ref{sec:subOptimalMPAI}). 
-Our main goal is to show how it is possible with current hardware, to implement a multi-player \emph{Yahtzee} strategy that has a consistently better performance in a multi-player setting than the optimal solitaire strategy, and can be computed and run in a reasonable amount of time (section \ref{sec:testsAndResults})).\footnote{i.e. at most \emph{days} of computation for preparation and \emph{seconds} of computation when playing.}
+Our main goal is therefore to show how it is possible with current hardware, to implement a multi-player \emph{Yahtzee} strategy that has a consistently better performance in a multi-player setting than the optimal solitaire strategy, and can be computed and run in a reasonable amount of time (section \ref{sec:testsAndResults})).\footnote{i.e. at most \emph{days} of computation for preparation and \emph{seconds} of computation when playing.}
 
-Claims have been made, indicating that such an algorithm has been already been crafted, but it has not been properly documented.
+Claims have been made, indicating that such an algorithm has already been found, but it has not been properly documented.
 The work by Jakub Pawlewicz is, to our knowledge, the publication with the strongest documentation of how to design a well performing multi-player \emph{Yahtzee} strategy.
 While the paper of Jakub Pawlewicz\citep{pawlewicz2011nearly} presents impressive results it does not test the solitaire strategy directly against a multi-player strategy.
 
