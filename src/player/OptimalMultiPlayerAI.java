@@ -19,8 +19,18 @@ public class OptimalMultiPlayerAI extends BaseAI {
 	public double[] stateValues;
 	public static final String filename = "optimalPlayerCache.bin";
 	
+	public double winningProbAfterTurn = -1;
+	
 	public OptimalMultiPlayerAI(){
 		stateValues = Persistence.loadArray(filename,CACHE_SIZE, Double.NaN);
+		
+		int c = 0;
+		for (int i = 0; i < stateValues.length; i++)
+		{
+			if (!Double.isNaN(stateValues[i])) c++;
+		}
+		//System.out.println("Count: " + c);
+		//System.out.println("Value: " + stateValues[(State.convertScoreboardsToState(new Scoreboard(State.NUM_FILLED, State.NUM_EMPTY), new Scoreboard(State.NUM_FILLED, State.NUM_EMPTY), false))]);
 	}
 
 	
@@ -30,26 +40,26 @@ public class OptimalMultiPlayerAI extends BaseAI {
 			if (State.isGameOver(state)){
 				stateValues[state] = State.getWinner(state);
 			}else{
-				stateValues[state] = rollFromState(state);
+				stateValues[state] = winProbFromState(state);
 			}
 		}	
 		return stateValues[state];
 	}
 	
 	
-	private double rollFromState(int state){
+	public double winProbFromState(int state){
 		optimalCacheBuildingPrint(state);
 		
 		double expected = 0;
 		double[] cache = newRollValuesCache();
 		for (int i = 0; i < YahtzeeMath.allRolls.length; i++) {
-			double v = valueOfRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, state, cache);
+			double v = winProbFromRoll(YahtzeeMath.colex(YahtzeeMath.allRolls[i]), 2, state, cache);
 			expected += v * YahtzeeMath.prob(5, YahtzeeMath.allRolls[i]);
 		}
 		return expected;
 	}
 	
-	private double valueOfRoll(int rollC, int rollsLeft, int state, double[] rollValues){
+	public double winProbFromRoll(int rollC, int rollsLeft, int state, double[] rollValues){
 		boolean myTurn = State.getTurn(state);
 		if (rollsLeft == 0){
 			
@@ -80,7 +90,7 @@ public class OptimalMultiPlayerAI extends BaseAI {
 				
 				for (int new_rollC : getPossibleRolls(rollC, hold))
 				{
-					sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, state, rollValues);
+					sum += getProbSmart(holdDice, new_rollC) * winProbFromRoll(new_rollC, rollsLeft-1, state, rollValues);
 				}
 				
 				ex = myTurn ? Math.max(ex, sum) : Math.min(ex, sum);
@@ -129,9 +139,46 @@ public class OptimalMultiPlayerAI extends BaseAI {
 				best = type;
 			}
 		}
+		winningProbAfterTurn = max;
 		return ScoreType.values()[best];
 	}
 	
+	//HOLD MUST BE SORTED
+	public double winningProbFromHold(int[] roll, boolean[] hold, int rollsLeft, int state)
+	{
+		hold = sortHold(hold, roll);
+		int rollC = YahtzeeMath.colex(roll);
+		int[] holdDice = getHoldDice(rollC, hold);	
+		
+		double sum = 0;
+		
+		for (int new_rollC : getPossibleRolls(rollC, hold))
+		{
+			sum += getProbSmart(holdDice, new_rollC) * winProbFromRoll(new_rollC, rollsLeft-1, state, newRollValuesCache());
+		}
+		
+		return sum;
+	}
+	
+	private boolean[] sortHold(boolean[] hold, int[] roll)
+	{
+		//roll: 1,1,4,2,2
+		//hold: f,f,f,t,t
+		
+		int[] sortedRoll = Arrays.copyOf(roll, roll.length);
+		Arrays.sort(sortedRoll);
+		int[] bestHoldDice = getHoldDiceInit(roll, hold); 
+		boolean[] resortedBestHold = new boolean[5];
+		for (int i = 0; i < 5; i++) {
+			if (bestHoldDice[sortedRoll[i]-1] > 0){
+				resortedBestHold[i] = true;
+				bestHoldDice[sortedRoll[i]-1]--;
+			}
+		}
+		return resortedBestHold;
+		
+		//out : f,f,t,t,f
+	}
 	
 	private boolean[] getBestHold(int[] roll, int rollsLeft, int state){
 		int rollC = YahtzeeMath.colex(roll);
@@ -143,24 +190,25 @@ public class OptimalMultiPlayerAI extends BaseAI {
 		int[] bestHoldDice = new int[6];
 		boolean[][] holds = null;
 		holds = getInterestingHolds(rollC);
-		for (boolean[] hold : holds)
+		double temp = Double.NaN;
+		for (boolean[] holdSorted : holds)
 		{
-			if (hold == null) continue;
-			int[] holdDice = getHoldDice(rollC, hold);			
+			if (holdSorted == null) continue;
+			int[] holdDice = getHoldDice(rollC, holdSorted);			
 			
 			double sum = 0;
-			for (int new_rollC : getPossibleRolls(rollC, hold))
+			for (int new_rollC : getPossibleRolls(rollC, holdSorted))
 			{
-				sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, state, newRollValuesCache());
+				sum += getProbSmart(holdDice, new_rollC) * winProbFromRoll(new_rollC, rollsLeft-1, state, newRollValuesCache());
 			}
-			
 			if (sum > max)
 			{
 				max = sum;
-				bestHoldDice = getHoldDiceInit(rollSorted, hold);
+				bestHoldDice = getHoldDiceInit(rollSorted, holdSorted);
+				temp = winningProbFromHold(rollSorted, holdSorted, rollsLeft, state);
 			}
 		}
-		
+		winningProbAfterTurn = max;
 		boolean[] resortedBestHold = new boolean[5];
 		for (int i = 0; i < 5; i++) {
 			if (bestHoldDice[roll[i]-1] > 0){
@@ -168,12 +216,17 @@ public class OptimalMultiPlayerAI extends BaseAI {
 				bestHoldDice[roll[i]-1]--;
 			}
 		}
+		/*double p = winningProbFromHold(roll, resortedBestHold, rollsLeft, state);
+		if (temp != p)
+		{
+			System.out.println("Something wrong!");
+		}*/
 		return resortedBestHold;
 	}
 	
 	
 	
-	private static double[] newRollValuesCache()
+	public static double[] newRollValuesCache()
 	{
 		double[] rollValues = new double[1020];
 		Arrays.fill(rollValues, Double.NaN);
@@ -202,11 +255,11 @@ public class OptimalMultiPlayerAI extends BaseAI {
 	int c = 0;
 	long t = System.currentTimeMillis();
 	private void optimalCacheBuildingPrint(int state){
-		if (c%10000 == 0){
+		if (c%100 == 0){
 			float runTime = (System.currentTimeMillis() - t)/1000f/60f;
 			float averageSpeed = c / runTime;
 			float expectedTimeLeft = (6000000 / averageSpeed) - runTime;
-			System.out.println("rollFromScoreboard called, state: " + state + ", count: " + c + ", runTime: " + runTime + " min");
+			System.out.println("winProbFromState called, state: " + state + ", count: " + c + ", runTime: " + runTime + " min");
 			System.out.println("average speed: "+ averageSpeed + " board/min");
 			System.out.println("expected time left: "+ expectedTimeLeft + " min");
 			

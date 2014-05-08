@@ -17,34 +17,153 @@ import yahtzee.Stats.Statsmath;
 
 public class Tournament {
 
-	private static Scoreboard getBoard1(){
-		Scoreboard b = new Scoreboard();
-		b.insert(ScoreType.ONES, 1);
-		b.insert(ScoreType.TWOS, 6);
-		b.insert(ScoreType.THREES, 9);
-		b.insert(ScoreType.FOURS, 12);
-		b.insert(ScoreType.SIXES, 18);
-		b.insert(ScoreType.FULL_HOUSE, 25);
-		b.insert(ScoreType.SMALL_STRAIGHT, 30);
-		b.insert(ScoreType.YAHTZEE, 50);
-		b.insert(ScoreType.CHANCE, 21);
-		return b;
+	public static Scoreboard getBoard(int id)
+	{
+		switch (id) {
+			case 1: return getBoard1();
+			case 2: return getBoard2();
+			case 3: return getBoard3();
+			case 4: return getBoard4();
+			case 5: return getBoard5();
+			case 6: return getBoard6();
+			case 7: return getBoard7();
+		}
+		throw new IllegalArgumentException();
 	}
 	
-	private static Scoreboard getBoard2(){
+	public static Scoreboard getBoard1(){
 		Scoreboard b = new Scoreboard();
-		b.insert(ScoreType.ONES, 1);
+		b.insert(ScoreType.ONES, 3);
 		b.insert(ScoreType.TWOS, 8);
-		b.insert(ScoreType.FOURS, 12);
-		b.insert(ScoreType.THREE_OF_A_KIND, 25);
-		b.insert(ScoreType.FOUR_OF_A_KIND, 9);
-		b.insert(ScoreType.FULL_HOUSE, 25);
+		b.insert(ScoreType.THREES, 9);
+		b.insert(ScoreType.FOURS, 8);
+		//b.insert(ScoreType.FIVES, 12);
+		b.insert(ScoreType.SIXES, 18);
+		//b.insert(ScoreType.THREE_OF_A_KIND, 18);
+		//b.insert(ScoreType.FOUR_OF_A_KIND, 18);
+		//b.insert(ScoreType.FULL_HOUSE, 25);
 		b.insert(ScoreType.SMALL_STRAIGHT, 30);
 		b.insert(ScoreType.BIG_STRAIGHT, 40);
+		b.insert(ScoreType.YAHTZEE, 0);
 		b.insert(ScoreType.CHANCE, 22);
 		return b;
 	}
 	
+	public static Scoreboard getBoard2(){
+		Scoreboard b = new Scoreboard();
+		//b.insert(ScoreType.ONES, 3);
+		b.insert(ScoreType.TWOS, 6);
+		b.insert(ScoreType.THREES, 9);
+		b.insert(ScoreType.FOURS, 12);
+		//b.insert(ScoreType.FIVES, 12);
+		//b.insert(ScoreType.SIXES, 18);
+		b.insert(ScoreType.THREE_OF_A_KIND, 19);
+		b.insert(ScoreType.FOUR_OF_A_KIND, 0);
+		b.insert(ScoreType.FULL_HOUSE, 25);
+		//b.insert(ScoreType.SMALL_STRAIGHT, 30);
+		b.insert(ScoreType.BIG_STRAIGHT, 40);
+		b.insert(ScoreType.YAHTZEE, 0);
+		b.insert(ScoreType.CHANCE, 21);
+		return b;
+	}
+	
+	public static Scoreboard getBoard3(){
+		Scoreboard b = new Scoreboard();
+		b.insert(ScoreType.ONES, 1);
+		b.insert(ScoreType.TWOS, 4);
+		//b.insert(ScoreType.THREES, 9);
+		b.insert(ScoreType.FOURS, 16);
+		b.insert(ScoreType.FIVES, 15);
+		b.insert(ScoreType.SIXES, 18);
+		b.insert(ScoreType.THREE_OF_A_KIND, 24);
+		//b.insert(ScoreType.FOUR_OF_A_KIND, 0);
+		b.insert(ScoreType.FULL_HOUSE, 25);
+		b.insert(ScoreType.SMALL_STRAIGHT, 30);
+		//b.insert(ScoreType.BIG_STRAIGHT, 40);
+		//b.insert(ScoreType.YAHTZEE, 0);
+		b.insert(ScoreType.CHANCE, 23);
+		return b;
+	}
+	
+	public static Scoreboard getBoard4(){
+		Scoreboard b = new Scoreboard();
+		//b.insert(ScoreType.ONES, 3);
+		//b.insert(ScoreType.TWOS, 6);
+		b.insert(ScoreType.THREES, 6);
+		///b.insert(ScoreType.FOURS, 12);
+		b.insert(ScoreType.FIVES, 20);
+		b.insert(ScoreType.SIXES, 18);
+		b.insert(ScoreType.THREE_OF_A_KIND, 26);
+		b.insert(ScoreType.FOUR_OF_A_KIND, 25);
+		b.insert(ScoreType.FULL_HOUSE, 25);
+		b.insert(ScoreType.SMALL_STRAIGHT, 30);
+		b.insert(ScoreType.BIG_STRAIGHT, 40);
+		//b.insert(ScoreType.YAHTZEE, 0);
+		b.insert(ScoreType.CHANCE, 22);
+		return b;
+	}
+	
+	public static Scoreboard getBoard5(){
+		Scoreboard b = new Scoreboard();
+		//b.insert(ScoreType.ONES, 3);
+		b.insert(ScoreType.TWOS, 6);
+		//b.insert(ScoreType.THREES, 9);
+		b.insert(ScoreType.FOURS, 8);
+		//b.insert(ScoreType.FIVES, 12);
+		b.insert(ScoreType.SIXES, 18);
+		b.insert(ScoreType.THREE_OF_A_KIND, 27);
+		//b.insert(ScoreType.FOUR_OF_A_KIND, 0);
+		b.insert(ScoreType.FULL_HOUSE, 25);
+		b.insert(ScoreType.SMALL_STRAIGHT, 30);
+		b.insert(ScoreType.BIG_STRAIGHT, 40);
+		b.insert(ScoreType.YAHTZEE, 50);
+		b.insert(ScoreType.CHANCE, 25);
+		return b;
+	}
+	
+	public static Scoreboard getBoard6(){
+		Scoreboard b = new Scoreboard();
+		//b.insert(ScoreType.ONES, 3);
+		b.insert(ScoreType.TWOS, 8);
+		//b.insert(ScoreType.THREES, 9);
+		//b.insert(ScoreType.FOURS, 12);
+		b.insert(ScoreType.FIVES, 15);
+		b.insert(ScoreType.SIXES, 24);
+		b.insert(ScoreType.THREE_OF_A_KIND, 28);
+		//b.insert(ScoreType.FOUR_OF_A_KIND, 0);
+		b.insert(ScoreType.FULL_HOUSE, 25);
+		b.insert(ScoreType.SMALL_STRAIGHT, 30);
+		b.insert(ScoreType.BIG_STRAIGHT, 40);
+		b.insert(ScoreType.YAHTZEE, 50);
+		b.insert(ScoreType.CHANCE, 24);
+		return b;
+	}
+	
+	public static Scoreboard getBoard7(){
+		Scoreboard b = new Scoreboard();
+		b.insert(ScoreType.ONES, 3);
+		//b.insert(ScoreType.TWOS, 6);
+		//b.insert(ScoreType.THREES, 9);
+		b.insert(ScoreType.FOURS, 16);
+		b.insert(ScoreType.FIVES, 20);
+		b.insert(ScoreType.SIXES, 30);
+		//b.insert(ScoreType.THREE_OF_A_KIND, 19);
+		b.insert(ScoreType.FOUR_OF_A_KIND, 29);
+		b.insert(ScoreType.FULL_HOUSE, 25);
+		b.insert(ScoreType.SMALL_STRAIGHT, 30);
+		b.insert(ScoreType.BIG_STRAIGHT, 40);
+		b.insert(ScoreType.YAHTZEE, 50);
+		//b.insert(ScoreType.CHANCE, 21);
+		return b;
+	}
+	
+	
+	/**
+	 * Play *rounds* games with spai using board 1 and mpai using board 2 with switching starting player. 
+	 * Then *rounds* games with spai using board 2 and mpai using board 2 again with switching starting player,
+	 * @param args : "rounds board1 board2"
+	 * @throws FileNotFoundException
+	 */
 	public static void main(String[] args) throws FileNotFoundException {
 		
 		Player[] players = new Player[]{new SinglePlayerAI(), new MultiPlayerAI()};
@@ -54,11 +173,14 @@ public class Tournament {
 		stats_file.println("------------------------------------------------------------------------------------------");
 		stats_file.println(new SimpleDateFormat("dd/MM/YYYY  - HH:mm:ss").format(Calendar.getInstance().getTime()));
 		
-		int rounds = 15;
+		int rounds = Integer.parseInt(args[0]);
+
 		int seed = new java.util.Random().nextInt();
+		int board1 = Integer.parseInt(args[1]);
+		int board2 = Integer.parseInt(args[2]);
 		
-		System.out.println("Starting stats with " + String.format("%,d",rounds) + " rounds from seed " + seed);
-		stats_file.println("Starting stats with " + String.format("%,d",rounds) + " rounds from seed " + seed);
+		System.out.println("Starting tournament with " + String.format("%,d",rounds) + " rounds from seed " + seed + " with board " + board1 + " and " + board2);
+		stats_file.println("Starting tournament with " + String.format("%,d",rounds) + " rounds from seed " + seed + " with board " + board1 + " and " + board2);
 		for (int i = 0; i < players.length; i++)
 		{
 			System.out.println("\t -> ["+(i)+"] = " + players[i].getName());
@@ -87,7 +209,7 @@ public class Tournament {
 		for (int i = 0; i < rounds; i++)
 		{	
 			//Build boards
-			Scoreboard[] boards = new Scoreboard[]{getBoard1(), getBoard2()};
+			Scoreboard[] boards = new Scoreboard[]{getBoard(board1), getBoard(board2)};
 			
 			
 			Controller c = new Controller(players, seed, boards, startingId);
@@ -200,7 +322,7 @@ public class Tournament {
 		for (int i = 0; i < rounds; i++)
 		{	
 			//Build boards
-			Scoreboard[] boards = new Scoreboard[]{getBoard1(), getBoard2()};
+			Scoreboard[] boards = new Scoreboard[]{getBoard(board1), getBoard(board2)};
 			
 			
 			Controller c = new Controller(players, seed, boards, startingId);

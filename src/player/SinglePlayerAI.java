@@ -40,6 +40,14 @@ public class SinglePlayerAI extends BaseAI {
 				System.out.println(", opponent: " + question.scoreboards[question.playerId == 0 ? 1 : 0].sum());
 		}
 
+		/*if (question.scoreboards[question.playerId].emptySpaces() == 4 && question.rollsLeft == 2)
+		{
+			Scoreboard b = question.scoreboards[question.playerId];
+			System.out.println("Scoreboard: " + b.ConvertMapToInt() + ". score: " + b.totalInclBonus() + " exp: " + boardValues[b.ConvertMapToInt()] + " total: " +  (b.totalInclBonus() + boardValues[b.ConvertMapToInt()]));
+			b.PrintScoreBoard();
+			System.out.println("------------------------------------------------------------------------------------");
+		}*/
+		
 		Answer ans = new Answer();
 		
 		if (question.rollsLeft == 0)
@@ -51,6 +59,8 @@ public class SinglePlayerAI extends BaseAI {
 
 		return ans;
 	}
+	
+	public Scoreboard scoreboardAfterTurn;
 	
 	private ScoreType getBestScoreEntry(int[] roll, Scoreboard scoreboard)
 	{
@@ -87,6 +97,10 @@ public class SinglePlayerAI extends BaseAI {
 				best = type;
 			}
 		}
+		Scoreboard clone = scoreboard.clone();
+		clone.insert(best, GameLogic.valueOfRoll(best, rollC));
+		scoreboardAfterTurn = clone;
+		
 		return ScoreType.values()[best];
 	}
 	
