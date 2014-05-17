@@ -118,6 +118,9 @@ public class SinglePlayerAI extends BaseAI {
 		boolean[][] holds = null;
 		if (optimize) holds = getInterestingHolds(rollC);
 		else holds = getInterestingHoldsInit(roll);
+		
+		double[] rollValues = newRollValuesCache();
+		
 		for (boolean[] hold : holds)
 		{
 			if (hold == null) continue;
@@ -127,12 +130,12 @@ public class SinglePlayerAI extends BaseAI {
 			if (optimize){
 				for (int new_rollC : getPossibleRolls(rollC, hold))
 				{
-					sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, board, newRollValuesCache());
+					sum += getProbSmart(holdDice, new_rollC) * valueOfRoll(new_rollC, rollsLeft-1, board, rollValues);
 				}
 			}else{
 				for (int[] new_roll : getPossibleRolls(roll, hold))
 				{
-					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, scoreboard, newRollValuesCache());
+					sum += getProb(hold, new_roll) * valueOfRoll(new_roll, rollsLeft-1, scoreboard, rollValues);
 				}
 			}
 			
@@ -143,6 +146,9 @@ public class SinglePlayerAI extends BaseAI {
 				else bestHold = hold;
 			}
 		}
+		
+		
+		
 		
 		if (optimize){
 			boolean[] resortedBestHold = new boolean[5];
@@ -196,6 +202,7 @@ public class SinglePlayerAI extends BaseAI {
 			}
 			rollValues[idx] = max;
 		}
+		
 		return rollValues[idx];
 	}
 	
