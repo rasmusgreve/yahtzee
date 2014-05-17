@@ -131,7 +131,7 @@ public class SinglePlayerTests {
 	}
 	
 	
-	private int[] scores = new int[]{300,268,237,240,205,252,220,329,230,157};
+	private int[] scores = new int[]{300,268,237,240,205,252,213,329,287,157};
 	@Test
 	public void testScores()
 	{
